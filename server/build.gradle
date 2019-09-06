@@ -1,0 +1,12 @@
+sourceCompatibility = 11
+dependencies {
+    testCompile 'junit:junit:4.12'
+    compile 'io.netty:netty-all:4.1.38.Final'
+    compile 'com.alibaba:fastjson:1.2.59'
+    compile 'org.apache.logging.log4j:log4j-core:2.12.1'
+    compile 'org.apache.logging.log4j:log4j-api:2.12.1'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
