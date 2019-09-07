@@ -1,45 +1,21 @@
 package model;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * 科室
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Department {
+    @Getter
     private int id;
+    @Getter
     private String name;
+    @Getter /* 分类 0 门诊部门 1 药师部门 2 技师部门 3 前台*/
     private int clazz;
 
-    /**
-     * 获取id
-     *
-     * @return id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * 获取名称
-     *
-     * @return 名称
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 获取分类
-     *
-     * @return 0 门诊部门 1 药师部门 2 技师部门 3 前台
-     */
-    public int getClazz() {
-        return clazz;
-    }
-
-    private Department(int id, String name, int clazz) {
-        this.id = id;
-        this.name = name;
-        this.clazz = clazz;
-    }
 
     /**
      * 新建一个科室对象并获取
@@ -49,9 +25,7 @@ public class Department {
      * @return id自动生成的科室对象
      */
     public static Department insert(String name, int clazz) {
-        // todo Id
-
-        int id = 0;
+        int id = 0;//todo 唯一id生成规则
         return new Department(id, name, clazz);
     }
 }

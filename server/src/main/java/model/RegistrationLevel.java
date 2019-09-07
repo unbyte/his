@@ -1,12 +1,22 @@
 package model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * 挂号等级
  */
+@ToString
 public class RegistrationLevel {
+    @Getter
     private int id;
+    @Getter
     private String name;
+    @Getter /*每日限制数*/
     private int limit;
+    @Getter
+    @Setter
     private double fee;
 
     private RegistrationLevel(int id, String name, int limit, double fee) {
@@ -25,53 +35,8 @@ public class RegistrationLevel {
      * @return id自动生成的挂号等级对象
      */
     public static RegistrationLevel insert(String name, int limit, double fee) {
-        // todo id生成
-        int id = 0;
+        int id = 0;//todo 唯一id生成规则
         return new RegistrationLevel(id, name, limit, fee);
     }
 
-    /**
-     * 获取id
-     *
-     * @return id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * 获取名称
-     *
-     * @return 名称
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 获取每日限制数
-     *
-     * @return 每日限制数
-     */
-    public int getLimit() {
-        return limit;
-    }
-
-    /**
-     * 获取费用
-     *
-     * @return 费用
-     */
-    public double getFee() {
-        return fee;
-    }
-
-    /**
-     * 修改费用
-     *
-     * @param fee 新费用
-     */
-    public void setFee(double fee) {
-        this.fee = fee;
-    }
 }

@@ -2,7 +2,7 @@ package net.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.message.Header;
+import lib.MessageUtils;
 import net.message.Message;
 import net.message.MessageType;
 
@@ -16,17 +16,9 @@ public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
         Message message = (Message) msg;
 
         if (message.getHeader() != null && message.getHeader().getType() == MessageType.HEARTBEAT_REQ.type())
-            ctx.writeAndFlush(buildHeartBeat());
+            ctx.writeAndFlush((MessageUtils.buildHeartBeat()));
         else
             ctx.fireChannelRead(msg);
     }
 
-
-    private Message buildHeartBeat() {
-        return new Message().setHeader(
-                new Header().setType(
-                        MessageType.HEARTBEAT_RES.type()
-                )
-        );
-    }
 }

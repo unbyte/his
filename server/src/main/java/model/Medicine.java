@@ -1,22 +1,24 @@
 package model;
 
+import lombok.*;
+
 /**
  * 药物
  */
+@ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Medicine {
+    @Getter
     private int id;
+    @Getter /*助记码*/
     private String code;
+    @Getter
     private String name;
+    @Getter /*药物规格*/
     private String format;
+    @Getter
+    @Setter
     private double price;
-
-    private Medicine(int id, String code, String name, String format, double price) {
-        this.id = id;
-        this.code = code;
-        this.name = name;
-        this.format = format;
-        this.price = price;
-    }
 
     /**
      * 新建一个药物对象并获取
@@ -28,62 +30,8 @@ public class Medicine {
      * @return id自动生成的药物对象
      */
     public static Medicine insert(String code, String name, String format, double price) {
-        // todo id生成
-        int id = 0;
+        int id = 0; //todo 唯一id生成规则
         return new Medicine(id, code, name, format, price);
     }
 
-    /**
-     * 修改价格
-     *
-     * @param price 新价格
-     */
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    /**
-     * 获取id
-     *
-     * @return id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * 获取助记码
-     *
-     * @return 助记码
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * 获取姓名
-     *
-     * @return 姓名
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 获取药物规格
-     *
-     * @return 药物规格
-     */
-    public String getFormat() {
-        return format;
-    }
-
-    /**
-     * 获取价格
-     *
-     * @return 价格
-     */
-    public double getPrice() {
-        return price;
-    }
 }

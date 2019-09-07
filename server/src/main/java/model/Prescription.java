@@ -1,28 +1,30 @@
 package model;
 
 import lib.IDGenerator;
+import lombok.*;
 
 import java.util.HashSet;
 
 /**
  * 处方
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 public class Prescription {
+    @Getter
     private long id;
+    @Getter /*挂号记录id*/
     private long registrationID;
+    @Getter /*0-中 1-西*/
     private int clazz;
+    @Getter /*药物清单*/
     private HashSet<PrescriptionItem> medicineList;
+    @Getter /*费用*/
     private double fee;
+    @Getter
+    @Setter
     private int status;
 
-    private Prescription(long id, long registrationID, int clazz, HashSet<PrescriptionItem> medicineList, double fee, int status) {
-        this.id = id;
-        this.registrationID = registrationID;
-        this.clazz = clazz;
-        this.medicineList = medicineList;
-        this.fee = fee;
-        this.status = status;
-    }
 
     /**
      * 新建一个处方对象并获取
@@ -42,66 +44,4 @@ public class Prescription {
         return new Prescription(IDGenerator.generate(), registrationID, clazz, medicineList, fee, status);
     }
 
-    /**
-     * 获取id
-     *
-     * @return id
-     */
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * 获取所属的挂号记录id
-     *
-     * @return 挂号记录id
-     */
-    public long getRegistrationID() {
-        return registrationID;
-    }
-
-    /**
-     * 获取分类
-     *
-     * @return 分类 0中 / 1西
-     */
-    public int getClazz() {
-        return clazz;
-    }
-
-    /**
-     * 获取药物清单
-     *
-     * @return 药物清单
-     */
-    public HashSet<PrescriptionItem> getMedicineList() {
-        return medicineList;
-    }
-
-    /**
-     * 获取费用
-     *
-     * @return 费用
-     */
-    public double getFee() {
-        return fee;
-    }
-
-    /**
-     * 获取状态id
-     *
-     * @return 状态id
-     */
-    public int getStatus() {
-        return status;
-    }
-
-    /**
-     * 更新状态id
-     *
-     * @param status 新的状态id
-     */
-    public void setStatus(int status) {
-        this.status = status;
-    }
 }

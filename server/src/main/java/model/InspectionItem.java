@@ -1,22 +1,22 @@
 package model;
 
+import lombok.*;
+
 /**
  * 检查/检验项目
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 public class InspectionItem {
+    @Getter
     private int id;
+    @Getter /*助记码*/
     private String code;
+    @Getter
     private String name;
-
-
+    @Getter
+    @Setter
     private double fee;
-
-    private InspectionItem(int id, String code, String name, double fee) {
-        this.id = id;
-        this.code = code;
-        this.name = name;
-        this.fee = fee;
-    }
 
     /**
      * 新建一个检查检验项目并获取
@@ -27,55 +27,8 @@ public class InspectionItem {
      * @return id自动生成的检查检验项目
      */
     public static InspectionItem insert(String code, String name, double fee) {
-        // todo 生成Id
-        int id = 0;
+        int id = 0;//todo 唯一id生成规则
         return new InspectionItem(id, code, name, fee);
     }
-
-    /**
-     * 获取id
-     *
-     * @return id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * 获取助记码
-     *
-     * @return 助记码
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * 获取名称
-     *
-     * @return 名称
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 获取费用
-     *
-     * @return 费用
-     */
-    public double getFee() {
-        return fee;
-    }
-
-    /**
-     * 修改费用
-     *
-     * @param fee 新费用
-     */
-    public void setFee(double fee) {
-        this.fee = fee;
-    }
-
 
 }

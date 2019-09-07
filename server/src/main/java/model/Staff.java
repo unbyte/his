@@ -1,15 +1,25 @@
 package model;
 
 import lib.Security;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 员工(医生、药师、技师、前台)
  */
+@ToString(exclude = "password")
 public class Staff {
+    @Getter
     private int id;
+    @Getter
     private String name;
     private String password;
+    @Getter
+    @Setter
     private int department;
+    @Getter
+    @Setter
     private int title;
 
     private Staff(int id, String name, String password, int department, int title) {
@@ -30,27 +40,8 @@ public class Staff {
      * @return id自动生成的员工对象
      */
     public static Staff insert(String name, String password, int department, int title) {
-        // todo 生成id
-        int id = 0;
+        int id = 0;//todo 唯一id生成规则
         return new Staff(id, name, Security.encrypt(password), department, title);
-    }
-
-    /**
-     * 获取id
-     *
-     * @return id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * 获取姓名
-     *
-     * @return 姓名
-     */
-    public String getName() {
-        return name;
     }
 
     /**
@@ -64,24 +55,6 @@ public class Staff {
     }
 
     /**
-     * 获取科室id
-     *
-     * @return 科室的id
-     */
-    public int getDepartment() {
-        return department;
-    }
-
-    /**
-     * 获取职称id
-     *
-     * @return 职称id
-     */
-    public int getTitle() {
-        return title;
-    }
-
-    /**
      * 修改密码
      *
      * @param password 明文新密码
@@ -90,12 +63,5 @@ public class Staff {
         this.password = Security.encrypt(password);
     }
 
-    /**
-     * 修改职称id
-     *
-     * @param title 新的职称id
-     */
-    public void setTitle(int title) {
-        this.title = title;
-    }
+
 }

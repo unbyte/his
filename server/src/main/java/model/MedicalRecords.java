@@ -1,124 +1,38 @@
 package model;
 
 import lib.IDGenerator;
+import lombok.*;
 
 /**
  * 病历
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 public class MedicalRecords {
+    @Getter /*病历号*/
     private long id;
+    @Getter
     private String name;
+    @Getter
     private long birthDate;
+    @Getter
     private int gender;
+    @Getter
     private String idCard;
+    @Getter
     private String address;
+    @Getter
+    @Setter /*既往史*/
     private String pastHistory;
+    @Getter
+    @Setter /*现病史*/
     private String presentIllnessHistory;
+    @Getter
+    @Setter /*过敏史*/
     private String allergyHistory;
+    @Getter
+    @Setter /*现病治疗情况*/
     private String currentIllnessTreatment;
-
-    /**
-     * 获取病历号
-     *
-     * @return 病历号
-     */
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * 获取患者姓名
-     *
-     * @return 患者姓名
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 获取出生日期
-     *
-     * @return 出生日期
-     */
-    public long getBirthDate() {
-        return birthDate;
-    }
-
-    /**
-     * 获取性别
-     *
-     * @return 性别
-     */
-    public int getGender() {
-        return gender;
-    }
-
-    /**
-     * 获取身份证号码
-     *
-     * @return 身份证号码
-     */
-    public String getIdCard() {
-        return idCard;
-    }
-
-    /**
-     * 获取家庭住址
-     *
-     * @return 家庭住址
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * 获取既往史
-     *
-     * @return 既往史
-     */
-    public String getPastHistory() {
-        return pastHistory;
-    }
-
-    /**
-     * 获取现病史
-     *
-     * @return 现病史
-     */
-    public String getPresentIllnessHistory() {
-        return presentIllnessHistory;
-    }
-
-    /**
-     * 获取过敏史
-     *
-     * @return 过敏史
-     */
-    public String getAllergyHistory() {
-        return allergyHistory;
-    }
-
-    /**
-     * 获取现病治疗情况
-     *
-     * @return 现病治疗情况
-     */
-    public String getCurrentIllnessTreatment() {
-        return currentIllnessTreatment;
-    }
-
-    private MedicalRecords(long id, String name, long birthDate, int gender, String idCard, String address, String pastHistory, String presentIllnessHistory, String allergyHistory, String currentIllnessTreatment) {
-        this.id = id;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.gender = gender;
-        this.idCard = idCard;
-        this.address = address;
-        this.pastHistory = pastHistory;
-        this.presentIllnessHistory = presentIllnessHistory;
-        this.allergyHistory = allergyHistory;
-        this.currentIllnessTreatment = currentIllnessTreatment;
-    }
 
     /**
      * 新建一个病历对象并获取
