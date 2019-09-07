@@ -199,7 +199,7 @@ public enum Database {
         // todo 以后改成增量写入
 
         // 是否有写入失败的情况
-        boolean flag = true;
+        boolean flag;
 
         LogUtils.info("Saving data...");
 

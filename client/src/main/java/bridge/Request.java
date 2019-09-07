@@ -1,7 +1,7 @@
 package bridge;
 
 
-import net.NetProcessor;
+import net.NetCenter;
 
 /**
  * 使得js能通过netty发送请求、接收响应
@@ -17,8 +17,7 @@ class Request implements Bridge {
     public String query(String method, String params) {
         //todo 根据method获得hooks里对应的静态处理类
         //todo 调用静态处理类的before方法
-        String result = NetProcessor.request(method, params);
         //todo 根据静态处理类的after方法
-        return result;
+        return "";
     }
 }

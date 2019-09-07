@@ -1,9 +1,11 @@
-package net.message;
+package net.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.util.CharsetUtil;
+import net.message.Header;
+import net.message.Message;
 
 public class MessageDecoder extends LengthFieldBasedFrameDecoder {
     public MessageDecoder(int maxFrameLength) {

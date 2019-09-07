@@ -8,25 +8,28 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import net.message.MessageDecoder;
-import net.message.MessageEncoder;
+import net.handler.HeartBeatHandler;
+import net.handler.MessageDecoder;
+import net.handler.MessageEncoder;
 
-public enum  NetCenter {
+public enum NetCenter {
     INSTANCE;
 
     private EventLoopGroup bossGroup = new NioEventLoopGroup();
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
 
-    public void start(){
+    public void start() {
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast("decoder",new MessageDecoder(1024*1024));
-                            ch.pipeline().addLast("encoder",new MessageEncoder());
-                            ch.pipeline().addLast("readTimeOutHandler",new ReadTimeoutHandler(50));
+                        protected void initChannel(SocketChannel ch) {
+                            ch.pipeline().addLast("decoder", new MessageDecoder(1024 * 1024));
+                            ch.pipeline().addLast("encoder", new MessageEncoder());
+                            ch.pipeline().addLast("readTimeOutHandler", new ReadTimeoutHandler(50));
+                            ch.pipeline().addLast("heartBeatHandler", new HeartBeatHandler());
+
                         }
                     });
             ChannelFuture channelFuture = serverBootstrap.bind(12345).sync();
