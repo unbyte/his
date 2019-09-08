@@ -10,9 +10,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lib.LogUtils;
-import net.handler.HeartBeatHandler;
-import net.handler.MessageDecoder;
-import net.handler.MessageEncoder;
+import net.handler.*;
 
 public enum NetCenter {
     INSTANCE;
@@ -33,6 +31,8 @@ public enum NetCenter {
                                 ch.pipeline().addLast("encoder", new MessageEncoder());
                                 ch.pipeline().addLast("readTimeOutHandler", new ReadTimeoutHandler(50));
                                 ch.pipeline().addLast("heartBeatHandler", new HeartBeatHandler());
+                                ch.pipeline().addLast("businessHandler", new BusinessHandler());
+                                ch.pipeline().addLast("connectHandler", new ConnectHandler());
                             }
                         });
                 ChannelFuture channelFuture = serverBootstrap.bind(port).sync();

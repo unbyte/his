@@ -2,6 +2,7 @@ package database;
 
 import com.alibaba.fastjson.JSON;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +10,10 @@ import java.util.List;
 /**
  * 数据查询会话
  */
-public class SelectSession {
+public class SelectSession<K,T> {
     // todo 为了安全深拷贝所有的结果
-    private List result = null;
-    private HashMap originData = null;
+    private List<T> result = new ArrayList<>();
+    private HashMap<K,T> originData;
 
     /**
      * 筛选操作
@@ -20,8 +21,8 @@ public class SelectSession {
      * @param filter 筛选器
      * @return 数据查询会话
      */
-    public SelectSession filter(SelectFilter filter) {
-        result = filter.filter(originData);
+    public SelectSession<K,T> filter(SelectFilter<K,T> filter) {
+        filter.filter(originData, result);
         return this;
     }
 
@@ -33,7 +34,7 @@ public class SelectSession {
      * @param to   结束下标
      * @return 数据查询会话
      */
-    public SelectSession range(Integer from, Integer to) {
+    public SelectSession<K,T> range(Integer from, Integer to) {
         if (from < 0 || to > result.size() || from > to)
             return this;
         result = result.subList(from, to);
@@ -54,7 +55,7 @@ public class SelectSession {
      *
      * @return 对象列表
      */
-    public List toList() {
+    public List<T> toList() {
         return result;
     }
 
@@ -76,13 +77,13 @@ public class SelectSession {
      *
      * @return 对象
      */
-    public Object get() {
+    public T get() {
         if (result.isEmpty())
             return null;
         return result.get(0);
     }
 
-    public SelectSession(HashMap originData) {
+    public SelectSession(HashMap<K,T> originData) {
         this.originData = originData;
     }
 

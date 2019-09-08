@@ -74,7 +74,7 @@ public enum Database {
 
 
     // 存储名称与数据的映射关系
-    private HashMap<String, HashMap> fileds = new HashMap<>() {
+    private HashMap<String, HashMap> fields = new HashMap<>() {
         {
             put("medicalRecords", medicalRecords);
             put("registrations", registrations);
@@ -109,9 +109,9 @@ public enum Database {
     @SuppressWarnings("unchecked")
     public <K extends Number, V> boolean insert(String fieldName, K key, V object) {
         // 如果键值已存在，则不存入
-        if (fileds.get(fieldName).containsKey(key))
+        if (fields.get(fieldName).containsKey(key))
             return false;
-        fileds.get(fieldName).put(key, object);
+        fields.get(fieldName).put(key, object);
         return true;
     }
 
@@ -120,10 +120,12 @@ public enum Database {
      * 在数据库中查找实体
      *
      * @param fieldName 待查找的实体所属的field名称
+     * @param type      实体的类型
      * @return 查找结果列表
      */
-    public SelectSession select(String fieldName) {
-        return new SelectSession(fileds.get(fieldName));
+    @SuppressWarnings("unchecked")
+    public <K extends Number, T> SelectSession<K, T> select(String fieldName, Class<K> key, Class<T> type) {
+        return new SelectSession<K, T>(fields.get(fieldName));
     }
 
     /**
@@ -135,8 +137,9 @@ public enum Database {
     public String selectAll(String fieldName) {
         if (caches.containsKey(fieldName))
             return caches.get(fieldName);
-        return JSON.toJSONString(fileds.get(fieldName));
+        return JSON.toJSONString(fields.get(fieldName));
     }
+
 
     /**
      * 启动时从文件中初始化数据
