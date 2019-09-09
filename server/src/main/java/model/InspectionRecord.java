@@ -7,24 +7,26 @@ import lombok.*;
  * 检查/检验记录
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @ToString
+@Getter
 public class InspectionRecord {
-    @Getter
+
     private long id;
-    @Getter /*挂号记录id*/
+    /*挂号记录id*/
     private long registrationID;
-    @Getter
+
     private long time;
-    @Getter /*检查项目*/
+    /*检查项目*/
     private int item;
-    @Getter /*检查部位*/
+    /*检查部位*/
     private String part;
-    @Getter /*检查要求*/
+    /*检查要求*/
     private String request;
-    @Getter
+
     @Setter /*检查结果*/
     private String result;
-    @Getter
+
     @Setter
     private int status;
 

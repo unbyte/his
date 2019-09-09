@@ -7,28 +7,32 @@ import lombok.*;
  * 诊断信息
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @ToString
+@Getter
 public class Diagnosis {
-    @Getter
     private long id;
-    @Getter /*挂号id*/
+
+    /*挂号id*/
     private long registrationID;
-    @Getter /*主诉*/
+
+    /*主诉*/
     private String complaint;
-    @Getter /*0-中 1-西*/
+
+    /*0-中 1-西*/
     private int clazz;
-    @Getter
+
     @Setter /*疾病*/
     private String disease;
-    @Getter /*建议*/
+    /*建议*/
     private String suggestion;
-    @Getter
+
     @Setter /*注意事项*/
     private String note;
-    @Getter
+
     @Setter /*最终诊断信息*/
     private String judgement;
-    @Getter
+
     @Setter
     private int status;
 

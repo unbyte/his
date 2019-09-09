@@ -7,23 +7,25 @@ import lombok.*;
  * 挂号记录
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @ToString
+@Getter
 public class Registration {
-    @Getter
+
     private long id;
-    @Getter
+
     private long medicalRecordsID;
-    @Getter
+
     private long time;
-    @Getter
+
     private int departmentID;
-    @Getter
+
     private int doctorID;
-    @Getter
+
     private int level;
-    @Getter
+
     private double fee;
-    @Getter
+
     @Setter
     private int status;
 

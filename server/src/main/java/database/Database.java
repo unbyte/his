@@ -53,22 +53,24 @@ public enum Database {
     private String titlesCache = null;
 
 
+
     // 存储数据与文件的映射关系
     private HashMap<String, Path> paths = new HashMap<>() {
         {
-            put("medicalRecords", Paths.get("medicalRecords.dat"));
-            put("registrations", Paths.get("registrations.dat"));
-            put("newRegistrations", Paths.get("newRegistrations.dat"));
-            put("diagnoses", Paths.get("diagnoses.dat"));
-            put("inspectionRecords", Paths.get("inspectionRecords.dat"));
-            put("prescriptions", Paths.get("prescriptions.dat"));
-            put("staffs", Paths.get("staffs.dat"));
-            put("inspectionItems", Paths.get("inspectionItems.dat"));
-            put("medicines", Paths.get("medicines.dat"));
-            put("diseases", Paths.get("disease.dat"));
-            put("registrationLevels", Paths.get("registrationLevels.dat"));
-            put("departments", Paths.get("departments.dat"));
-            put("titles", Paths.get("titles.dat"));
+            String pathPrefix = "./server/data";
+            put("medicalRecords", Paths.get(pathPrefix, "medicalRecords.dat"));
+            put("registrations", Paths.get(pathPrefix, "registrations.dat"));
+            put("newRegistrations", Paths.get(pathPrefix, "newRegistrations.dat"));
+            put("diagnoses", Paths.get(pathPrefix, "diagnoses.dat"));
+            put("inspectionRecords", Paths.get(pathPrefix, "inspectionRecords.dat"));
+            put("prescriptions", Paths.get(pathPrefix, "prescriptions.dat"));
+            put("staffs", Paths.get(pathPrefix, "staffs.dat"));
+            put("inspectionItems", Paths.get(pathPrefix, "inspectionItems.dat"));
+            put("medicines", Paths.get(pathPrefix, "medicines.dat"));
+            put("diseases", Paths.get(pathPrefix, "disease.dat"));
+            put("registrationLevels", Paths.get(pathPrefix, "registrationLevels.dat"));
+            put("departments", Paths.get(pathPrefix, "departments.dat"));
+            put("titles", Paths.get(pathPrefix, "titles.dat"));
         }
     };
 
@@ -162,22 +164,22 @@ public enum Database {
         staffs = FileUtils.loadHashMapFromFile(paths.get("staffs"), Integer.class, Staff.class);
 
         inspectionItems = FileUtils.loadHashMapFromFile(paths.get("inspectionItems"), Integer.class, InspectionItem.class);
-        inspectionItemsCache = FileUtils.readStringFromFile(paths.get("inspectionItems"));
+        inspectionItemsCache = FileUtils.readJSONStringFromFile(paths.get("inspectionItems"), "{}");
 
         departments = FileUtils.loadHashMapFromFile(paths.get("departments"), Integer.class, Department.class);
-        departmentsCache = FileUtils.readStringFromFile(paths.get("departments"));
+        departmentsCache = FileUtils.readJSONStringFromFile(paths.get("departments"), "{}");
 
         medicines = FileUtils.loadHashMapFromFile(paths.get("medicines"), Integer.class, Medicine.class);
-        medicinesCache = FileUtils.readStringFromFile(paths.get("medicines"));
+        medicinesCache = FileUtils.readJSONStringFromFile(paths.get("medicines"), "{}");
 
         diseases = FileUtils.loadHashMapFromFile(paths.get("diseases"), Integer.class, Disease.class);
-        diseasesCache = FileUtils.readStringFromFile(paths.get("diseases"));
+        diseasesCache = FileUtils.readJSONStringFromFile(paths.get("diseases"), "{}");
 
         registrationLevels = FileUtils.loadHashMapFromFile(paths.get("registrationLevels"), Integer.class, RegistrationLevel.class);
-        registrationLevelsCache = FileUtils.readStringFromFile(paths.get("registrationLevels"));
+        registrationLevelsCache = FileUtils.readJSONStringFromFile(paths.get("registrationLevels"), "{}");
 
         titles = FileUtils.loadHashMapFromFile(paths.get("titles"), Integer.class, Title.class);
-        titlesCache = FileUtils.readStringFromFile(paths.get("titles"));
+        titlesCache = FileUtils.readJSONStringFromFile(paths.get("titles"), "{}");
 
         LogUtils.info("Database booted successfully");
     }

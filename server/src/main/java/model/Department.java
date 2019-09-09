@@ -3,17 +3,18 @@ package model;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 科室
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@NoArgsConstructor
 public class Department {
-    @Getter
     private int id;
-    @Getter
     private String name;
-    @Getter /* 分类 0 门诊部门 1 药师部门 2 技师部门 3 前台*/
+    /* 分类 0 门诊部门 1 药师部门 2 技师部门 3 前台*/
     private int clazz;
 
 

@@ -7,30 +7,32 @@ import lombok.*;
  * 病历
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @ToString
+@Getter
 public class MedicalRecords {
-    @Getter /*病历号*/
+    /*病历号*/
     private long id;
-    @Getter
+
     private String name;
-    @Getter
+
     private long birthDate;
-    @Getter
+    /*0 男 1 女*/
     private int gender;
-    @Getter
+
     private String idCard;
-    @Getter
+
     private String address;
-    @Getter
+
     @Setter /*既往史*/
     private String pastHistory;
-    @Getter
+
     @Setter /*现病史*/
     private String presentIllnessHistory;
-    @Getter
+
     @Setter /*过敏史*/
     private String allergyHistory;
-    @Getter
+
     @Setter /*现病治疗情况*/
     private String currentIllnessTreatment;
 

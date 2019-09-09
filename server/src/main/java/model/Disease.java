@@ -3,19 +3,20 @@ package model;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 疾病
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@Getter
 public class Disease {
-    @Getter
     private int id;
-    @Getter
     private String name;
-    @Getter /*助记码*/
+    /*助记码*/
     private String code;
-    @Getter /*0-中 1-西*/
+    /*0-中 1-西*/
     private int clazz;
 
 

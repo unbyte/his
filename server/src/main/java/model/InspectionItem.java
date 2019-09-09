@@ -6,15 +6,17 @@ import lombok.*;
  * 检查/检验项目
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @ToString
+@Getter
 public class InspectionItem {
-    @Getter
+
     private int id;
-    @Getter /*助记码*/
+    /*助记码*/
     private String code;
-    @Getter
+
     private String name;
-    @Getter
+
     @Setter
     private double fee;
 

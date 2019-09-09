@@ -5,18 +5,20 @@ import lombok.*;
 /**
  * 药物
  */
-@ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@ToString
+@Getter
 public class Medicine {
-    @Getter
     private int id;
-    @Getter /*助记码*/
+
+    /*助记码*/
     private String code;
-    @Getter
+
     private String name;
-    @Getter /*药物规格*/
+
     private String format;
-    @Getter
+
     @Setter
     private double price;
 

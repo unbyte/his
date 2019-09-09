@@ -2,23 +2,26 @@ package model;
 
 import lib.Security;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
  * 员工(医生、药师、技师、前台)
  */
+@NoArgsConstructor
 @ToString(exclude = "password")
+@Getter
 public class Staff {
-    @Getter
+
     private int id;
-    @Getter
+
     private String name;
     private String password;
-    @Getter
+
     @Setter
     private int department;
-    @Getter
+
     @Setter
     private int title;
 

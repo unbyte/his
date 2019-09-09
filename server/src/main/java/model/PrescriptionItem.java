@@ -2,22 +2,25 @@ package model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
  * 处方中的药物清单组成
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
+@Getter
 public class PrescriptionItem {
-    @Getter /*药物id*/
+    /*药物id*/
     private int medicineID;
-    @Getter /*用量*/
+    /*用量*/
     private String dosage;
-    @Getter /*用法*/
+    /*用法*/
     private String usage;
-    @Getter /*频次*/
+    /*频次*/
     private String frequency;
-    @Getter /*数量*/
+    /*数量*/
     private int amount;
 }

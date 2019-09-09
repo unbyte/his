@@ -9,19 +9,21 @@ import java.util.HashSet;
  * 处方
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @ToString
+@Getter
 public class Prescription {
-    @Getter
+
     private long id;
-    @Getter /*挂号记录id*/
+    /*挂号记录id*/
     private long registrationID;
-    @Getter /*0-中 1-西*/
+    /*0-中 1-西*/
     private int clazz;
-    @Getter /*药物清单*/
+    /*药物清单*/
     private HashSet<PrescriptionItem> medicineList;
-    @Getter /*费用*/
+    /*费用*/
     private double fee;
-    @Getter
+
     @Setter
     private int status;
 

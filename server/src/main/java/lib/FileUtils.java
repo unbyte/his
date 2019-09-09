@@ -25,6 +25,9 @@ public class FileUtils {
             return false;
         File file = path.toFile();
         if (!file.exists()) {
+            if (file.getParentFile() != null && !file.getParentFile().exists())
+                if(!file.getParentFile().mkdirs())
+                    return false;
             try {
                 if (file.createNewFile()) {
                     LogUtils.info("File `" + file.getAbsolutePath() + "` was created successfully.");
@@ -32,6 +35,7 @@ public class FileUtils {
                     LogUtils.warn("File `" + file.getAbsolutePath() + "` already exists!");
                 }
             } catch (IOException e) {
+                e.printStackTrace();
                 LogUtils.error("Failed to create file `" + file.getAbsolutePath() + "`");
                 return false;
             }
@@ -48,18 +52,20 @@ public class FileUtils {
     /**
      * 读取一个文件中的所有内容，若读取失败则返回空字符串
      *
-     * @param path path对象
+     * @param path           path对象
+     * @param defaultContent 若文件内容为空或读取出错，返回的默认值
      * @return path对象所指向的文件中的内容 string
      */
-    public static String readStringFromFile(Path path) {
+    public static String readJSONStringFromFile(Path path, String defaultContent) {
         if (!ensureFile(path))
-            return "";
+            return defaultContent;
         try {
-            return Files.readString(path);
+            String content = Files.readString(path);
+            return JSON.isValid(content) ? content : defaultContent;
         } catch (IOException e) {
             LogUtils.warn("IOException happened when read file `" + path.getFileName() + "`");
         }
-        return "";
+        return defaultContent;
     }
 
     /**
@@ -96,10 +102,11 @@ public class FileUtils {
      * @param valueType HashMap值的类型
      * @return HashMap对象
      */
-    public static <K, V> HashMap<K, V> loadHashMapFromFile(Path path, Class<K> keyType, Class<V> valueType) {
+    public static <
+            K, V> HashMap<K, V> loadHashMapFromFile(Path path, Class<K> keyType, Class<V> valueType) {
         if (!ensureFile(path))
             return new HashMap<>();
-        String jsonString = FileUtils.readStringFromFile(path);
+        String jsonString = FileUtils.readJSONStringFromFile(path, "{}");
         return JSON.parseObject(jsonString, new TypeReference<>(keyType, valueType) {
         });
     }

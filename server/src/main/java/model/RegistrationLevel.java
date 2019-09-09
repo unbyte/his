@@ -1,21 +1,24 @@
 package model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
  * 挂号等级
  */
+@NoArgsConstructor
 @ToString
+@Getter
 public class RegistrationLevel {
-    @Getter
+
     private int id;
-    @Getter
+
     private String name;
-    @Getter /*每日限制数*/
+    /*每日限制数*/
     private int limit;
-    @Getter
+
     @Setter
     private double fee;
 

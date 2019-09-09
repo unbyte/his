@@ -1,6 +1,6 @@
 <Configuration status="WARN" monitorInterval="300">
     <properties>
-        <property name="LOG_HOME">./logs</property>
+        <property name="LOG_HOME">./server/logs</property>
         <property name="FILE_NAME">log</property>
     </properties>
     <Appenders>

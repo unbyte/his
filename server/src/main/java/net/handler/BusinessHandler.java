@@ -54,7 +54,7 @@ public class BusinessHandler extends ChannelInboundHandlerAdapter {
         // 校验成功，进入逻辑处理
         Tuple result = ControllerCenter.INSTANCE.forwardTask(methodName, params, staff);
 
-        // todo 通过methodName调用相应的解释器解释result，默认解释器为取出直接取出message返回
+        // 通过methodName调用相应的解释器解释result，默认解释器为不进行任何操作
 
         ResultAnalyser analyser = AnalyserCenter.getAnalyser(methodName);
         analyser.process(ctx, result);

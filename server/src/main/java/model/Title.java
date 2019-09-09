@@ -6,13 +6,15 @@ import lombok.*;
 /**
  * 职称
  */
-@ToString
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Getter
 public class Title {
-    @Getter
     private int id;
-    @Getter
+
     private String name;
-    @Getter /*返回的是registrationLevel的id*/
+
+    /*返回的是registrationLevel的id*/
     private int registrationLevel;
 }

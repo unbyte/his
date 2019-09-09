@@ -15,6 +15,7 @@ public enum ControllerCenter {
 
     public Tuple forwardTask(String methodName, JSONObject params, Staff user) {
         if (!controllers.containsKey(methodName))
+            // 若没有对应的controller
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
         return controllers.get(methodName).process(params, user);
     }
@@ -24,7 +25,9 @@ public enum ControllerCenter {
     }
 
 
-    ControllerCenter() {
+    {
+        // 初始化controller映射表
         controllers.put("login", new Login());
+
     }
 }
