@@ -5,7 +5,7 @@ import javafx.application.Platform;
 /**
  * 方便js调用java主程序的生命周期方法
  */
-class Lifecycle implements Bridge {
+public class Lifecycle implements Bridge {
     /**
      * 将js中的数据打印到java控制台中，方便调试
      *

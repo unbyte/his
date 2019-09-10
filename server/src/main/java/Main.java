@@ -16,9 +16,9 @@ public class Main {
         NetCenter.INSTANCE.start(port);
 
         // 注册程序关闭钩子
-        Runtime runtime = Runtime.getRuntime();
-        runtime.addShutdownHook(new Thread(Main::shutdown));
+        Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown));
 
+        // 需要通过kill -15关闭程序
     }
 
     private static void shutdown() {

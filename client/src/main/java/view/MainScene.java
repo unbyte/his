@@ -1,6 +1,8 @@
 package view;
 
-import bridge.BridgeMaster;
+import bridge.BridgeCenter;
+import bridge.Lifecycle;
+import bridge.Request;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.web.WebEngine;
@@ -14,14 +16,9 @@ public class MainScene implements Initializable {
     @FXML
     WebView webView;
 
-    private WebEngine webEngine;
-
-    // 存一个stage对象的引用，以便于修改窗口尺寸等属性
-    private Stage stage;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        webEngine = webView.getEngine();
+        WebEngine webEngine = webView.getEngine();
 
         // 载入前端页面
         webEngine.load(getClass().getResource("../html/index.html").toExternalForm());
@@ -33,16 +30,13 @@ public class MainScene implements Initializable {
         webView.requestFocus();
 
         // 把WebEngine对象注册进BridgeMaster工厂
-        BridgeMaster.setWebEngine(webEngine);
+        BridgeCenter.setWebEngine(webEngine);
 
         // 通过类名指定需要挂载到JS运行时里的对象
-        BridgeMaster.addBridge("Lifecycle");
-        BridgeMaster.addBridge("Request");
+        BridgeCenter.addBridge("lifecycle",new Lifecycle());
+        BridgeCenter.addBridge("request",new Request());
     }
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
 
     /**
      * 改变窗口的大小
@@ -51,6 +45,8 @@ public class MainScene implements Initializable {
      * @param newHeight 新的高度
      */
     public void changeSize(double newWidth, double newHeight) {
+        Stage stage = viewMaster.getStage("main");
+
         stage.close();
         stage.setWidth(newWidth);
         stage.setHeight(newHeight);

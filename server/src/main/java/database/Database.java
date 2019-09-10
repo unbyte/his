@@ -201,6 +201,7 @@ public enum Database {
      * 持久化，写入数据
      */
     private boolean persist() {
+        // todo 定时或监视增量数量时自动触发
         // todo 以后改成增量写入
 
         // 是否有写入失败的情况

@@ -6,7 +6,7 @@ import net.NetCenter;
 /**
  * 使得js能通过netty发送请求、接收响应
  */
-class Request implements Bridge {
+public class Request implements Bridge {
     /**
      * 发送一个请求，并返回响应结果
      *
