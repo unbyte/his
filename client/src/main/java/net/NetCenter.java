@@ -1,25 +1,29 @@
 package net;
 
+import controller.PushHandlerCenter;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import net.handler.HeartBeatHandler;
 import net.handler.MessageDecoder;
 import net.handler.MessageEncoder;
+import net.message.Message;
+
+import java.util.concurrent.CountDownLatch;
 
 public enum NetCenter {
     INSTANCE;
 
     private EventLoopGroup group = new NioEventLoopGroup();
     private Channel channel;
+
+    private CountDownLatch countDownLatch;
+    private Message tempResponse;
 
     public void start(String address, int port) {
         try {
@@ -53,8 +57,42 @@ public enum NetCenter {
     }
 
 
-    public void send(Object msg) {
-        // todo 要做一个原始请求到msg的转换
+    public Message send(Object msg) {
+        // 新实例化一个倒数器
+        countDownLatch = new CountDownLatch(1);
+
+        // 请求不能为空
+        if (channel == null)
+            return null;
+
         channel.writeAndFlush(msg);
+
+        // 阻塞，等待响应
+        try {
+            countDownLatch.wait(10 * 1000);
+        } catch (InterruptedException ignored) {
+        }
+
+        // 获取到响应
+        Message response = tempResponse;
+
+        // 删除倒数器和临时响应
+        countDownLatch = null;
+        tempResponse = null;
+
+        // 超时了没有收到消息或其他原因会返回null
+        return response;
+    }
+
+    public void receive(Message message) {
+        // 若倒数器为空，则没有前序请求，是服务端主动推送，直接转发给push handler
+        if (countDownLatch == null)
+            PushHandlerCenter.handle(message);
+
+        // 将返回的message存成临时响应供返回
+        tempResponse = message;
+
+        // 通知已经取到响应
+        countDownLatch.countDown();
     }
 }

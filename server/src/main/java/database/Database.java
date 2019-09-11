@@ -17,41 +17,40 @@ public enum Database {
     INSTANCE;
 
     // 病历
-    private HashMap<Long, MedicalRecords> medicalRecords = null;
+    private HashMap<Long, MedicalRecords> medicalRecords;
     // 已经退费/完成的挂号记录，供查询
-    private HashMap<Long, Registration> registrations = null;
+    private HashMap<Long, Registration> registrations;
     // 尚未完成/退费的挂号记录，供操作
-    private HashMap<Long, Registration> newRegistrations = null;
+    private HashMap<Long, Registration> newRegistrations;
     // 诊断
-    private HashMap<Long, Diagnosis> diagnoses = null;
+    private HashMap<Long, Diagnosis> diagnoses;
     // 检查记录
-    private HashMap<Long, InspectionRecord> inspectionRecords = null;
+    private HashMap<Long, InspectionRecord> inspectionRecords;
     // 药方
-    private HashMap<Long, Prescription> prescriptions = null;
+    private HashMap<Long, Prescription> prescriptions;
     // 员工
-    private HashMap<Integer, Staff> staffs = null;
+    private HashMap<Integer, Staff> staffs;
     // 检查项目
-    private HashMap<Integer, InspectionItem> inspectionItems = null;
+    private HashMap<Integer, InspectionItem> inspectionItems;
     // 药物
-    private HashMap<Integer, Medicine> medicines = null;
+    private HashMap<Integer, Medicine> medicines;
     // 疾病
-    private HashMap<Integer, Disease> diseases = null;
+    private HashMap<Integer, Disease> diseases;
     // 挂号等级
-    private HashMap<Integer, RegistrationLevel> registrationLevels = null;
+    private HashMap<Integer, RegistrationLevel> registrationLevels;
     // 科室
-    private HashMap<Integer, Department> departments = null;
+    private HashMap<Integer, Department> departments;
     // 职称
-    private HashMap<Integer, Title> titles = null;
+    private HashMap<Integer, Title> titles;
 
 
     // 因为极少更新，所以缓存成json字符串
-    private String inspectionItemsCache = null;
-    private String medicinesCache = null;
-    private String diseasesCache = null;
-    private String registrationLevelsCache = null;
-    private String departmentsCache = null;
-    private String titlesCache = null;
-
+    private String inspectionItemsCache;
+    private String medicinesCache;
+    private String diseasesCache;
+    private String registrationLevelsCache;
+    private String departmentsCache;
+    private String titlesCache;
 
 
     // 存储数据与文件的映射关系
