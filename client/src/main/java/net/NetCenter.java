@@ -26,32 +26,39 @@ public enum NetCenter {
     private Message tempResponse;
 
     public void start(String address, int port) {
-        try {
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(group).channel(NioSocketChannel.class)
-                    .handler(
+        if (channel != null)
+            return;
+        Thread client = new Thread(() -> {
+            try {
+                Bootstrap bootstrap = new Bootstrap();
+                bootstrap.group(group).channel(NioSocketChannel.class)
+                        .handler(
 // 客户端拦截器数据进入顺序 编解码器 -> 心跳处理 -> 业务处理
 // 服务端拦截器数据进入顺序 编解码器 -> 心跳处理 -> 业务处理 -> 响应连接处理
-                            new ChannelInitializer<SocketChannel>() {
-                                @Override
-                                protected void initChannel(SocketChannel ch) {
-                                    ch.pipeline().addLast("decoder", new MessageDecoder(1024 * 1024));
-                                    ch.pipeline().addLast("encoder", new MessageEncoder());
-                                    ch.pipeline().addLast("readTimeOutHandler", new ReadTimeoutHandler(50));
-                                    ch.pipeline().addLast("heartBeatHandler", new HeartBeatHandler());
-                                }
-                            });
+                                new ChannelInitializer<SocketChannel>() {
+                                    @Override
+                                    protected void initChannel(SocketChannel ch) {
+                                        ch.pipeline().addLast("decoder", new MessageDecoder(1024 * 1024));
+                                        ch.pipeline().addLast("encoder", new MessageEncoder());
+                                        ch.pipeline().addLast("readTimeOutHandler", new ReadTimeoutHandler(50));
+                                        ch.pipeline().addLast("heartBeatHandler", new HeartBeatHandler());
+                                    }
+                                });
 
-            channel = bootstrap.connect(address, port).sync().channel();
-        } catch (
-                InterruptedException ignored) {
-        } finally {
-            group.shutdownGracefully();
-        }
+                channel = bootstrap.connect(address, port).sync().channel();
+            } catch (
+                    InterruptedException ignored) {
+            } finally {
+                group.shutdownGracefully();
+            }
+        });
+
+        client.start();
     }
 
     public void stop() {
-        // todo 关闭
+        if (channel == null)
+            return;
         channel.close();
         channel = null;
     }

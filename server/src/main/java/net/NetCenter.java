@@ -20,6 +20,8 @@ public enum NetCenter {
     private Channel channel;
 
     public void start(int port) {
+        if (channel != null)
+            return;
         Thread server = new Thread(() -> {
             try {
                 ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -53,10 +55,11 @@ public enum NetCenter {
 
 
     public void stop() {
-        if (channel != null) {
-            channel.close();
-            channel = null;
-            LogUtils.info("Server close successfully");
-        }
+        if (channel == null)
+            return;
+
+        channel.close();
+        channel = null;
+        LogUtils.info("Server close successfully");
     }
 }
