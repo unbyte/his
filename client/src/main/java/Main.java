@@ -10,8 +10,6 @@ import view.viewMaster;
 public class Main extends Application {
 
     public static void main(String[] args) {
-        //todo 启动netty
-
         // 启动窗口
         launch();
     }

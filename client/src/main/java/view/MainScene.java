@@ -1,8 +1,9 @@
 package view;
 
 import bridge.BridgeCenter;
-import bridge.Lifecycle;
-import bridge.Request;
+import bridge.ConfigBridge;
+import bridge.LifecycleBridge;
+import bridge.RequestBridge;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.web.WebEngine;
@@ -33,8 +34,9 @@ public class MainScene implements Initializable {
         BridgeCenter.setWebEngine(webEngine);
 
         // 通过类名指定需要挂载到JS运行时里的对象
-        BridgeCenter.addBridge("lifecycle",new Lifecycle());
-        BridgeCenter.addBridge("request",new Request());
+        BridgeCenter.addBridge("lifecycle", new LifecycleBridge());
+        BridgeCenter.addBridge("request", new RequestBridge());
+        BridgeCenter.addBridge("config", new ConfigBridge());
     }
 
 

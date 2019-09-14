@@ -9,10 +9,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import net.handler.BusinessHandler;
 import net.handler.HeartBeatHandler;
 import net.handler.MessageDecoder;
 import net.handler.MessageEncoder;
 import net.message.Message;
+import net.message.MessageType;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -42,6 +44,7 @@ public enum NetCenter {
                                         ch.pipeline().addLast("encoder", new MessageEncoder());
                                         ch.pipeline().addLast("readTimeOutHandler", new ReadTimeoutHandler(50));
                                         ch.pipeline().addLast("heartBeatHandler", new HeartBeatHandler());
+                                        ch.pipeline().addLast("businessHandler",new BusinessHandler());
                                     }
                                 });
 
@@ -93,7 +96,7 @@ public enum NetCenter {
 
     public void receive(Message message) {
         // 若倒数器为空，则没有前序请求，是服务端主动推送，直接转发给push handler
-        if (countDownLatch == null)
+        if (countDownLatch == null || message.getHeader().getType() == MessageType.PUSH.type())
             PushHandlerCenter.handle(message);
 
         // 将返回的message存成临时响应供返回

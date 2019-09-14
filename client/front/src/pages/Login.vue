@@ -20,12 +20,6 @@
                         <mu-form-item label="密码" prop="password" :rules="passwordRules">
                             <mu-text-field type="password" v-model="loginForm.password" prop="password"></mu-text-field>
                         </mu-form-item>
-                        <mu-form-item prop="radio" label="账号类型">
-                            <mu-radio v-model="loginForm.role" value="registrar" label="收费"></mu-radio>
-                            <mu-radio v-model="loginForm.role" value="doctor" label="医师"></mu-radio>
-                            <mu-radio v-model="loginForm.role" value="pharmacist" label="药师"></mu-radio>
-                            <mu-radio v-model="loginForm.role" value="technician" label="技师"></mu-radio>
-                        </mu-form-item>
                         <mu-form-item>
                             <mu-button color="primary" @click="submit">登陆</mu-button>
                             <mu-button @click="clear">重置</mu-button>
@@ -50,8 +44,7 @@
                 ],
                 loginForm: {
                     username: '',
-                    password: '',
-                    role: 'registrar'
+                    password: ''
                 },
                 app: {testData: 1}
             };
@@ -61,7 +54,6 @@
                 this.$refs.form.validate().then((result) => {
                     if (result) {
                         // request.login(this.loginForm.username, this.loginForm.password, this.loginForm.role)
-                        this.app = this.$request.query('test', {haha: 'yes'})
                     }
                 });
             },
@@ -69,8 +61,7 @@
                 this.$refs.form.clear();
                 this.loginForm = {
                     username: '',
-                    password: '',
-                    role: 's'
+                    password: ''
                 };
             },
             quitApp() {

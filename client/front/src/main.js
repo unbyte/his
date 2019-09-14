@@ -4,12 +4,12 @@ import router from './lib/router'
 import store from './lib/store'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
-import io from './lib/io'
+import request from './lib/request'
 
 Vue.use(MuseUI)
 
 Vue.config.productionTip = false
-Vue.prototype.$io = io
+Vue.prototype.$request = request
 
 new Vue({
     render: h => h(App),

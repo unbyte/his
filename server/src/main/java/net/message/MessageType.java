@@ -28,7 +28,11 @@ public enum MessageType {
     /**
      * 5 - 建立链接响应
      */
-    CONNECT_RES((byte) 5);
+    CONNECT_RES((byte) 5),
+    /**
+     * 6 - 服务端推送
+     */
+    PUSH((byte)6);
 
     private byte type;
 
