@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class Medicine {
     private int id;
 
@@ -19,7 +20,6 @@ public class Medicine {
 
     private String format;
 
-    @Setter
     private double price;
 
     /**

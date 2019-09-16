@@ -17,31 +17,31 @@ public enum Database {
     INSTANCE;
 
     // 病历
-    private HashMap<Long, MedicalRecords> medicalRecords;
+    private HashMap<Long, MedicalRecords> medicalRecords = new HashMap<>();
     // 已经退费/完成的挂号记录，供查询
-    private HashMap<Long, Registration> registrations;
+    private HashMap<Long, Registration> registrations = new HashMap<>();
     // 尚未完成/退费的挂号记录，供操作
-    private HashMap<Long, Registration> newRegistrations;
+    private HashMap<Long, Registration> newRegistrations = new HashMap<>();
     // 诊断
-    private HashMap<Long, Diagnosis> diagnoses;
+    private HashMap<Long, Diagnosis> diagnoses = new HashMap<>();
     // 检查记录
-    private HashMap<Long, InspectionRecord> inspectionRecords;
+    private HashMap<Long, InspectionRecord> inspectionRecords = new HashMap<>();
     // 药方
-    private HashMap<Long, Prescription> prescriptions;
+    private HashMap<Long, Prescription> prescriptions = new HashMap<>();
     // 员工
-    private HashMap<Integer, Staff> staffs;
+    private HashMap<Integer, Staff> staffs = new HashMap<>();
     // 检查项目
-    private HashMap<Integer, InspectionItem> inspectionItems;
+    private HashMap<Integer, InspectionItem> inspectionItems = new HashMap<>();
     // 药物
-    private HashMap<Integer, Medicine> medicines;
+    private HashMap<Integer, Medicine> medicines = new HashMap<>();
     // 疾病
-    private HashMap<Integer, Disease> diseases;
+    private HashMap<Integer, Disease> diseases = new HashMap<>();
     // 挂号等级
-    private HashMap<Integer, RegistrationLevel> registrationLevels;
+    private HashMap<Integer, RegistrationLevel> registrationLevels = new HashMap<>();
     // 科室
-    private HashMap<Integer, Department> departments;
+    private HashMap<Integer, Department> departments = new HashMap<>();
     // 职称
-    private HashMap<Integer, Title> titles;
+    private HashMap<Integer, Title> titles = new HashMap<>();
 
 
     // 因为极少更新，所以缓存成json字符串
@@ -93,16 +93,7 @@ public enum Database {
         }
     };
 
-    private HashMap<String, String> caches = new HashMap<>() {
-        {
-            put("inspectionItems", inspectionItemsCache);
-            put("medicines", medicinesCache);
-            put("diseases", diseasesCache);
-            put("registrationLevels", registrationLevelsCache);
-            put("departments", departmentsCache);
-            put("titles", titlesCache);
-        }
-    };
+    private HashMap<String, String> caches = new HashMap<>();
 
     /**
      * 创建数据对象
@@ -148,37 +139,45 @@ public enum Database {
     public void boot() {
         LogUtils.info("Database is booting");
 
-        medicalRecords = FileUtils.loadHashMapFromFile(paths.get("medicalRecords"), Long.class, MedicalRecords.class);
+        medicalRecords.putAll(FileUtils.loadHashMapFromFile(paths.get("medicalRecords"), Long.class, MedicalRecords.class));
 
-        registrations = FileUtils.loadHashMapFromFile(paths.get("registrations"), Long.class, Registration.class);
+        registrations.putAll(FileUtils.loadHashMapFromFile(paths.get("registrations"), Long.class, Registration.class));
 
-        newRegistrations = FileUtils.loadHashMapFromFile(paths.get("newRegistrations"), Long.class, Registration.class);
+        newRegistrations.putAll(FileUtils.loadHashMapFromFile(paths.get("newRegistrations"), Long.class, Registration.class));
 
-        diagnoses = FileUtils.loadHashMapFromFile(paths.get("diagnoses"), Long.class, Diagnosis.class);
+        diagnoses.putAll(FileUtils.loadHashMapFromFile(paths.get("diagnoses"), Long.class, Diagnosis.class));
 
-        inspectionRecords = FileUtils.loadHashMapFromFile(paths.get("inspectionRecords"), Long.class, InspectionRecord.class);
+        inspectionRecords.putAll(FileUtils.loadHashMapFromFile(paths.get("inspectionRecords"), Long.class, InspectionRecord.class));
 
-        prescriptions = FileUtils.loadHashMapFromFile(paths.get("prescriptions"), Long.class, Prescription.class);
+        prescriptions.putAll(FileUtils.loadHashMapFromFile(paths.get("prescriptions"), Long.class, Prescription.class));
 
-        staffs = FileUtils.loadHashMapFromFile(paths.get("staffs"), Integer.class, Staff.class);
+        staffs.putAll(FileUtils.loadHashMapFromFile(paths.get("staffs"), Integer.class, Staff.class));
 
-        inspectionItems = FileUtils.loadHashMapFromFile(paths.get("inspectionItems"), Integer.class, InspectionItem.class);
+        inspectionItems.putAll(FileUtils.loadHashMapFromFile(paths.get("inspectionItems"), Integer.class, InspectionItem.class));
         inspectionItemsCache = FileUtils.readJSONStringFromFile(paths.get("inspectionItems"), "{}");
 
-        departments = FileUtils.loadHashMapFromFile(paths.get("departments"), Integer.class, Department.class);
+        departments.putAll(FileUtils.loadHashMapFromFile(paths.get("departments"), Integer.class, Department.class));
         departmentsCache = FileUtils.readJSONStringFromFile(paths.get("departments"), "{}");
 
-        medicines = FileUtils.loadHashMapFromFile(paths.get("medicines"), Integer.class, Medicine.class);
+        medicines.putAll(FileUtils.loadHashMapFromFile(paths.get("medicines"), Integer.class, Medicine.class));
         medicinesCache = FileUtils.readJSONStringFromFile(paths.get("medicines"), "{}");
 
-        diseases = FileUtils.loadHashMapFromFile(paths.get("diseases"), Integer.class, Disease.class);
+        diseases.putAll(FileUtils.loadHashMapFromFile(paths.get("diseases"), Integer.class, Disease.class));
         diseasesCache = FileUtils.readJSONStringFromFile(paths.get("diseases"), "{}");
 
-        registrationLevels = FileUtils.loadHashMapFromFile(paths.get("registrationLevels"), Integer.class, RegistrationLevel.class);
+        registrationLevels.putAll(FileUtils.loadHashMapFromFile(paths.get("registrationLevels"), Integer.class, RegistrationLevel.class));
         registrationLevelsCache = FileUtils.readJSONStringFromFile(paths.get("registrationLevels"), "{}");
 
-        titles = FileUtils.loadHashMapFromFile(paths.get("titles"), Integer.class, Title.class);
+        titles.putAll(FileUtils.loadHashMapFromFile(paths.get("titles"), Integer.class, Title.class));
         titlesCache = FileUtils.readJSONStringFromFile(paths.get("titles"), "{}");
+
+        // 存储缓存引用
+        caches.put("inspectionItems", inspectionItemsCache);
+        caches.put("medicines", medicinesCache);
+        caches.put("diseases", diseasesCache);
+        caches.put("registrationLevels", registrationLevelsCache);
+        caches.put("departments", departmentsCache);
+        caches.put("titles", titlesCache);
 
         LogUtils.info("Database booted successfully");
     }

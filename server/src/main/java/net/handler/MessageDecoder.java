@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.util.CharsetUtil;
+import lib.LogUtils;
 import net.message.Header;
 import net.message.Message;
 
@@ -27,6 +28,7 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
             message.setBody(frame.toString(frame.readerIndex(), frame.readableBytes(), CharsetUtil.UTF_8));
         // 备用 message.setBody(frame.readCharSequence(frame.readInt(), CharsetUtil.UTF_8).toString());
 
+        System.out.println(message.getBody());
         return message;
     }
 }

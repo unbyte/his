@@ -12,6 +12,7 @@ import java.util.HashSet;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class Prescription {
 
     private long id;
@@ -24,7 +25,6 @@ public class Prescription {
     /*费用*/
     private double fee;
 
-    @Setter
     private int status;
 
 

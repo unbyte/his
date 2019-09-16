@@ -2,10 +2,12 @@ package net.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lib.FileUtils;
 import net.message.Header;
 import net.message.Message;
 import net.message.MessageType;
 
+import java.nio.file.Paths;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +22,7 @@ public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
         Message message = (Message) msg;
 
         if (message.getHeader() != null && message.getHeader().getType() == MessageType.CONNECT_RES.type())
+
             heartBeat = ctx.executor().scheduleAtFixedRate(new HeartBeatHandler.Task(ctx), 0, 5, TimeUnit.SECONDS);
             // todo 加上对CONNECT_RES的初步判断是否成功，若成功则进入下一个拦截器，若失败则断开连接
         else

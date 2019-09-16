@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class Diagnosis {
     private long id;
 
@@ -22,18 +23,17 @@ public class Diagnosis {
     /*0-中 1-西*/
     private int clazz;
 
-    @Setter /*疾病*/
+    /*疾病*/
     private String disease;
     /*建议*/
     private String suggestion;
 
-    @Setter /*注意事项*/
+    /*注意事项*/
     private String note;
 
-    @Setter /*最终诊断信息*/
+    /*最终诊断信息*/
     private String judgement;
 
-    @Setter
     private int status;
 
 

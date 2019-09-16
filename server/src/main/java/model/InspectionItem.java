@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class InspectionItem {
 
     private int id;
@@ -17,7 +18,6 @@ public class InspectionItem {
 
     private String name;
 
-    @Setter
     private double fee;
 
     /**

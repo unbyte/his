@@ -18,7 +18,7 @@ import net.message.MessageType;
 
 import java.util.concurrent.CountDownLatch;
 
-public enum NetCenter {
+public enum ClientNetCenter {
     INSTANCE;
 
     private EventLoopGroup group = new NioEventLoopGroup();
@@ -47,16 +47,19 @@ public enum NetCenter {
                                         ch.pipeline().addLast("businessHandler",new BusinessHandler());
                                     }
                                 });
-
                 channel = bootstrap.connect(address, port).sync().channel();
+                channel.closeFuture().sync();
             } catch (
                     InterruptedException ignored) {
             } finally {
                 group.shutdownGracefully();
             }
         });
-
         client.start();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ignored) {
+        }
     }
 
     public void stop() {
@@ -77,11 +80,13 @@ public enum NetCenter {
 
         channel.writeAndFlush(msg);
 
+
         // 阻塞，等待响应
         try {
             countDownLatch.wait(10 * 1000);
         } catch (InterruptedException ignored) {
         }
+
 
         // 获取到响应
         Message response = tempResponse;
@@ -99,6 +104,7 @@ public enum NetCenter {
         if (countDownLatch == null || message.getHeader().getType() == MessageType.PUSH.type())
             PushHandlerCenter.handle(message);
 
+        System.out.println(message.getBody());
         // 将返回的message存成临时响应供返回
         tempResponse = message;
 

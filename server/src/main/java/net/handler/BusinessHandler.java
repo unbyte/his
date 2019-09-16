@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import controller.ControllerCenter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lib.LogUtils;
 import lib.MessageUtils;
 import lib.Tuple;
 import model.Staff;
@@ -63,4 +64,8 @@ public class BusinessHandler extends ChannelInboundHandlerAdapter {
         return result.get(0, Message.class);
     }
 
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        LogUtils.warn(cause.getMessage());
+    }
 }

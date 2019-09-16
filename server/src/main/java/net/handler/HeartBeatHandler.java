@@ -2,6 +2,7 @@ package net.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lib.LogUtils;
 import lib.MessageUtils;
 import net.message.Message;
 import net.message.MessageType;
@@ -14,7 +15,6 @@ public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         Message message = (Message) msg;
-
         if (message.getHeader() != null && message.getHeader().getType() == MessageType.HEARTBEAT_REQ.type())
             ctx.writeAndFlush((MessageUtils.buildHeartBeat()));
         else

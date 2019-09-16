@@ -26,7 +26,7 @@ public class FileUtils {
         File file = path.toFile();
         if (!file.exists()) {
             if (file.getParentFile() != null && !file.getParentFile().exists())
-                if(!file.getParentFile().mkdirs())
+                if (!file.getParentFile().mkdirs())
                     return false;
             try {
                 if (file.createNewFile()) {
@@ -81,9 +81,9 @@ public class FileUtils {
             return false;
         try {
             if (appendMode)
-                Files.writeString(path, content);
-            else
                 Files.writeString(path, content, StandardOpenOption.APPEND);
+            else
+                Files.writeString(path, content);
         } catch (IOException e) {
             LogUtils.warn("IOException happened when write data to file `" + path.getFileName() + "`");
             return false;
@@ -102,8 +102,7 @@ public class FileUtils {
      * @param valueType HashMap值的类型
      * @return HashMap对象
      */
-    public static <
-            K, V> HashMap<K, V> loadHashMapFromFile(Path path, Class<K> keyType, Class<V> valueType) {
+    public static <K, V> HashMap<K, V> loadHashMapFromFile(Path path, Class<K> keyType, Class<V> valueType) {
         if (!ensureFile(path))
             return new HashMap<>();
         String jsonString = FileUtils.readJSONStringFromFile(path, "{}");

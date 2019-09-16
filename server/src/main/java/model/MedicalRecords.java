@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class MedicalRecords {
     /*病历号*/
     private long id;
@@ -24,16 +25,16 @@ public class MedicalRecords {
 
     private String address;
 
-    @Setter /*既往史*/
+    /*既往史*/
     private String pastHistory;
 
-    @Setter /*现病史*/
+    /*现病史*/
     private String presentIllnessHistory;
 
-    @Setter /*过敏史*/
+    /*过敏史*/
     private String allergyHistory;
 
-    @Setter /*现病治疗情况*/
+    /*现病治疗情况*/
     private String currentIllnessTreatment;
 
     /**

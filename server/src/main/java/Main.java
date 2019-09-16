@@ -1,5 +1,5 @@
 import database.Database;
-import net.NetCenter;
+import net.ServerNetCenter;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,7 +13,7 @@ public class Main {
             } catch (Exception ignored) {
             }
         }
-        NetCenter.INSTANCE.start(port);
+        ServerNetCenter.INSTANCE.start(port);
 
         // 注册程序关闭钩子
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown));
@@ -23,7 +23,7 @@ public class Main {
 
     private static void shutdown() {
         // 关闭netty服务
-        NetCenter.INSTANCE.stop();
+        ServerNetCenter.INSTANCE.stop();
 
         // 关闭数据库
         Database.INSTANCE.shut();

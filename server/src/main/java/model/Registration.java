@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class Registration {
 
     private long id;

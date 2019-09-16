@@ -4,15 +4,23 @@ import router from './lib/router'
 import store from './lib/store'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
-import request from './lib/request'
+import io from './lib/io'
 
 Vue.use(MuseUI)
 
 Vue.config.productionTip = false
-Vue.prototype.$request = request
+
+
+window['mode'] = 'product'; // or product
+
+window['isDev'] = window.mode === 'dev';
+
+// 几个bridge
+window['io'] = io;
+
 
 new Vue({
     render: h => h(App),
     router,
     store
-}).$mount('#app')
+}).$mount('#app');

@@ -14,14 +14,14 @@ public class ConfigBridge implements Bridge {
     private Path configPath = Paths.get("./config.ini");
 
     {
-        String[] configItems = FileUtils.readStringFromFile(configPath, "127.0.0.1\n3000").split("\n");
+        String[] configItems = FileUtils.readStringFromFile(configPath, "127.0.0.1:30000").split(":");
         if (configItems.length > 1) {
             configs.put("server_address", configItems[0]);
             configs.put("server_port", configItems[1]);
         } else {
-            FileUtils.writeStringToFile(configPath, "127.0.0.1\n3000", false);
+            FileUtils.writeStringToFile(configPath, "127.0.0.1:30000", false);
             configs.put("server_address", "127.0.0.1");
-            configs.put("server_port", "3000");
+            configs.put("server_port", "30000");
         }
     }
 

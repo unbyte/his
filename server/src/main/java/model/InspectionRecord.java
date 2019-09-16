@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class InspectionRecord {
 
     private long id;
@@ -24,10 +25,9 @@ public class InspectionRecord {
     /*检查要求*/
     private String request;
 
-    @Setter /*检查结果*/
+    /*检查结果*/
     private String result;
 
-    @Setter
     private int status;
 
     /**

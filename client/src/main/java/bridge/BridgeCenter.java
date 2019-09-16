@@ -30,6 +30,9 @@ public class BridgeCenter {
         }
     }
 
+    public static Bridge getBridge(String name) {
+        return bridges.get(name);
+    }
 
     public static void setWebEngine(WebEngine webEngine) {
         BridgeCenter.webEngine = webEngine;

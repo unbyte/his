@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from "../pages/Login";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const router = new VueRouter({
     routes: [
@@ -13,10 +13,10 @@ const router = new VueRouter({
         }
 
     ]
-})
+});
 
 router.beforeEach((to, from, next) => {
     next()
-})
+});
 
 export default router

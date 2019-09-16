@@ -12,7 +12,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import lib.LogUtils;
 import net.handler.*;
 
-public enum NetCenter {
+public enum ServerNetCenter {
     INSTANCE;
 
     private EventLoopGroup bossGroup = new NioEventLoopGroup();

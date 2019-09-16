@@ -33,7 +33,7 @@ public class MainScene implements Initializable {
         // 把WebEngine对象注册进BridgeMaster工厂
         BridgeCenter.setWebEngine(webEngine);
 
-        // 通过类名指定需要挂载到JS运行时里的对象
+        // 指定需要挂载到JS运行时里的对象
         BridgeCenter.addBridge("lifecycle", new LifecycleBridge());
         BridgeCenter.addBridge("request", new RequestBridge());
         BridgeCenter.addBridge("config", new ConfigBridge());

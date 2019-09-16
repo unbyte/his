@@ -12,6 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(exclude = "password")
 @Getter
+@Setter
 public class Staff {
 
     private int id;
@@ -19,10 +20,8 @@ public class Staff {
     private String name;
     private String password;
 
-    @Setter
     private int department;
 
-    @Setter
     private int title;
 
     private Staff(int id, String name, String password, int department, int title) {
@@ -54,7 +53,7 @@ public class Staff {
      * @return 密码是否正确
      */
     public boolean comparePassword(String password) {
-        return password.equals(Security.encrypt(password));
+        return this.password.equals(Security.encrypt(password));
     }
 
     /**
@@ -62,7 +61,7 @@ public class Staff {
      *
      * @param password 明文新密码
      */
-    public void setPassword(String password) {
+    public void shangePassword(String password) {
         this.password = Security.encrypt(password);
     }
 

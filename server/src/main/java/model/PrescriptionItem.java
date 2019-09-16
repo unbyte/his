@@ -1,9 +1,6 @@
 package model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * 处方中的药物清单组成
@@ -12,6 +9,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class PrescriptionItem {
     /*药物id*/
     private int medicineID;

@@ -27,7 +27,7 @@ public enum ControllerCenter {
 
     {
         // 初始化controller映射表
-        controllers.put("login", new Login());
+        controllers.put("login", new LoginController());
 
     }
 }

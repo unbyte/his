@@ -11,6 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class RegistrationLevel {
 
     private int id;
@@ -19,7 +20,6 @@ public class RegistrationLevel {
     /*每日限制数*/
     private int limit;
 
-    @Setter
     private double fee;
 
     private RegistrationLevel(int id, String name, int limit, double fee) {
