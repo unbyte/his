@@ -27,7 +27,7 @@ public class RequestHandler {
      * @return 响应
      */
     protected Message post(String methodName, String request) {
-        return ClientNetCenter.INSTANCE.send(MessageUtils.buildRequest(methodName, request, MessageType.REQUEST.type()));
+        return ClientNetCenter.INSTANCE.send(MessageUtils.buildRequest(methodName, request, MessageType.REQUEST));
     }
 
     /**
@@ -49,7 +49,6 @@ public class RequestHandler {
     public Message process(String methodName, String request) {
         before(methodName, request);
         Message response = post(methodName, request);
-        System.out.println(response.getBody());
         after(response);
         return response;
     }

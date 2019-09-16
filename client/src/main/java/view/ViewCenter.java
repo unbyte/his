@@ -7,7 +7,7 @@ import java.util.HashMap;
 /**
  * 可视化界面对象容器
  */
-public class viewMaster {
+public class ViewCenter {
     private static HashMap<String, Object> scenes = new HashMap<>();
     private static HashMap<String, Stage> stages = new HashMap<>();
 
@@ -38,8 +38,8 @@ public class viewMaster {
      * @param name 注册的名称
      * @return Scene对象
      */
-    public static <T> T getScene(String name) {
-        return (T) scenes.get(name);
+    public static <T> T getScene(String name, Class<T> clazz) {
+        return clazz.cast(scenes.get(name));
     }
 
     /**

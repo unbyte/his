@@ -15,7 +15,7 @@ public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         Message message = (Message) msg;
-        if (message.getHeader() != null && message.getHeader().getType() == MessageType.HEARTBEAT_REQ.type())
+        if (message.getHeader() != null && message.getHeader().getType() == MessageType.HEARTBEAT_REQ)
             ctx.writeAndFlush((MessageUtils.buildHeartBeat()));
         else
             ctx.fireChannelRead(msg);

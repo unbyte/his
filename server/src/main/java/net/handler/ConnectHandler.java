@@ -15,7 +15,7 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         Message message = (Message) msg;
-        if (message.getHeader() != null && message.getHeader().getType() == MessageType.CONNECT_REQ.type())
+        if (message.getHeader() != null && message.getHeader().getType() == MessageType.CONNECT_REQ)
             ctx.writeAndFlush(handleLogin(ctx, message));
         else
             // 经过三次类型筛选后进入该分支的类型应该不属于任何一个，因此抛出not found

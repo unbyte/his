@@ -35,7 +35,7 @@ public class MessageUtils {
      * @return Message对象
      */
     public static Message buildResponse(byte status, Object msg) {
-        return buildResponse(status, msg, MessageType.RESPONSE.type());
+        return buildResponse(status, msg, MessageType.RESPONSE);
     }
 
     /**
@@ -49,6 +49,7 @@ public class MessageUtils {
     public static Message buildResponse(byte status, Object msg, byte type) {
         return new Message().setHeader(
                 new Header().setType(type)
+                .setStatus(status)
         ).setBody(
                 new JSONObject().fluentPut("status", status)
                         .fluentPut("msg", msg)
@@ -64,7 +65,7 @@ public class MessageUtils {
     public static Message buildHeartBeat() {
         return new Message().setHeader(
                 new Header().setType(
-                        MessageType.HEARTBEAT_RES.type()
+                        MessageType.HEARTBEAT_RES
                 )
         );
     }

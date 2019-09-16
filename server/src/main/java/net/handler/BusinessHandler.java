@@ -22,7 +22,7 @@ public class BusinessHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         Message message = (Message) msg;
-        if (message.getHeader() != null && message.getHeader().getType() == MessageType.REQUEST.type())
+        if (message.getHeader() != null && message.getHeader().getType() == MessageType.REQUEST)
             ctx.writeAndFlush(handleRequest(ctx, message));
         else
             ctx.fireChannelRead(msg);

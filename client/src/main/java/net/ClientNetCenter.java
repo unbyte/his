@@ -17,6 +17,7 @@ import net.message.Message;
 import net.message.MessageType;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public enum ClientNetCenter {
     INSTANCE;
@@ -44,10 +45,11 @@ public enum ClientNetCenter {
                                         ch.pipeline().addLast("encoder", new MessageEncoder());
                                         ch.pipeline().addLast("readTimeOutHandler", new ReadTimeoutHandler(50));
                                         ch.pipeline().addLast("heartBeatHandler", new HeartBeatHandler());
-                                        ch.pipeline().addLast("businessHandler",new BusinessHandler());
+                                        ch.pipeline().addLast("businessHandler", new BusinessHandler());
                                     }
                                 });
                 channel = bootstrap.connect(address, port).sync().channel();
+                countDownLatch.countDown();
                 channel.closeFuture().sync();
             } catch (
                     InterruptedException ignored) {
@@ -55,11 +57,20 @@ public enum ClientNetCenter {
                 group.shutdownGracefully();
             }
         });
+        // 初始化一个倒数器
+        countDownLatch = new CountDownLatch(1);
+
+        // 启动线程
         client.start();
+
+        // 阻塞住主线程直到client线程里channel建立成功
         try {
-            Thread.sleep(2000);
+            countDownLatch.await();
         } catch (InterruptedException ignored) {
         }
+
+        // 用完了，赋空
+        countDownLatch = null;
     }
 
     public void stop() {
@@ -83,7 +94,7 @@ public enum ClientNetCenter {
 
         // 阻塞，等待响应
         try {
-            countDownLatch.wait(10 * 1000);
+            countDownLatch.await(10, TimeUnit.SECONDS);
         } catch (InterruptedException ignored) {
         }
 
@@ -95,16 +106,18 @@ public enum ClientNetCenter {
         countDownLatch = null;
         tempResponse = null;
 
+        System.out.println(response.getBody());
         // 超时了没有收到消息或其他原因会返回null
         return response;
     }
 
     public void receive(Message message) {
         // 若倒数器为空，则没有前序请求，是服务端主动推送，直接转发给push handler
-        if (countDownLatch == null || message.getHeader().getType() == MessageType.PUSH.type())
+        if (countDownLatch == null || message.getHeader().getType() == MessageType.PUSH) {
             PushHandlerCenter.handle(message);
+            return;
+        }
 
-        System.out.println(message.getBody());
         // 将返回的message存成临时响应供返回
         tempResponse = message;
 

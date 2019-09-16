@@ -11,7 +11,7 @@ Vue.use(MuseUI)
 Vue.config.productionTip = false
 
 
-window['mode'] = 'product'; // or product
+window['mode'] = 'dev'; // or product
 
 window['isDev'] = window.mode === 'dev';
 

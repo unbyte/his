@@ -31,7 +31,7 @@ public class LoginController implements Controller {
     public Tuple process(JSONObject params, Staff user) {
         // 判断是否手动构造业务login请求
         if (user != null)
-            return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "禁止重复登陆", MessageType.CONNECT_RES.type()));
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "禁止重复登陆", MessageType.CONNECT_RES));
 
         Database database = Database.INSTANCE;
         // 获取staff对象
@@ -40,14 +40,13 @@ public class LoginController implements Controller {
                         (map, res) -> res.add(map.get(params.getInteger("username")))
                 ).get();
         if (staff == null)
-            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "用户不存在", MessageType.CONNECT_RES.type()));
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "用户不存在", MessageType.CONNECT_RES));
         // 判断是否多端重复登陆
         if (ChannelPool.containStaff(staff) && ChannelPool.getChannel(staff).isActive())
-            return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "禁止重复登陆", MessageType.CONNECT_RES.type()));
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "禁止重复登陆", MessageType.CONNECT_RES));
         // 判断密码是否一致
-        System.out.println(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "密码错误", MessageType.CONNECT_RES.type()).getBody());
         if (!staff.comparePassword(params.getString("password")))
-            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "密码错误", MessageType.CONNECT_RES.type()));
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "密码错误", MessageType.CONNECT_RES));
         // 登陆成功，构造返回消息体
         JSONObject msg = new JSONObject().fluentPut("user",
                 new JSONObject().fluentPut("name", staff.getName())
@@ -65,7 +64,7 @@ public class LoginController implements Controller {
                                 res.add(i);
                         })).toJSONString());
         LogUtils.info(msg);
-        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, msg, MessageType.CONNECT_RES.type()), staff);
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, msg, MessageType.CONNECT_RES), staff);
     }
 
 

@@ -20,14 +20,14 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
         Message message = new Message()
                 .setHeader(new Header().setCrcCode(frame.readInt())
                         .setLength(frame.readInt())
-                        .setType(frame.readByte()));
+                        .setType(frame.readByte())
+                        .setStatus(frame.readByte()));
 
 
         if (frame.readableBytes() > 4)
             message.setBody(frame.toString(frame.readerIndex(), frame.readableBytes(), CharsetUtil.UTF_8));
         // 备用 message.setBody(frame.readCharSequence(frame.readInt(), CharsetUtil.UTF_8).toString());
 
-        System.out.println(message.getBody());
         return message;
     }
 }

@@ -47,7 +47,7 @@ public class MainScene implements Initializable {
      * @param newHeight 新的高度
      */
     public void changeSize(double newWidth, double newHeight) {
-        Stage stage = viewMaster.getStage("main");
+        Stage stage = ViewCenter.getStage("main");
 
         stage.close();
         stage.setWidth(newWidth);

@@ -8,6 +8,7 @@ public class Header {
     private int crcCode = 0x2817767d;
     private int length;
     private byte type;
+    private byte status;
 
     /**
      * 获取校验码
@@ -71,6 +72,16 @@ public class Header {
 
     @Override
     public String toString() {
-        return "header [ crcCode=" + crcCode + ", length=" + length + ", type=" + type;
+        return "header [ crcCode=" + crcCode + ", length=" + length + ", type=" + type + ", status=" + status;
+    }
+
+
+    public byte getStatus() {
+        return status;
+    }
+
+    public Header setStatus(byte status) {
+        this.status = status;
+        return this;
     }
 }

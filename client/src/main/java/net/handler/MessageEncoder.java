@@ -17,6 +17,7 @@ public class MessageEncoder extends MessageToByteEncoder<Message> {
         out.writeInt(msg.getHeader().getCrcCode());
         out.writeInt(msg.getHeader().getLength());
         out.writeByte(msg.getHeader().getType());
+        out.writeByte(msg.getHeader().getStatus());
         if (msg.getBody() != null)
             out.writeBytes(msg.getBody().getBytes(CharsetUtil.UTF_8)); // 直接取得字符串的bytes形式
             // 备用      .writeInt(msg.getBody().getBytes().length);

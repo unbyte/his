@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import view.MainScene;
-import view.viewMaster;
+import view.ViewCenter;
 
 public class Main extends Application {
 
@@ -22,7 +22,7 @@ public class Main extends Application {
         MainScene controller = loader.getController();
 
         // 将MainStageController加进Scene的容器，以便于其他类或对象取得
-        viewMaster.registerScene(controller);
+        ViewCenter.registerScene(controller);
 
         // 初始化窗口参数
         Scene scene = new Scene(root, 700, 360);
@@ -30,7 +30,7 @@ public class Main extends Application {
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setResizable(false);
 
-        viewMaster.registerStage("main", stage);
+        ViewCenter.registerStage("main", stage);
 
         // 显示窗口
         stage.show();

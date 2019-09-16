@@ -6,6 +6,8 @@ import lib.MessageUtils;
 import net.ClientNetCenter;
 import net.message.Message;
 import net.message.MessageType;
+import view.MainScene;
+import view.ViewCenter;
 
 public class LoginRequestHandler extends RequestHandler {
     @Override
@@ -14,16 +16,27 @@ public class LoginRequestHandler extends RequestHandler {
         ConfigBridge configBridge = (ConfigBridge) BridgeCenter.getBridge("config");
         String address = configBridge.getConfig("server_address");
         int port = Integer.parseInt(configBridge.getConfig("server_port"));
-        ClientNetCenter.INSTANCE.start(address,port);
+        ClientNetCenter.INSTANCE.start(address, port);
     }
 
     @Override
     protected Message post(String methodName, String request) {
-        return ClientNetCenter.INSTANCE.send(MessageUtils.buildRequest(methodName, request, MessageType.CONNECT_REQ.type()));
+        return ClientNetCenter.INSTANCE.send(MessageUtils.buildRequest(methodName, request, MessageType.CONNECT_REQ));
     }
 
     @Override
     protected void after(Message message) {
-        //todo 若成功则挂载信息、改变窗口大小; 若失败则断开连接
+        // 若失败则断开连接
+        if (message.getHeader().getStatus() != MessageUtils.SUCCESS) {
+            ClientNetCenter.INSTANCE.stop();
+            return;
+        }
+
+        // 若成功则改变窗口大小
+        MainScene mainScene = ViewCenter.getScene("MainScene", MainScene.class);
+
+        // 窗口大小1024*768（暂定
+        mainScene.changeSize(1024, 768);
+        // todo 继续写登陆之后的界面变化
     }
 }
