@@ -35,7 +35,7 @@ public class LoginRequestHandler extends RequestHandler {
         // 若成功则改变窗口大小
         MainScene mainScene = ViewCenter.getScene("MainScene", MainScene.class);
 
-        // 窗口大小1024*768（暂定
+        // 窗口大小1280x800（暂定
         mainScene.changeSize(1280, 800);
         // todo 继续写登陆之后的界面变化
     }

@@ -66,6 +66,6 @@ public class BusinessHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        LogUtils.warn(cause.getMessage());
+        LogUtils.info(cause.getMessage());
     }
 }

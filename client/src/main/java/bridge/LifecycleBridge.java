@@ -21,11 +21,11 @@ public class LifecycleBridge implements Bridge {
      * 关闭java主程序
      */
     public void exit() {
-        Platform.exit();
         ClientNetCenter.INSTANCE.stop();
+        Platform.exit();
     }
 
-    public void showStage(String stageName){
+    public void showStage(String stageName) {
         ViewCenter.getStage(stageName).show();
     }
 }

@@ -10,7 +10,7 @@ const store = new Vuex.Store({
     mutations: {
         setGlobalData(state, globalData) {
             state.global = globalData;
-        }
+        },
     },
     actions: {}
 })

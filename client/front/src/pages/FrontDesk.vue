@@ -1,24 +1,86 @@
 <template>
-    <div>
-        <HeaderBar></HeaderBar>
+    <div id="front-desk-page">
+        <mu-container>
+            <mu-tabs :value.sync="active" inverse color="primary" indicator-color="rgb(33, 150, 243)"
+                     text-color="rgba(0, 0, 0, .54)">
+                <mu-tab to="/front-desk/main">首页</mu-tab>
+                <mu-tab to="/front-desk/register">挂号</mu-tab>
+                <mu-tab to="/front-desk/unregister">退号</mu-tab>
+                <mu-tab to="/front-desk/charge">收费</mu-tab>
+                <mu-tab to="/front-desk/refund">退费</mu-tab>
+                <mu-tab to="/front-desk/query">费用查询</mu-tab>
+            </mu-tabs>
+            <router-view></router-view>
+            <mu-chip class="name-chip" color="blue300" delete @delete="exit">
+                {{user.name}} 【{{user.title}}】
+            </mu-chip>
+        </mu-container>
     </div>
 </template>
 
 <script>
-    import HeaderBar from "../components/global/HeaderBar";
+
 
     export default {
         name: "FrontDesk",
+        data() {
+            return {
+                active: 0,
+                user: {
+                    name: '',
+                    title: '',
+                    department: ''
+                }
+            }
+        },
         mounted() {
+            if (!this.$utils.isLoggedIn()) {
+                this.$router.push('/');
+                return;
+            }
+
+            this.user.name = this.$utils.getCurrentName();
+            this.user.title = this.$utils.getCurrentTitleName();
+            this.user.department = this.$utils.getCurrentDepartmentName();
+
             if (!isDev)
                 lifecycle.showStage("main");
         },
-        components: {
-            HeaderBar
-        }
+        methods: {
+            exit() {
+                lifecycle.exit();
+            }
+        },
+        components: {}
     }
 </script>
 
 <style scoped>
+    #front-desk-page {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        position: relative;
+        min-width: 1280px;
+        height: 800px;
+        padding: 0 !important;
+    }
+
+    .name-chip {
+        position: absolute;
+        right: 12px;
+        top: 8px;
+        z-index: 999;
+    }
+
+    /*强制取消掉自适应，防止宽度改变，下划线长度不够*/
+    .mu-tab {
+        min-width: 160px !important;
+    }
 
 </style>

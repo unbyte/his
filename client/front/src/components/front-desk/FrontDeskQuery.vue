@@ -1,12 +1,10 @@
 <template>
-    <mu-row>
-        
-    </mu-row>
+
 </template>
 
 <script>
     export default {
-        name: "HeaderBar"
+        name: "FrontDeskQuery"
     }
 </script>
 
