@@ -28,7 +28,6 @@ public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
         if (message.getHeader().getType() == MessageType.RESPONSE)
             ctx.fireChannelRead(msg);
 
-        System.out.println(message.getHeader().getType());
         if (message.getHeader().getType() == MessageType.CONNECT_RES) {
             // 对CONNECT_RES初步判断是否成功，若成功则开启心跳包处理
             if (message.getHeader().getStatus() == MessageUtils.SUCCESS)

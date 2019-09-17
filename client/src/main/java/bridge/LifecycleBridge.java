@@ -2,6 +2,7 @@ package bridge;
 
 import javafx.application.Platform;
 import net.ClientNetCenter;
+import view.ViewCenter;
 
 /**
  * 方便js调用java主程序的生命周期方法
@@ -22,5 +23,9 @@ public class LifecycleBridge implements Bridge {
     public void exit() {
         Platform.exit();
         ClientNetCenter.INSTANCE.stop();
+    }
+
+    public void showStage(String stageName){
+        ViewCenter.getStage(stageName).show();
     }
 }

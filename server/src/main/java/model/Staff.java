@@ -24,26 +24,12 @@ public class Staff {
 
     private int title;
 
-    private Staff(int id, String name, String password, int department, int title) {
+    public Staff(int id, String name, String password, int department, int title) {
         this.id = id;
         this.name = name;
-        this.password = password;
+        this.password = Security.encrypt(password);
         this.department = department;
         this.title = title;
-    }
-
-    /**
-     * 新建一个员工对象并获取
-     *
-     * @param name       姓名
-     * @param password   密码，会自动进行hash处理
-     * @param department 科室id
-     * @param title      职称id
-     * @return id自动生成的员工对象
-     */
-    public static Staff insert(String name, String password, int department, int title) {
-        int id = 0;//todo 唯一id生成规则
-        return new Staff(id, name, Security.encrypt(password), department, title);
     }
 
     /**

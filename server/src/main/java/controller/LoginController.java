@@ -6,6 +6,7 @@ import lib.LogUtils;
 import lib.MessageUtils;
 import lib.Security;
 import lib.Tuple;
+import model.Department;
 import model.Registration;
 import model.Staff;
 import net.ChannelPool;
@@ -46,24 +47,43 @@ public class LoginController implements Controller {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "禁止重复登陆", MessageType.CONNECT_RES));
         // 判断密码是否一致
         if (!staff.comparePassword(params.getString("password")))
-            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "密码错误", MessageType.CONNECT_RES));
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.FAIL, "密码错误", MessageType.CONNECT_RES));
+
+        // 获取所在科室信息
+        Department department = database.select("departments", Integer.class, Department.class).filter(
+                (map, res) -> res.add(map.get(staff.getDepartment()))
+        ).get();
+
+        // 若科室有误，则账号不正常
+        if (department == null)
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.FAIL, "账号内部错误", MessageType.CONNECT_RES));
+
         // 登陆成功，构造返回消息体
         JSONObject msg = new JSONObject().fluentPut("user",
                 new JSONObject().fluentPut("name", staff.getName())
                         .fluentPut("title", staff.getTitle())
                         .fluentPut("department", staff.getDepartment()))
-                .fluentPut("inspectionItems", database.selectAll("inspectionItems"))
+                .fluentPut("titles", database.selectAll("titles"))
+                .fluentPut("departments", database.selectAll("departments"))
+                .fluentPut("registrationLevels", database.selectAll("registrationLevels"));
+
+        if (department.getClazz() == Department.OUTPATIENT)
+            msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"))
                 .fluentPut("medicines", database.selectAll("medicines"))
                 .fluentPut("diseases", database.selectAll("diseases"))
-                .fluentPut("registrationLevels", database.selectAll("registrationLevels"))
-                .fluentPut("departments", database.selectAll("departments"))
-                .fluentPut("titles", database.selectAll("titles"))
                 .fluentPut("patients", database.select("newRegistrations", Long.class, Registration.class).filter(
                         (map, res) -> map.values().forEach(i -> {
                             if (i.getDoctorID() == staff.getId())
                                 res.add(i);
                         })).toJSONString());
-        LogUtils.info(msg);
+
+        if (department.getClazz() == Department.MEDICAL_TECHNIQUE)
+            msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"));
+
+        if (department.getClazz() == Department.PHARMACY)
+            msg.fluentPut("medicines", database.selectAll("medicines"))
+                    .fluentPut("diseases", database.selectAll("diseases"));
+
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, msg, MessageType.CONNECT_RES), staff);
     }
 

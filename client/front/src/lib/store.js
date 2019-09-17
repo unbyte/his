@@ -5,9 +5,12 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
-
+        global: {}
     },
     mutations: {
+        setGlobalData(state, globalData) {
+            state.global = globalData;
+        }
     },
     actions: {}
 })

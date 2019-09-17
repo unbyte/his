@@ -89,10 +89,13 @@
             submit() {
                 this.$refs.loginForm.validate().then((result) => {
                     if (result) {
-                        if (!isDev) {
-                            lifecycle.log(io.post('login', JSON.stringify(this.loginForm)))
-                        }
-                        // io.login(this.loginForm.username, this.loginForm.password, this.loginForm.role)
+                        let response = io.post('login', JSON.stringify(this.loginForm));
+                        if (response.status === 0) {
+                            // 登陆成功
+                            this.$store.commit("setGlobalData", response.msg);
+                            this.$router.push(`/${this.$utils.departmentClazzToRouteName(response.msg.departments[response.msg.user.department].clazz)}/main`);
+                        } else
+                            this.$toast.message(response.msg);
                     }
                 });
             },

@@ -126,10 +126,10 @@ public enum Database {
      * @param fieldName 待查找的实体所属的field名称
      * @return 查找结果的json字符串
      */
-    public String selectAll(String fieldName) {
+    public Object selectAll(String fieldName) {
         if (caches.containsKey(fieldName))
-            return caches.get(fieldName);
-        return JSON.toJSONString(fields.get(fieldName));
+            return JSON.parseObject(caches.get(fieldName));
+        return JSON.toJSON(fields.get(fieldName));
     }
 
 

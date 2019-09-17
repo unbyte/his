@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public enum ClientNetCenter {
     INSTANCE;
 
-    private EventLoopGroup group = new NioEventLoopGroup();
+    private EventLoopGroup group;
     private Channel channel;
 
     private CountDownLatch countDownLatch;
@@ -31,6 +31,7 @@ public enum ClientNetCenter {
     public void start(String address, int port) {
         if (channel != null)
             return;
+        group = new NioEventLoopGroup();
         Thread client = new Thread(() -> {
             try {
                 Bootstrap bootstrap = new Bootstrap();
@@ -51,10 +52,10 @@ public enum ClientNetCenter {
                 channel = bootstrap.connect(address, port).sync().channel();
                 countDownLatch.countDown();
                 channel.closeFuture().sync();
-            } catch (
-                    InterruptedException ignored) {
+            } catch (InterruptedException ignored) {
             } finally {
                 group.shutdownGracefully();
+                channel = null;
             }
         });
         // 初始化一个倒数器
@@ -77,7 +78,6 @@ public enum ClientNetCenter {
         if (channel == null)
             return;
         channel.close();
-        channel = null;
     }
 
 
@@ -106,7 +106,6 @@ public enum ClientNetCenter {
         countDownLatch = null;
         tempResponse = null;
 
-        System.out.println(response.getBody());
         // 超时了没有收到消息或其他原因会返回null
         return response;
     }

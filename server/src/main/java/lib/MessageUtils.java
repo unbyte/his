@@ -27,6 +27,8 @@ public class MessageUtils {
     public static byte NO_PERMISSION = (byte) 3;
 
 
+    public static byte FAIL = (byte)4;
+
     /**
      * 为业务响应构造Message
      *

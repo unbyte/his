@@ -39,7 +39,6 @@ public class MainScene implements Initializable {
         BridgeCenter.addBridge("config", new ConfigBridge());
     }
 
-
     /**
      * 改变窗口的大小
      *
@@ -47,14 +46,14 @@ public class MainScene implements Initializable {
      * @param newHeight 新的高度
      */
     public void changeSize(double newWidth, double newHeight) {
-        Stage stage = ViewCenter.getStage("main");
 
-        stage.close();
+        // 思路是，更改窗口尺寸的时候关闭窗口，同时消息传到webview中，经过js处理，通过js调用显示窗口，以实现平滑过渡
+        Stage stage = ViewCenter.getStage("main");
+        stage.hide();
         stage.setWidth(newWidth);
         stage.setHeight(newHeight);
         webView.setPrefWidth(newWidth);
         webView.setPrefHeight(newHeight);
         stage.centerOnScreen();
-        stage.show();
     }
 }

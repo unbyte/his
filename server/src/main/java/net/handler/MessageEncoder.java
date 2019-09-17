@@ -16,7 +16,6 @@ public class MessageEncoder extends MessageToByteEncoder<Message> {
 
         if (msg == null || msg.getHeader() == null)
             throw new Exception("The encode message is null");
-        LogUtils.info(msg.getBody());
         out.writeInt(msg.getHeader().getCrcCode());
         out.writeInt(msg.getHeader().getLength());
         out.writeByte(msg.getHeader().getType());
