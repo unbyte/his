@@ -27,6 +27,14 @@ public class SelectSession<K,T> {
     }
 
     /**
+     * 获取原始HashMap数据
+     *
+     * @return 原始数据
+     */
+    public  HashMap<K, T> getRaw() {
+        return originData;
+    }
+    /**
      * 保留指定下标范围内的结果<br/>
      * 范围前闭后开
      *
@@ -71,6 +79,8 @@ public class SelectSession<K,T> {
             return JSON.toJSONString(result.toArray());
         return JSON.toJSONString(result.get(0));
     }
+
+
 
     /**
      * 获取一个结果

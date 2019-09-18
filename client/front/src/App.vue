@@ -36,5 +36,11 @@
         font-size: 14px !important;
     }
 
+    /*字体透明颜色渲染有问题，覆盖掉透明颜色的字体*/
+    .mu-tabs-inverse, >>> .mu-form-item, >>> .mu-step-label.disabled {
+        color: rgba(0, 0, 0, 0.9) !important;
+    }
+
+
     @import "assets/font.css";
 </style>

@@ -1,10 +1,9 @@
 package controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import database.Database;
-import lib.LogUtils;
 import lib.MessageUtils;
-import lib.Security;
 import lib.Tuple;
 import model.Department;
 import model.Registration;
@@ -12,7 +11,8 @@ import model.Staff;
 import net.ChannelPool;
 import net.message.MessageType;
 
-import javax.swing.*;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 
 /**
@@ -59,6 +59,8 @@ public class LoginController implements Controller {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.FAIL, "账号内部错误", MessageType.CONNECT_RES));
 
         // 登陆成功，构造返回消息体
+        HashMap<Integer, Department> departments = database.select("departments", Integer.class, Department.class).getRaw();
+
         JSONObject msg = new JSONObject().fluentPut("user",
                 new JSONObject().fluentPut("name", staff.getName())
                         .fluentPut("title", staff.getTitle())
@@ -69,13 +71,13 @@ public class LoginController implements Controller {
 
         if (department.getClazz() == Department.OUTPATIENT)
             msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"))
-                .fluentPut("medicines", database.selectAll("medicines"))
-                .fluentPut("diseases", database.selectAll("diseases"))
-                .fluentPut("patients", database.select("newRegistrations", Long.class, Registration.class).filter(
-                        (map, res) -> map.values().forEach(i -> {
-                            if (i.getDoctorID() == staff.getId())
-                                res.add(i);
-                        })).toJSONString());
+                    .fluentPut("medicines", database.selectAll("medicines"))
+                    .fluentPut("diseases", database.selectAll("diseases"))
+                    .fluentPut("patients", database.select("newRegistrations", Long.class, Registration.class).filter(
+                            (map, res) -> map.values().forEach(i -> {
+                                if (i.getDoctorID() == staff.getId())
+                                    res.add(i);
+                            })).toJSONString());
 
         if (department.getClazz() == Department.MEDICAL_TECHNIQUE)
             msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"));
@@ -83,6 +85,12 @@ public class LoginController implements Controller {
         if (department.getClazz() == Department.PHARMACY)
             msg.fluentPut("medicines", database.selectAll("medicines"))
                     .fluentPut("diseases", database.selectAll("diseases"));
+
+        if (department.getClazz() == Department.FRONT_DESK)
+            msg.fluentPut("doctors",
+                    JSON.parse("{" + database.select("staffs", Integer.class, Staff.class).getRaw().values().stream().filter(
+                            i -> departments.get(i.getDepartment()).getClazz() == Department.OUTPATIENT)
+                            .map(Staff::toString).collect(Collectors.joining(",")) + "}"));
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, msg, MessageType.CONNECT_RES), staff);
     }

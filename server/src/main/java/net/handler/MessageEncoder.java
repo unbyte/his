@@ -20,10 +20,11 @@ public class MessageEncoder extends MessageToByteEncoder<Message> {
         out.writeInt(msg.getHeader().getLength());
         out.writeByte(msg.getHeader().getType());
         out.writeByte(msg.getHeader().getStatus());
+
+        LogUtils.info(msg.getBody());
         if (msg.getBody() != null)
             out.writeBytes(msg.getBody().getBytes(CharsetUtil.UTF_8)); // 直接取得字符串的bytes形式
-        // 备用      .writeInt(msg.getBody().getBytes().length);
-        //           .writeCharSequence(msg.getBody(), CharsetUtil.UTF_8);
+
         out.setInt(4, out.readableBytes() - 8); // set与get都是通过绝对下标修改ByteBuf内容，这里用来重写最终的帧长度
 
     }

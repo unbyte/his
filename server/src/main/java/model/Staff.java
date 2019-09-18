@@ -10,7 +10,6 @@ import lombok.ToString;
  * 员工(医生、药师、技师、前台)
  */
 @NoArgsConstructor
-@ToString(exclude = "password")
 @Getter
 @Setter
 public class Staff {
@@ -51,5 +50,8 @@ public class Staff {
         this.password = Security.encrypt(password);
     }
 
-
+    @Override
+    public String toString() {
+        return id + ":{\"department\":" + department + ",\"id\":" + id + ",\"name\":\"" + name + "\",\"title\":" + title + "}";
+    }
 }

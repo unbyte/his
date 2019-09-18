@@ -1,5 +1,9 @@
 package net.handler.analyser;
 
+import lib.LogUtils;
+import model.Staff;
+import net.ChannelPool;
+
 import java.util.HashMap;
 
 public class AnalyserCenter {
@@ -7,6 +11,16 @@ public class AnalyserCenter {
 
     static {
         analysers.put("default", ((ctx, result) -> {
+        }));
+        analysers.put("login",((ctx, result) -> {
+            // 登陆失败
+            if (result.size() < 2)
+                return;
+            // 登陆成功, 加入到链接池
+            Staff staff = result.get(1, Staff.class);
+            ChannelPool.add(ctx.channel(), staff);
+            // 日志输出
+            LogUtils.info(staff.getName() + " has connected");
         }));
     }
 

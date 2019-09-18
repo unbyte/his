@@ -8,6 +8,8 @@ import lib.MessageUtils;
 import lib.Tuple;
 import model.Staff;
 import net.ChannelPool;
+import net.handler.analyser.AnalyserCenter;
+import net.handler.analyser.ResultAnalyser;
 import net.message.Message;
 import net.message.MessageType;
 
@@ -23,17 +25,12 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     private Message handleLogin(ChannelHandlerContext ctx, Message message) {
-        Tuple res = ControllerCenter.INSTANCE.forwardTask("login", message.getBody(), null);
-        // 登陆失败
-        if (res.size() < 2)
-            return res.get(0, Message.class);
-        // 登陆成功
-        // 加入到链接池
-        Staff staff = res.get(1, Staff.class);
-        ChannelPool.add(ctx.channel(), staff);
-        // 日志输出
-        LogUtils.info(staff.getName() + " was connected");
+        Tuple result = ControllerCenter.INSTANCE.forwardTask("login", message.getBody(), null);
 
-        return res.get(0, Message.class);
+        // 调用login的解释器
+        ResultAnalyser analyser = AnalyserCenter.getAnalyser("login");
+        analyser.process(ctx, result);
+
+        return result.get(0, Message.class);
     }
 }

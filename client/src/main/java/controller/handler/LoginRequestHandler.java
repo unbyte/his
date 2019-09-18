@@ -26,17 +26,14 @@ public class LoginRequestHandler extends RequestHandler {
 
     @Override
     protected void after(Message message) {
-        // 若失败则断开连接
-        if (message.getHeader().getStatus() != MessageUtils.SUCCESS) {
-            ClientNetCenter.INSTANCE.stop();
+        // 若失败则不改变
+        if (message.getHeader().getStatus() != MessageUtils.SUCCESS)
             return;
-        }
 
         // 若成功则改变窗口大小
         MainScene mainScene = ViewCenter.getScene("MainScene", MainScene.class);
 
         // 窗口大小1280x800（暂定
         mainScene.changeSize(1280, 800);
-        // todo 继续写登陆之后的界面变化
     }
 }

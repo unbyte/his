@@ -68,4 +68,12 @@ public class BusinessHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         LogUtils.info(cause.getMessage());
     }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        if (ChannelPool.containChannel(ctx.channel())) {
+            LogUtils.info(ChannelPool.getStaff(ctx.channel()).getName() + " has disconnected");
+            ChannelPool.removeChannel(ctx.channel());
+        }
+    }
 }
