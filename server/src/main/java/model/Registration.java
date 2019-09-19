@@ -23,12 +23,10 @@ public class Registration {
 
     private int doctorID;
 
-    private int level;
-
     private double fee;
 
     @Setter
-    private int status;
+    private byte status;
 
     /**
      * 新建一个挂号记录对象并获取
@@ -37,13 +35,12 @@ public class Registration {
      * @param time             挂号时间
      * @param departmentID     科室id
      * @param doctorID         医生id
-     * @param level            挂号等级
      * @param fee              挂号费用
      * @param status           挂号状态
      * @return 一个id自动生成的挂号记录对象
      */
-    public static Registration insert(long medicalRecordsID, long time, int departmentID, int doctorID, int level, double fee, int status) {
-        return new Registration(IDGenerator.generate(), medicalRecordsID, time, departmentID, doctorID, level, fee, status);
+    public static Registration insert(long medicalRecordsID, long time, int departmentID, int doctorID, double fee, byte status) {
+        return new Registration(IDGenerator.generate(), medicalRecordsID, time, departmentID, doctorID, fee, status);
     }
 
 }

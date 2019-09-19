@@ -6,8 +6,13 @@ const io = {
         if (!isDev) {
             return eval(`(${window.request.send(methodName, request)})`);
         } else {
-            if (methodName === 'login')
-                return mock.loginSuccess;
+            switch (methodName) {
+                case 'login':
+                    return mock.loginSuccess;
+                case 'front-desk-register-new':
+                    return mock.registerWithNewMedicalRecordSuccess;
+            }
+
         }
     },
     receive(message) {

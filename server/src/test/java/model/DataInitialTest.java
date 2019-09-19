@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class DataInitialTest {
     public static void main(String[] args) {
-        genTitles();
+        genDepartments();
         genStaff();
     }
 
@@ -17,6 +17,7 @@ public class DataInitialTest {
         departments.put(2, new Department(2, "西药药房", Department.PHARMACY));
         departments.put(3, new Department(3, "放射科", Department.MEDICAL_TECHNIQUE));
         departments.put(4, new Department(4, "外科", Department.OUTPATIENT));
+        departments.put(5, new Department(5, "消化科", Department.OUTPATIENT));
         System.out.println(JSON.toJSONString(departments));
     }
 
@@ -53,7 +54,11 @@ public class DataInitialTest {
         staffs.put(1,new Staff(1,"黑黑黑","E=mc^2",1,8)); // 中药房
         staffs.put(2,new Staff(2,"灰灰灰","E=1/2mv^2",2,8)); // 西药房
         staffs.put(3,new Staff(3,"蓝蓝蓝","E=U/d",3,4)); // 放射科
-        staffs.put(4,new Staff(4,"红红红","E=BLv",4,1)); // 初级医师
+        staffs.put(4,new Staff(4,"红红红","E=BLv",4,1)); // 主治医师
+        staffs.put(5,new Staff(5,"绿绿绿","E=BLv",4,2)); // 副主任医师
+        staffs.put(6,new Staff(6,"黄黄黄","E=BLv",4,3)); // 主任医师
+        staffs.put(7,new Staff(7,"青青青","E=BLv",5,1)); // 主治医师
+        staffs.put(8,new Staff(8,"紫紫紫","E=BLv",5,1)); // 主治医师
         System.out.println(JSON.toJSONString(staffs));
     }
 

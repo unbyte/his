@@ -34,7 +34,7 @@ public class Diagnosis {
     /*最终诊断信息*/
     private String judgement;
 
-    private int status;
+    private byte status;
 
 
     /**
@@ -50,7 +50,7 @@ public class Diagnosis {
      * @param status         诊断状态
      * @return 一个id自动生成的诊断信息对象
      */
-    public static Diagnosis insert(long registrationID, String complaint, int clazz, String disease, String suggestion, String note, String judgement, int status) {
+    public static Diagnosis insert(long registrationID, String complaint, int clazz, String disease, String suggestion, String note, String judgement, byte status) {
         return new Diagnosis(IDGenerator.generate(), registrationID, complaint, clazz, disease, suggestion, note, judgement, status);
     }
 

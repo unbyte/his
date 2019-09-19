@@ -25,7 +25,7 @@ public class Prescription {
     /*费用*/
     private double fee;
 
-    private int status;
+    private byte status;
 
 
     /**
@@ -38,7 +38,7 @@ public class Prescription {
      * @param status         状态id
      * @return id自动生成的处方对象，若药物超出5种则返回null
      */
-    public static Prescription insert(long registrationID, int clazz, HashSet<PrescriptionItem> medicineList, double fee, int status) {
+    public static Prescription insert(long registrationID, int clazz, HashSet<PrescriptionItem> medicineList, double fee, byte status) {
         // 根据国家规定，每个处方中最多只能包含5种药品，如果超过需要新增处方
         // todo 更详细的检验
         if (medicineList.size() > 5)

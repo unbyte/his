@@ -90,7 +90,7 @@
                 this.$refs.loginForm.validate().then((result) => {
                     if (result) {
                         let response = io.post('login', JSON.stringify(this.loginForm));
-                        if (response.status === 0) {
+                        if (!response.status) {
                             // 登陆成功
                             this.$store.commit("setGlobalData", response.msg);
                             this.$router.push(`/${this.$utils.departmentClazzToRouteName(response.msg.departments[response.msg.user.department].clazz)}/main`);
@@ -167,7 +167,7 @@
 
     .buttons {
         position: absolute;
-        bottom: 0px;
+        bottom: 0;
         margin: 10px;
         width: 120px;
     }

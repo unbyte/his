@@ -28,7 +28,7 @@ public class InspectionRecord {
     /*检查结果*/
     private String result;
 
-    private int status;
+    private byte status;
 
     /**
      * 新建一个检查记录对象并获取
@@ -42,7 +42,7 @@ public class InspectionRecord {
      * @param status         状态id
      * @return 一个id自动生成的检查记录对象
      */
-    public static InspectionRecord insert(long registrationID, long time, int item, String part, String request, String result, int status) {
+    public static InspectionRecord insert(long registrationID, long time, int item, String part, String request, String result, byte status) {
         return new InspectionRecord(IDGenerator.generate(), registrationID, time, item, part, request, result, status);
     }
 }

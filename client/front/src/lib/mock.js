@@ -8,7 +8,11 @@ const mock = {
                 3: {"fee": 100.0, "limit": 40, "id": 3}
             },
             "doctors": {
-                4: {"name": "红红红", "id": 4, "department": 4, "title": 1}
+                4: {"name": "红红红", "id": 4, "department": 4, "title": 1},
+                5: {"name": "绿绿绿", "id": 5, "department": 4, "title": 2},
+                6: {"name": "黄黄黄", "id": 6, "department": 4, "title": 3},
+                7: {"name": "青青青", "id": 7, "department": 5, "title": 1},
+                8: {"name": "紫紫紫", "id": 8, "department": 5, "title": 1}
             },
             "titles": {
                 0: {"registrationLevel": 0, "name": "住院医师", "id": 0},
@@ -25,15 +29,20 @@ const mock = {
                 11: {"registrationLevel": 0, "name": "主任药师", "id": 11},
                 12: {"registrationLevel": 0, "name": "前台接诊", "id": 12}
             },
-            "filteredDepartments": {
+            "departments": {
                 0: {"name": "前台", "id": 0, "clazz": 3},
                 1: {"name": "中药药房", "id": 1, "clazz": 1},
                 2: {"name": "西药药房", "id": 2, "clazz": 1},
                 3: {"name": "放射科", "id": 3, "clazz": 2},
-                4: {"name": "外科", "id": 4, "clazz": 0}
+                4: {"name": "外科", "id": 4, "clazz": 0},
+                5: {"name": "消化科", "id": 5, "clazz": 0}
             },
             "user": {"name": "白白白", "title": 12, "department": 0}
         }, "status": 0
+    },
+    registerWithNewMedicalRecordSuccess: {
+        "msg": {"registrationID": 1568916278621, "medicalRecordID": 1568916278620},
+        "status": 0
     }
 
 

@@ -13,23 +13,38 @@ const utils = {
                 return "front-desk";
         }
     },
-    departmentIDToName(departmentID) {
-        return store.state.global.departments[departmentID].name;
+    departmentIDToObject(departmentID) {
+        return store.state.global.departments[departmentID];
     },
-    titleIDToName(titleID) {
-        return store.state.global.titles[titleID].name;
+    titleIDToObject(titleID){
+        return store.state.global.titles[titleID];
+    },
+    registrationLevelIDToObject(registrationLevelID){
+        return store.state.global.registrationLevels[registrationLevelID];
+    },
+    titleIDToLimit(titleID){
+        return this.registrationLevelIDToObject(this.titleIDToObject(titleID).registrationLevel).limit;
+    },
+    titleIDToFee(titleID){
+        return this.registrationLevelIDToObject(this.titleIDToObject(titleID).registrationLevel).fee;
     },
     getCurrentName() {
         return store.state.global.user.name;
     },
     getCurrentTitleName() {
-        return this.titleIDToName(store.state.global.user.title);
+        return this.titleIDToObject(store.state.global.user.title).name;
     },
     getCurrentDepartmentName() {
-        return this.departmentIDToName(store.state.global.user.department);
+        return this.departmentIDToObject(store.state.global.user.department).name;
     },
-    isLoggedIn(){
+    isLoggedIn() {
         return !!store.state.global.user
+    },
+    departmentClazzMap: {
+        OUTPATIENT: 0,
+        PHARMACY: 1,
+        MEDICAL_TECHNIQUE: 2,
+        FRONT_DESK: 3
     }
 }
 

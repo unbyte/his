@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import lib.Tuple;
 import model.Staff;
 
-@FunctionalInterface
 public interface Controller {
     /**
      * 返回的结果Tuple规约如下<br/>
@@ -12,5 +11,5 @@ public interface Controller {
      * 若需要返回额外对象，需要按对象类型首字母由小到大顺序填入
      *
      * */
-    Tuple process(JSONObject params, Staff user);
+    Tuple process(String methodName,JSONObject params, Staff user);
 }

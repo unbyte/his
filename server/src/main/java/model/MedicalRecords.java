@@ -19,7 +19,7 @@ public class MedicalRecords {
 
     private long birthDate;
     /*0 男 1 女*/
-    private int gender;
+    private byte gender;
 
     private String idCard;
 
@@ -51,7 +51,7 @@ public class MedicalRecords {
      * @param currentIllnessTreatment 现病治疗情况
      * @return 一个病历号自动生成的病历对象
      */
-    public static MedicalRecords insert(String name, long birthDate, int gender, String idCard, String address, String pastHistory, String presentIllnessHistory, String allergyHistory, String currentIllnessTreatment) {
+    public static MedicalRecords insert(String name, long birthDate, byte gender, String idCard, String address, String pastHistory, String presentIllnessHistory, String allergyHistory, String currentIllnessTreatment) {
         return new MedicalRecords(IDGenerator.generate(), name, birthDate, gender, idCard, address, pastHistory, presentIllnessHistory, allergyHistory, currentIllnessTreatment);
     }
 }

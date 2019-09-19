@@ -29,7 +29,7 @@ public class LoginController implements Controller {
      * }
      **/
     @Override
-    public Tuple process(JSONObject params, Staff user) {
+    public Tuple process(String methodName, JSONObject params, Staff user) {
         // 判断是否手动构造业务login请求
         if (user != null)
             return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "禁止重复登陆", MessageType.CONNECT_RES));

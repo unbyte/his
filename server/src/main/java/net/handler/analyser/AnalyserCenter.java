@@ -10,6 +10,7 @@ public class AnalyserCenter {
     private static HashMap<String, ResultAnalyser> analysers = new HashMap<>();
 
     static {
+        // todo 在这里注册analyser
         analysers.put("default", ((ctx, result) -> {
         }));
         analysers.put("login",((ctx, result) -> {

@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" :class="switchClass()">
         <router-view>
         </router-view>
     </div>
@@ -9,7 +9,11 @@
 
     export default {
         name: 'app',
-        components: {}
+        methods: {
+            switchClass() {
+                return !isDev ? 'font-color-fix' : '';
+            }
+        },
     }
 </script>
 
@@ -36,8 +40,17 @@
         font-size: 14px !important;
     }
 
+
     /*字体透明颜色渲染有问题，覆盖掉透明颜色的字体*/
-    .mu-tabs-inverse, >>> .mu-form-item, >>> .mu-step-label.disabled {
+    .font-color-fix .mu-tabs-inverse, /*Tab头*/
+    .font-color-fix .mu-form-item, /*表单*/
+    .font-color-fix .mu-step-label.disabled, /*Step*/
+    .font-color-fix .mu-table th, /*表格头*/
+    .mu-day-button:not(.selected):not(:hover) .mu-day-button-text:not(:hover), /*日期选择器*/
+    .font-color-fix .mu-input-help, /*编辑框下边的提示文本*/
+    .font-color-fix .mu-item-action, /*清单右边*/
+    .font-color-fix .mu-item-sub-title /*清单副标题*/
+    {
         color: rgba(0, 0, 0, 0.9) !important;
     }
 

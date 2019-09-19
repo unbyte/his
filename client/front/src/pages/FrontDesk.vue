@@ -10,7 +10,7 @@
                 <mu-tab to="/front-desk/refund">退费</mu-tab>
                 <mu-tab to="/front-desk/query">费用查询</mu-tab>
             </mu-tabs>
-            <router-view></router-view>
+            <router-view v-if="isRouterAlive"></router-view>
             <mu-chip class="name-chip" color="blue300" delete @delete="exit">
                 {{user.name}} 【{{user.title}}】
             </mu-chip>
@@ -30,7 +30,8 @@
                     name: '',
                     title: '',
                     department: ''
-                }
+                },
+                isRouterAlive: true
             }
         },
         mounted() {
@@ -38,7 +39,6 @@
                 this.$router.push('/');
                 return;
             }
-
             this.user.name = this.$utils.getCurrentName();
             this.user.title = this.$utils.getCurrentTitleName();
             this.user.department = this.$utils.getCurrentDepartmentName();
@@ -49,9 +49,17 @@
         methods: {
             exit() {
                 lifecycle.exit();
+            },
+            reload () {
+                this.isRouterAlive = false
+                this.$nextTick(() => (this.isRouterAlive = true))
             }
         },
-        components: {}
+        provide () {
+            return {
+                reload: this.reload
+            }
+        },
     }
 </script>
 
@@ -69,6 +77,7 @@
         min-width: 1280px;
         height: 800px;
         padding: 0 !important;
+        border: 1px solid #ccc;
     }
 
     .name-chip {
@@ -77,6 +86,14 @@
         top: 8px;
         z-index: 999;
     }
+
+    /*为了各个子页面单独配，直接设置一个class*/
+    .tab-page {
+        position: relative;
+        height: 100%;
+        width: 100%;
+    }
+
 
     /*强制取消掉自适应，防止宽度改变，下划线长度不够*/
     .mu-tab {
