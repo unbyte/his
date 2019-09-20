@@ -16,16 +16,19 @@ const utils = {
     departmentIDToObject(departmentID) {
         return store.state.global.departments[departmentID];
     },
-    titleIDToObject(titleID){
+    titleIDToObject(titleID) {
         return store.state.global.titles[titleID];
     },
-    registrationLevelIDToObject(registrationLevelID){
+    registrationLevelIDToObject(registrationLevelID) {
         return store.state.global.registrationLevels[registrationLevelID];
     },
-    titleIDToLimit(titleID){
+    doctorIDToObject(doctorID) {
+        return store.state.global.doctors[doctorID];
+    },
+    titleIDToLimit(titleID) {
         return this.registrationLevelIDToObject(this.titleIDToObject(titleID).registrationLevel).limit;
     },
-    titleIDToFee(titleID){
+    titleIDToFee(titleID) {
         return this.registrationLevelIDToObject(this.titleIDToObject(titleID).registrationLevel).fee;
     },
     getCurrentName() {
@@ -45,6 +48,14 @@ const utils = {
         PHARMACY: 1,
         MEDICAL_TECHNIQUE: 2,
         FRONT_DESK: 3
+    },
+    statusNameMap: {
+        0: '暂存',
+        1: '未付费',
+        2: '未消费',
+        3: '已消费',
+        4: '已作废',
+        5: '已退费'
     }
 }
 

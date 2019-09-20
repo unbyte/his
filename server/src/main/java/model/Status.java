@@ -1,7 +1,7 @@
 package model;
 
 /**
- * 各项目状态表示规约
+ * 项目状态
  */
 public class Status {
     /*

@@ -89,7 +89,7 @@
             submit() {
                 this.$refs.loginForm.validate().then((result) => {
                     if (result) {
-                        let response = io.post('login', JSON.stringify(this.loginForm));
+                        let response = io.post('login', this.loginForm);
                         if (!response.status) {
                             // 登陆成功
                             this.$store.commit("setGlobalData", response.msg);

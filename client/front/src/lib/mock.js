@@ -41,8 +41,38 @@ const mock = {
         }, "status": 0
     },
     registerWithNewMedicalRecordSuccess: {
-        "msg": {"registrationID": 1568916278621, "medicalRecordID": 1568916278620},
+        "msg": {"registrationID": 1568916278621, "medicalRecordID": 1568916278620, "cost": 100},
         "status": 0
+    },
+    registerWithExistMedicalRecordSuccess: {
+        "msg": {"registrationID": 1568916278621, "medicalRecordID": 1568916278620, "cost": 100},
+        "status": 0
+    },
+    cancelSuccess: {
+        "msg": "退号成功",
+        "status": 0
+    },
+    queryMedicalRecordByIDSuccess: {
+        "msg": {
+            "birthday": 1558916278620,
+            "address": "北京",
+            "gender": 0,
+            "name": "爱新觉罗",
+            "id": 1568976155713,
+            "IDNumber": "011110011110011110"
+        }, "status": 0
+    },
+    queryCancelableByMedicalRecordID: {
+        "msg": [
+            {
+                "id": 100,
+                "time": 1569005142057,
+                "doctor": 4,
+                "department": 4,
+                "cost": 21,
+                "status": 1
+            }
+        ], "status": 0
     }
 
 

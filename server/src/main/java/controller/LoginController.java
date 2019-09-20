@@ -11,7 +11,7 @@ import model.Staff;
 import net.ChannelPool;
 import net.message.MessageType;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -59,7 +59,7 @@ public class LoginController implements Controller {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.FAIL, "账号内部错误", MessageType.CONNECT_RES));
 
         // 登陆成功，构造返回消息体
-        HashMap<Integer, Department> departments = database.select("departments", Integer.class, Department.class).getRaw();
+        Map<Integer, Department> departments = database.select("departments", Integer.class, Department.class).getRaw();
 
         JSONObject msg = new JSONObject().fluentPut("user",
                 new JSONObject().fluentPut("name", staff.getName())

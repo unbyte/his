@@ -15,6 +15,7 @@ public enum ControllerCenter {
     private HashMap<String, Controller> controllers = new HashMap<>();
 
     public Tuple forwardTask(String methodName, JSONObject params, Staff user) {
+        // 获得对应的controller
         Controller controller = controllers.entrySet().stream()
                 .filter(i -> methodName.startsWith(i.getKey()))
                 .map(Map.Entry::getValue)

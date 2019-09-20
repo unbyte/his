@@ -9,6 +9,10 @@ import model.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 数据库
@@ -17,31 +21,32 @@ public enum Database {
     INSTANCE;
 
     // 病历
-    private HashMap<Long, MedicalRecords> medicalRecords = new HashMap<>();
+    private Map<Long, MedicalRecords> medicalRecords = new ConcurrentHashMap<>();
     // 已经退费/完成的挂号记录，供查询
-    private HashMap<Long, Registration> registrations = new HashMap<>();
+    private Map<Long, Registration> registrations = new ConcurrentHashMap<>();
     // 尚未完成/退费的挂号记录，供操作
-    private HashMap<Long, Registration> newRegistrations = new HashMap<>();
+    private Map<Long, Registration> newRegistrations = new ConcurrentHashMap<>();
     // 诊断
-    private HashMap<Long, Diagnosis> diagnoses = new HashMap<>();
+    private Map<Long, Diagnosis> diagnoses = new ConcurrentHashMap<>();
     // 检查记录
-    private HashMap<Long, InspectionRecord> inspectionRecords = new HashMap<>();
+    private Map<Long, InspectionRecord> inspectionRecords = new ConcurrentHashMap<>();
     // 药方
-    private HashMap<Long, Prescription> prescriptions = new HashMap<>();
+    private Map<Long, Prescription> prescriptions = new ConcurrentHashMap<>();
     // 员工
-    private HashMap<Integer, Staff> staffs = new HashMap<>();
+    private Map<Integer, Staff> staffs = new ConcurrentHashMap<>();
     // 检查项目
-    private HashMap<Integer, InspectionItem> inspectionItems = new HashMap<>();
+    private Map<Integer, InspectionItem> inspectionItems = new ConcurrentHashMap<>();
     // 药物
-    private HashMap<Integer, Medicine> medicines = new HashMap<>();
+    private Map<Integer, Medicine> medicines = new ConcurrentHashMap<>();
     // 疾病
-    private HashMap<Integer, Disease> diseases = new HashMap<>();
+    private Map<Integer, Disease> diseases = new ConcurrentHashMap<>();
     // 挂号等级
-    private HashMap<Integer, RegistrationLevel> registrationLevels = new HashMap<>();
+    private Map<Integer, RegistrationLevel> registrationLevels = new ConcurrentHashMap<>();
     // 科室
-    private HashMap<Integer, Department> departments = new HashMap<>();
+    private Map<Integer, Department> departments = new ConcurrentHashMap<>();
     // 职称
-    private HashMap<Integer, Title> titles = new HashMap<>();
+    private Map<Integer, Title> titles = new ConcurrentHashMap<>();
+
 
 
     // 因为极少更新，所以缓存成json字符串
@@ -54,7 +59,7 @@ public enum Database {
 
 
     // 存储数据与文件的映射关系
-    private HashMap<String, Path> paths = new HashMap<>() {
+    private final HashMap<String, Path> paths = new HashMap<>() {
         {
             String pathPrefix = "./server/data";
             put("medicalRecords", Paths.get(pathPrefix, "medicalRecords.dat"));
@@ -75,7 +80,7 @@ public enum Database {
 
 
     // 存储名称与数据的映射关系
-    private HashMap<String, HashMap> fields = new HashMap<>() {
+    private final HashMap<String, Map> fields = new HashMap<>() {
         {
             put("medicalRecords", medicalRecords);
             put("registrations", registrations);
@@ -94,6 +99,9 @@ public enum Database {
     };
 
     private HashMap<String, String> caches = new HashMap<>();
+
+    // 用于持久化的定时任务
+    private final Timer persistTimer = new Timer();
 
     /**
      * 创建数据对象
@@ -141,36 +149,36 @@ public enum Database {
     public void boot() {
         LogUtils.info("Database is booting");
 
-        medicalRecords.putAll(FileUtils.loadHashMapFromFile(paths.get("medicalRecords"), Long.class, MedicalRecords.class));
+        medicalRecords.putAll(FileUtils.loadMapFromFile(paths.get("medicalRecords"), Long.class, MedicalRecords.class));
 
-        registrations.putAll(FileUtils.loadHashMapFromFile(paths.get("registrations"), Long.class, Registration.class));
+        registrations.putAll(FileUtils.loadMapFromFile(paths.get("registrations"), Long.class, Registration.class));
 
-        newRegistrations.putAll(FileUtils.loadHashMapFromFile(paths.get("newRegistrations"), Long.class, Registration.class));
+        newRegistrations.putAll(FileUtils.loadMapFromFile(paths.get("newRegistrations"), Long.class, Registration.class));
 
-        diagnoses.putAll(FileUtils.loadHashMapFromFile(paths.get("diagnoses"), Long.class, Diagnosis.class));
+        diagnoses.putAll(FileUtils.loadMapFromFile(paths.get("diagnoses"), Long.class, Diagnosis.class));
 
-        inspectionRecords.putAll(FileUtils.loadHashMapFromFile(paths.get("inspectionRecords"), Long.class, InspectionRecord.class));
+        inspectionRecords.putAll(FileUtils.loadMapFromFile(paths.get("inspectionRecords"), Long.class, InspectionRecord.class));
 
-        prescriptions.putAll(FileUtils.loadHashMapFromFile(paths.get("prescriptions"), Long.class, Prescription.class));
+        prescriptions.putAll(FileUtils.loadMapFromFile(paths.get("prescriptions"), Long.class, Prescription.class));
 
-        staffs.putAll(FileUtils.loadHashMapFromFile(paths.get("staffs"), Integer.class, Staff.class));
+        staffs.putAll(FileUtils.loadMapFromFile(paths.get("staffs"), Integer.class, Staff.class));
 
-        inspectionItems.putAll(FileUtils.loadHashMapFromFile(paths.get("inspectionItems"), Integer.class, InspectionItem.class));
+        inspectionItems.putAll(FileUtils.loadMapFromFile(paths.get("inspectionItems"), Integer.class, InspectionItem.class));
         inspectionItemsCache = FileUtils.readJSONStringFromFile(paths.get("inspectionItems"), "{}");
 
-        departments.putAll(FileUtils.loadHashMapFromFile(paths.get("departments"), Integer.class, Department.class));
+        departments.putAll(FileUtils.loadMapFromFile(paths.get("departments"), Integer.class, Department.class));
         departmentsCache = FileUtils.readJSONStringFromFile(paths.get("departments"), "{}");
 
-        medicines.putAll(FileUtils.loadHashMapFromFile(paths.get("medicines"), Integer.class, Medicine.class));
+        medicines.putAll(FileUtils.loadMapFromFile(paths.get("medicines"), Integer.class, Medicine.class));
         medicinesCache = FileUtils.readJSONStringFromFile(paths.get("medicines"), "{}");
 
-        diseases.putAll(FileUtils.loadHashMapFromFile(paths.get("diseases"), Integer.class, Disease.class));
+        diseases.putAll(FileUtils.loadMapFromFile(paths.get("diseases"), Integer.class, Disease.class));
         diseasesCache = FileUtils.readJSONStringFromFile(paths.get("diseases"), "{}");
 
-        registrationLevels.putAll(FileUtils.loadHashMapFromFile(paths.get("registrationLevels"), Integer.class, RegistrationLevel.class));
+        registrationLevels.putAll(FileUtils.loadMapFromFile(paths.get("registrationLevels"), Integer.class, RegistrationLevel.class));
         registrationLevelsCache = FileUtils.readJSONStringFromFile(paths.get("registrationLevels"), "{}");
 
-        titles.putAll(FileUtils.loadHashMapFromFile(paths.get("titles"), Integer.class, Title.class));
+        titles.putAll(FileUtils.loadMapFromFile(paths.get("titles"), Integer.class, Title.class));
         titlesCache = FileUtils.readJSONStringFromFile(paths.get("titles"), "{}");
 
         // 存储缓存引用
@@ -180,6 +188,15 @@ public enum Database {
         caches.put("registrationLevels", registrationLevelsCache);
         caches.put("departments", departmentsCache);
         caches.put("titles", titlesCache);
+
+        // 开始定时持久化数据
+        // todo 有时间再加一个到达一定增量调用持久化
+        persistTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                persist();
+            }
+        },30_000,30_000);
 
         LogUtils.info("Database booted successfully");
     }
@@ -207,16 +224,14 @@ public enum Database {
         // 是否有写入失败的情况
         boolean flag;
 
-        LogUtils.info("Saving data...");
-
-        // 由HashMap写入到文件
-        flag = FileUtils.saveHashMapToFile(paths.get("medicalRecords"), medicalRecords, false);
-        flag &= FileUtils.saveHashMapToFile(paths.get("registrations"), registrations, false);
-        flag &= FileUtils.saveHashMapToFile(paths.get("newRegistrations"), newRegistrations, false);
-        flag &= FileUtils.saveHashMapToFile(paths.get("diagnoses"), diagnoses, false);
-        flag &= FileUtils.saveHashMapToFile(paths.get("inspectionRecords"), inspectionRecords, false);
-        flag &= FileUtils.saveHashMapToFile(paths.get("prescriptions"), prescriptions, false);
-        flag &= FileUtils.saveHashMapToFile(paths.get("staffs"), staffs, false);
+        // 由Map写入到文件
+        flag = FileUtils.saveMapToFile(paths.get("medicalRecords"), medicalRecords, false);
+        flag &= FileUtils.saveMapToFile(paths.get("registrations"), registrations, false);
+        flag &= FileUtils.saveMapToFile(paths.get("newRegistrations"), newRegistrations, false);
+        flag &= FileUtils.saveMapToFile(paths.get("diagnoses"), diagnoses, false);
+        flag &= FileUtils.saveMapToFile(paths.get("inspectionRecords"), inspectionRecords, false);
+        flag &= FileUtils.saveMapToFile(paths.get("prescriptions"), prescriptions, false);
+        flag &= FileUtils.saveMapToFile(paths.get("staffs"), staffs, false);
 
 
         // 由缓存成的字符串直接写成文件
@@ -227,7 +242,7 @@ public enum Database {
         flag &= FileUtils.writeStringToFile(paths.get("registrationLevels"), registrationLevelsCache, false);
         flag &= FileUtils.writeStringToFile(paths.get("titles"), titlesCache, false);
         if (!flag)
-            LogUtils.warn("Some of data has been saved");
+            LogUtils.warn("Failed to save some data, please check");
         else
             LogUtils.info("Data has been saved completely");
         return flag;

@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 文件操作工具类
@@ -93,16 +94,16 @@ public class FileUtils {
 
 
     /**
-     * 从文件中读入一个HashMap类型的对象，若读取失败则返回空HashMap
+     * 从文件中读入一个Map类型的对象，若读取失败则返回空HashMap
      *
-     * @param <K>       HashMap键的类型
-     * @param <V>       HashMap值的类型
+     * @param <K>       Map键的类型
+     * @param <V>       Map值的类型
      * @param path      Path对象
-     * @param keyType   HashMap键的类型
-     * @param valueType HashMap值的类型
-     * @return HashMap对象
+     * @param keyType   Map键的类型
+     * @param valueType Map值的类型
+     * @return Map对象
      */
-    public static <K, V> HashMap<K, V> loadHashMapFromFile(Path path, Class<K> keyType, Class<V> valueType) {
+    public static <K, V> Map<K, V> loadMapFromFile(Path path, Class<K> keyType, Class<V> valueType) {
         if (!ensureFile(path))
             return new HashMap<>();
         String jsonString = FileUtils.readJSONStringFromFile(path, "{}");
@@ -111,16 +112,16 @@ public class FileUtils {
     }
 
     /**
-     * 将一个HashMap以json的形式存储到文件中
+     * 将一个Map以json的形式存储到文件中
      *
      * @param path       path对象
-     * @param hashMap    将要保存的hashmap对象
+     * @param map    将要保存的map对象
      * @param appendMode 是否以追加在文件末尾的形式写入
      * @return 是否写入成功
      */
-    public static boolean saveHashMapToFile(Path path, HashMap hashMap, boolean appendMode) {
+    public static boolean saveMapToFile(Path path, Map map, boolean appendMode) {
         if (!ensureFile(path))
             return false;
-        return FileUtils.writeStringToFile(path, JSON.toJSONString(hashMap), appendMode);
+        return FileUtils.writeStringToFile(path, JSON.toJSONString(map), appendMode);
     }
 }

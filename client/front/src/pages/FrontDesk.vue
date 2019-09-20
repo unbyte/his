@@ -5,13 +5,13 @@
                      text-color="rgba(0, 0, 0, .54)">
                 <mu-tab to="/front-desk/main">首页</mu-tab>
                 <mu-tab to="/front-desk/register">挂号</mu-tab>
-                <mu-tab to="/front-desk/unregister">退号</mu-tab>
+                <mu-tab to="/front-desk/cancel">退号</mu-tab>
                 <mu-tab to="/front-desk/charge">收费</mu-tab>
                 <mu-tab to="/front-desk/refund">退费</mu-tab>
                 <mu-tab to="/front-desk/query">费用查询</mu-tab>
             </mu-tabs>
             <router-view v-if="isRouterAlive"></router-view>
-            <mu-chip class="name-chip" color="blue300" delete @delete="exit">
+            <mu-chip class="name-chip" color="primary" delete @delete="exit">
                 {{user.name}} 【{{user.title}}】
             </mu-chip>
         </mu-container>
@@ -50,12 +50,12 @@
             exit() {
                 lifecycle.exit();
             },
-            reload () {
+            reload() {
                 this.isRouterAlive = false
                 this.$nextTick(() => (this.isRouterAlive = true))
             }
         },
-        provide () {
+        provide() {
             return {
                 reload: this.reload
             }
@@ -98,6 +98,11 @@
     /*强制取消掉自适应，防止宽度改变，下划线长度不够*/
     .mu-tab {
         min-width: 160px !important;
+    }
+
+    /*改变字体大小*/
+    #front-desk-page >>> .mu-tab-wrapper, .mu-form-item {
+        font-size: 15px;
     }
 
 </style>

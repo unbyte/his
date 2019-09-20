@@ -1,7 +1,7 @@
 package database;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @FunctionalInterface
 public interface SelectFilter<K, T> {
@@ -11,5 +11,5 @@ public interface SelectFilter<K, T> {
      * @param data   数据库中的原始表单
      * @param result 存放结果的集合
      */
-    void filter(HashMap<K, T> data, List<T> result);
+    void filter(Map<K, T> data, List<T> result);
 }

@@ -3,6 +3,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import view.MainScene;
@@ -30,6 +31,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setResizable(false);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
 
         // 取消掉自动关闭
         Platform.setImplicitExit(false);

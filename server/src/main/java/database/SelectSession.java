@@ -2,10 +2,7 @@ package database;
 
 import com.alibaba.fastjson.JSON;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * 数据查询会话
@@ -13,7 +10,7 @@ import java.util.List;
 public class SelectSession<K,T> {
     // todo 为了安全深拷贝所有的结果
     private List<T> result = new ArrayList<>();
-    private HashMap<K,T> originData;
+    private Map<K,T> originData;
 
     /**
      * 筛选操作
@@ -27,11 +24,11 @@ public class SelectSession<K,T> {
     }
 
     /**
-     * 获取原始HashMap数据
+     * 获取原始Map数据
      *
      * @return 原始数据
      */
-    public  HashMap<K, T> getRaw() {
+    public  Map<K, T> getRaw() {
         return originData;
     }
     /**
@@ -93,7 +90,7 @@ public class SelectSession<K,T> {
         return result.get(0);
     }
 
-    public SelectSession(HashMap<K,T> originData) {
+    public SelectSession(Map<K,T> originData) {
         this.originData = originData;
     }
 

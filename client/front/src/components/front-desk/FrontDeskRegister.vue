@@ -32,7 +32,7 @@
                 </mu-stepper>
             </mu-col>
             <mu-col span="1">
-                <mu-button class="demo-step-button" color="primary" @click="handleNext"
+                <mu-button color="primary" @click="handleNext"
                 > {{nextButtonTitle}}
                 </mu-button>
             </mu-col>
@@ -48,9 +48,10 @@
 
             <div v-show="!controls.newMedicalRecord">
                 <mu-form ref="existForm" :model="existForm" label-position="right" label-width="100">
-                    <mu-form-item label="病历号" prop="id">
-                        <mu-text-field max-length="13" v-model.number="existForm.medicalRecordID"
-                                       prop="id"></mu-text-field>
+                    <mu-form-item label="病历号" prop="medicalRecordID" :rules="formValidator.medicalRecordIDRules">
+                        <mu-text-field max-length="13" v-model="existForm.medicalRecordID"
+                                       :oninput="existForm.medicalRecordID = existForm.medicalRecordID.replace(/[^\d]/g, '')"
+                                       prop="medicalRecordID"></mu-text-field>
                     </mu-form-item>
                 </mu-form>
             </div>
@@ -83,6 +84,42 @@
                     </mu-form-item>
                 </mu-form>
             </div>
+        </mu-container>
+
+        <!--信息确认-->
+        <mu-container v-show="controls.activeStep === 1" class="step-content">
+            <mu-form :model="medicalRecordInfo" label-position="right" label-width="100">
+                <mu-form-item prop="name" label="病历号">
+                    <mu-text-field prop="name" :value="medicalRecordInfo.id" disabled></mu-text-field>
+                </mu-form-item>
+                <mu-form-item prop="name" label="姓名">
+                    <mu-text-field prop="name" :value="medicalRecordInfo.name" disabled></mu-text-field>
+                </mu-form-item>
+                <mu-form-item prop="gender" label="性别">
+                    <mu-select :value="medicalRecordInfo.gender" prop="gender" disabled>
+                        <mu-option label="男" :value="0"></mu-option>
+                        <mu-option label="女" :value="1"></mu-option>
+                    </mu-select>
+                </mu-form-item>
+                <mu-form-item prop="birthday" label="出生日期">
+                    <mu-date-input prop="birthday" :value="medicalRecordInfo.birthday" type="date" container="dialog"
+                                   full-width
+                                   :max-date="today"
+                                   actions
+                                   disabled></mu-date-input>
+                </mu-form-item>
+                <mu-form-item prop="age" label="年龄">
+                    <mu-text-field prop="age" :value="getAge(medicalRecordInfo.birthday)" disabled></mu-text-field>
+                </mu-form-item>
+                <mu-form-item prop="IDNumber" label="身份证号码">
+                    <mu-text-field :value="medicalRecordInfo.IDNumber" max-length="18" prop="IDNumber"
+                                   disabled></mu-text-field>
+                </mu-form-item>
+                <mu-form-item prop="address" label="家庭住址">
+                    <mu-text-field :value="medicalRecordInfo.address" max-length="50" prop="address"
+                                   disabled></mu-text-field>
+                </mu-form-item>
+            </mu-form>
         </mu-container>
 
         <!--挂号-->
@@ -141,7 +178,7 @@
                     </mu-col>
 
                     <mu-col span="3" offset="1">
-                        <mu-list textline="two-line">
+                        <mu-list textline="two-line" class="select-info">
                             <mu-list-item button :ripple="false">
                                 <mu-list-item-content>
                                     <mu-list-item-title>{{registrationForm.department === -1?
@@ -193,13 +230,73 @@
 
         </mu-container>
 
-        <mu-container v-show="controls.activeStep === 3" class="step-content">
+        <mu-container v-if="controls.activeStep === 3" class="step-content">
             <mu-row>
-                <mu-col span="4" offset="2">
-                    <p> 病历号 {{responseInfo.medicalRecordID}}</p>
-                </mu-col>
-                <mu-col span="4" offset="2">
+                <mu-col span="6" offset="3">
+                    <mu-list class="success-info">
+                        <mu-list-item :ripple="false">
+                            <mu-list-item-content>
+                                <mu-list-item-title>病历号
+                                </mu-list-item-title>
+                            </mu-list-item-content>
+                            <mu-list-item-action>
+                                <p style="display: flex;align-items: center;">
+                                    <mu-badge content="New" color="primary" v-if="controls.newMedicalRecord"></mu-badge>
+                                    {{responseInfo.medicalRecordID}}
+                                </p>
+                            </mu-list-item-action>
+                        </mu-list-item>
+                        <mu-list-item :ripple="false">
+                            <mu-list-item-content>
+                                <mu-list-item-title>挂号时间
+                                </mu-list-item-title>
+                            </mu-list-item-content>
+                            <mu-list-item-action>
+                                {{new Date(responseInfo.registrationID).toLocaleString('en')}}
+                            </mu-list-item-action>
+                        </mu-list-item>
 
+                        <mu-list-item :ripple="false">
+
+                            <mu-list-item-content>
+                                <mu-list-item-title>
+                                    科室
+                                </mu-list-item-title>
+                            </mu-list-item-content>
+                            <mu-list-item-action>
+                                {{filteredDepartments[registrationForm.department].name}}
+                            </mu-list-item-action>
+                        </mu-list-item>
+
+                        <mu-list-item :ripple="false">
+                            <mu-list-item-content>
+                                <mu-list-item-title>医生
+                                </mu-list-item-title>
+                            </mu-list-item-content>
+                            <mu-list-item-action>
+                                {{registrationForm.doctor.name}}
+                            </mu-list-item-action>
+                        </mu-list-item>
+                        <mu-list-item :ripple="false">
+                            <mu-list-item-content>
+                                <mu-list-item-title>挂号级别
+                                </mu-list-item-title>
+                            </mu-list-item-content>
+                            <mu-list-item-action>
+                                {{filteredTitles[registrationForm.title].name}}
+                            </mu-list-item-action>
+                        </mu-list-item>
+
+                        <mu-list-item :ripple="false">
+                            <mu-list-item-content>
+                                <mu-list-item-title>应缴金额
+                                </mu-list-item-title>
+                            </mu-list-item-content>
+                            <mu-list-item-action>
+                                ￥{{responseInfo.cost.toFixed(2)}}
+                            </mu-list-item-action>
+                        </mu-list-item>
+                    </mu-list>
                 </mu-col>
             </mu-row>
         </mu-container>
@@ -210,7 +307,7 @@
 
     export default {
         name: "FrontDeskRegister",
-        inject:  ['reload'],
+        inject: ['reload'],
         data() {
             return {
                 newForm: {
@@ -235,6 +332,9 @@
                         validate: val => !!val, message: '必须不为空'
                     }, {
                         validate: val => /(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(val), message: '格式不正确，身份证为18位号码'
+                    }],
+                    medicalRecordIDRules: [{
+                        validate: val => val.length === 13, message: '病历号应为13位数字'
                     }]
                 },
                 /*用于存放用已有的病历号获取到的病历对象*/
@@ -266,7 +366,8 @@
                 ],
                 responseInfo: {
                     medicalRecordID: null,
-                    registrationID: null
+                    registrationID: null,
+                    cost: 0
                 }
             }
         },
@@ -310,7 +411,7 @@
                     address: ''
                 };
                 this.existForm = {
-                    medicalRecordID: null
+                    medicalRecordID: ''
                 };
             },
             getAge(birthday) {
@@ -335,11 +436,32 @@
                             this.controls.activeStep = 2;
                     })
                 else {
-                    if (this.existForm.medicalRecordID > 1e12) {
-                        // todo 发送请求病历对象请求，返回后进入信息确认
-                        this.controls.activeStep = 1;
-                    } else
-                        this.$toast.info("病历号格式错误，应为13位数字");
+                    this.$refs.existForm.validate().then((result) => {
+                        if (result) {
+                            let response = io.post('query-medical-record-by-id', {
+                                method: 'query-medical-record-by-id',
+                                params: {id: parseInt(this.existForm.medicalRecordID)}
+                            });
+
+                            // 若失败
+                            if (response.status) {
+                                this.$toast.message(response.msg);
+                                return;
+                            }
+                            // 成功则挂载病历对象信息
+                            let {id, name, gender, birthday, IDNumber, address} = response.msg;
+                            this.medicalRecordInfo = {
+                                id,
+                                name,
+                                gender,
+                                birthday: new Date(birthday),
+                                IDNumber,
+                                address
+                            };
+                            this.controls.activeStep = 1;
+                        }
+
+                    })
                 }
             },
             handleLastStep() {
@@ -391,7 +513,7 @@
                         }
 
                     }
-                return io.post(method, JSON.stringify(requestBody));
+                return io.post(method, requestBody);
             }
         },
         computed: {
@@ -441,6 +563,8 @@
             },
             nextButtonTitle() {
                 switch (this.controls.activeStep) {
+                    case 1:
+                        return '确认';
                     case 2:
                         return '结算';
                     case 3:
@@ -475,7 +599,16 @@
     }
 
     /*让清算项目信息列表文字靠右边*/
-    li:not(:last-child) .mu-item-title, li:not(:last-child) .mu-item-sub-title {
+    .select-info li:not(:last-child) .mu-item-title, .select-info li:not(:last-child) .mu-item-sub-title {
         text-align: right;
+    }
+
+    /*让结果信息列表文字加大*/
+    .success-info .mu-item-action {
+        font-size: 1.6em;
+    }
+
+    .success-info {
+        margin-top: 80px;
     }
 </style>
