@@ -49,7 +49,8 @@
     .mu-day-button:not(.selected):not(:hover) .mu-day-button-text:not(:hover), /*日期选择器*/
     .font-color-fix .mu-input-help, /*编辑框下边的提示文本*/
     .font-color-fix .mu-item-action, /*清单右边*/
-    .font-color-fix .mu-item-sub-title /*清单副标题*/
+    .font-color-fix .mu-item-sub-title, /*清单副标题*/
+    .mu-dialog-wrapper .mu-dialog-body /*弹窗内容*/
     {
         color: rgba(0, 0, 0, 0.9) !important;
     }

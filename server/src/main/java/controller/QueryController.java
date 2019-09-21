@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import database.Database;
 import lib.MessageUtils;
 import lib.Tuple;
-import model.MedicalRecords;
-import model.Registration;
-import model.Staff;
+import model.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,10 +19,13 @@ public class QueryController implements Controller {
                 return queryMedicalRecordByID(params);
             case "query-cancelable-by-medical-record-id":
                 return queryCancelableByMedicalRecordID(params);
+            case "query-uncharged-items-by-medical-record-id":
+                return queryUnchargedItemsByMedicalRecordID(params);
         }
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
 
+    /* 用病历id查询病历 */
     private Tuple queryMedicalRecordByID(JSONObject params) {
         long id;
         try {
@@ -50,6 +51,7 @@ public class QueryController implements Controller {
 
     }
 
+    /* 用病历id查可退号挂号记录 */
     private Tuple queryCancelableByMedicalRecordID(JSONObject params) {
         long id;
         try {
@@ -72,4 +74,42 @@ public class QueryController implements Controller {
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, cancelableList));
     }
+
+    private Tuple queryUnchargedItemsByMedicalRecordID(JSONObject params) {
+        long id;
+        try {
+            id = params.getLong("id");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+
+        // 查询未缴费的检查检验项目
+        List<JSONObject> unchargedInspectionRecords = Database.INSTANCE.select("inspectionRecords", Long.class, InspectionRecord.class).getRaw().values().stream()
+                .filter(i -> i.getMedicalRecordID() == id)
+                .filter(i -> i.getStatus() == Status.UNPAID)
+                .map(i -> new JSONObject()
+                        .fluentPut("id", i.getId())
+                        .fluentPut("clazz", i.getTime())
+                        .fluentPut("item", i.getItem())
+                        .fluentPut("cost", i.getFee())
+                )
+                .collect(Collectors.toList());
+
+        List<JSONObject> unchargedPrescriptions = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw().values().stream()
+                .filter(i -> i.getMedicalRecordID() == id)
+                .filter(i -> i.getStatus() == Status.UNPAID)
+                .map(i -> new JSONObject()
+                        .fluentPut("id", i.getId())
+                        .fluentPut("clazz", i.getClazz())
+                        .fluentPut("medicineListSize", i.getMedicineList().size())
+                        .fluentPut("cost", i.getFee())
+                )
+                .collect(Collectors.toList());
+
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, new JSONObject()
+                .fluentPut("inspectionRecords", unchargedInspectionRecords)
+                .fluentPut("prescriptions", unchargedPrescriptions)));
+    }
+
 }

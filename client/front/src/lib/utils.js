@@ -22,6 +22,9 @@ const utils = {
     registrationLevelIDToObject(registrationLevelID) {
         return store.state.global.registrationLevels[registrationLevelID];
     },
+    inspectionItemIDToObject(inspectionItemID) {
+        return store.state.global.inspectionItems[inspectionItemID];
+    },
     doctorIDToObject(doctorID) {
         return store.state.global.doctors[doctorID];
     },

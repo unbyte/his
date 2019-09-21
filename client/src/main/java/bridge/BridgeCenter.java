@@ -3,7 +3,6 @@ package bridge;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 /**

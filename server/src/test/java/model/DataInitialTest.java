@@ -6,8 +6,7 @@ import java.util.HashMap;
 
 public class DataInitialTest {
     public static void main(String[] args) {
-        genDepartments();
-        genStaff();
+        genInspectionItem();
     }
 
     static void genDepartments() {
@@ -48,18 +47,24 @@ public class DataInitialTest {
         System.out.println(JSON.toJSONString(registrationLevels));
     }
 
-    static void genStaff(){
-        HashMap<Integer,Staff> staffs = new HashMap<>();
-        staffs.put(0,new Staff(0,"白白白","E=pc",0,12)); // 前台
-        staffs.put(1,new Staff(1,"黑黑黑","E=mc^2",1,8)); // 中药房
-        staffs.put(2,new Staff(2,"灰灰灰","E=1/2mv^2",2,8)); // 西药房
-        staffs.put(3,new Staff(3,"蓝蓝蓝","E=U/d",3,4)); // 放射科
-        staffs.put(4,new Staff(4,"红红红","E=BLv",4,1)); // 主治医师
-        staffs.put(5,new Staff(5,"绿绿绿","E=BLv",4,2)); // 副主任医师
-        staffs.put(6,new Staff(6,"黄黄黄","E=BLv",4,3)); // 主任医师
-        staffs.put(7,new Staff(7,"青青青","E=BLv",5,1)); // 主治医师
-        staffs.put(8,new Staff(8,"紫紫紫","E=BLv",5,1)); // 主治医师
+    static void genStaff() {
+        HashMap<Integer, Staff> staffs = new HashMap<>();
+        staffs.put(0, new Staff(0, "白白白", "E=pc", 0, 12)); // 前台
+        staffs.put(1, new Staff(1, "黑黑黑", "E=mc^2", 1, 8)); // 中药房
+        staffs.put(2, new Staff(2, "灰灰灰", "E=1/2mv^2", 2, 8)); // 西药房
+        staffs.put(3, new Staff(3, "蓝蓝蓝", "E=U/d", 3, 4)); // 放射科
+        staffs.put(4, new Staff(4, "红红红", "E=BLv", 4, 1)); // 主治医师
+        staffs.put(5, new Staff(5, "绿绿绿", "E=BLv", 4, 2)); // 副主任医师
+        staffs.put(6, new Staff(6, "黄黄黄", "E=BLv", 4, 3)); // 主任医师
+        staffs.put(7, new Staff(7, "青青青", "E=BLv", 5, 1)); // 主治医师
+        staffs.put(8, new Staff(8, "紫紫紫", "E=BLv", 5, 1)); // 主治医师
         System.out.println(JSON.toJSONString(staffs));
     }
 
+    static void genInspectionItem() {
+        HashMap<Integer, InspectionItem> inspectionItems = new HashMap<>();
+        inspectionItems.put(0, new InspectionItem(0, "PTTS", "普通透视", 3, 5));
+        inspectionItems.put(1, new InspectionItem(1, "SGBCTS", "食管钡餐透视", 3, 15));
+        System.out.println(JSON.toJSONString(inspectionItems));
+    }
 }

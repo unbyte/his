@@ -2,13 +2,11 @@ package net.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import lib.FileUtils;
 import lib.MessageUtils;
 import net.message.Header;
 import net.message.Message;
 import net.message.MessageType;
 
-import java.nio.file.Paths;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 

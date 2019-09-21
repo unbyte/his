@@ -2,9 +2,7 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.WebView?>
-
-<AnchorPane prefHeight="700" prefWidth="360" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainScene">
-   <children>
-      <WebView fx:id="webView" prefHeight="360" prefWidth="700"/>
-   </children>
+<AnchorPane prefHeight="700" prefWidth="360" xmlns="http://javafx.com/javafx/8.0.172-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainScene">
+    <WebView fx:id="webView" prefHeight="360" prefWidth="700"/>
 </AnchorPane>

@@ -23,6 +23,8 @@ public class FrontDeskController implements Controller {
                 return registerExist(params);
             case "front-desk-cancel":
                 return cancelRegistration(params);
+            case "front-desk-charge":
+                return chargeItems(params);
         }
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
@@ -92,8 +94,9 @@ public class FrontDeskController implements Controller {
         ));
     }
 
+    /* 取消挂号 */
     private Tuple cancelRegistration(JSONObject params) {
-        Long id;
+        long id;
         try {
             id = params.getLong("id");
         } catch (ClassCastException e) {
@@ -113,5 +116,33 @@ public class FrontDeskController implements Controller {
         Database.INSTANCE.insert("registrations", registration.getId(), registration);
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "退号成功"));
+    }
+
+    /* 收费 */
+    private Tuple chargeItems(JSONObject params) {
+        byte type; // 0 - prescription/1 - inspectionRecords
+        long id;
+        try {
+            type = params.getByte("type");
+            id = params.getLong("id");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+        if (type == 0) {
+            Prescription prescriptions = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw()
+                    .get(id);
+            if (prescriptions == null)
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该收费记录不存在"));
+            prescriptions.setStatus(Status.UNCONSUMED);
+        } else if (type == 1) {
+            InspectionRecord inspectionRecords = Database.INSTANCE.select("inspectionRecords", Long.class, InspectionRecord.class).getRaw()
+                    .get(id);
+            if (inspectionRecords == null)
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该收费记录不存在"));
+            inspectionRecords.setStatus(Status.UNCONSUMED);
+        } else
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "该收费类型不存在"));
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "收费成功"));
     }
 }

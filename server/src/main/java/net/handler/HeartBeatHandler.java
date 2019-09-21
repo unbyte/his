@@ -2,7 +2,6 @@ package net.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import lib.LogUtils;
 import lib.MessageUtils;
 import net.message.Message;
 import net.message.MessageType;

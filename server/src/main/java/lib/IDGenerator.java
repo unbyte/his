@@ -2,7 +2,6 @@ package lib;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.UUID;
 
 /**
  * ID发号器

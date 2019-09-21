@@ -39,5 +39,6 @@ public enum ControllerCenter {
         controllers.put("login", new LoginController());
         controllers.put("query", new QueryController());
         controllers.put("front-desk", new FrontDeskController());
+        controllers.put("outpatient", new OutpatientController());
     }
 }

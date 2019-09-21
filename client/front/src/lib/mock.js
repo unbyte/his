@@ -37,6 +37,10 @@ const mock = {
                 4: {"name": "外科", "id": 4, "clazz": 0},
                 5: {"name": "消化科", "id": 5, "clazz": 0}
             },
+            "inspectionItems": {
+                0: {"code": "PTTS", "departmentID": 3, "fee": 5.0, "id": 0, "name": "普通透视"},
+                1: {"code": "SGBCTS", "departmentID": 3, "fee": 15.0, "id": 1, "name": "食管钡餐透视"}
+            },
             "user": {"name": "白白白", "title": 12, "department": 0}
         }, "status": 0
     },

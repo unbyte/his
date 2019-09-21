@@ -18,6 +18,9 @@ public class InspectionItem {
 
     private String name;
 
+    /*执行科室*/
+    private int departmentID;
+
     private double fee;
 
 }

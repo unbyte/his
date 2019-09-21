@@ -90,7 +90,8 @@ public class LoginController implements Controller {
             msg.fluentPut("doctors",
                     JSON.parse("{" + database.select("staffs", Integer.class, Staff.class).getRaw().values().stream().filter(
                             i -> departments.get(i.getDepartment()).getClazz() == Department.OUTPATIENT)
-                            .map(Staff::toString).collect(Collectors.joining(",")) + "}"));
+                            .map(Staff::toString).collect(Collectors.joining(",")) + "}"))
+                    .fluentPut("inspectionItems", database.selectAll("inspectionItems"));
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, msg, MessageType.CONNECT_RES), staff);
     }

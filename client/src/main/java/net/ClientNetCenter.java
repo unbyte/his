@@ -16,7 +16,6 @@ import net.handler.MessageEncoder;
 import net.message.Message;
 import net.message.MessageType;
 
-import java.net.ConnectException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
