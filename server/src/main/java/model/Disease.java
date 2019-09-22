@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * 疾病
  */
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

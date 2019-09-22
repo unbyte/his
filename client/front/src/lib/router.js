@@ -8,6 +8,13 @@ import FrontDeskCancel from "../components/front-desk/FrontDeskCancel";
 import FrontDeskCharge from "../components/front-desk/FrontDeskCharge";
 import FrontDeskRefund from "../components/front-desk/FrontDeskRefund";
 import FrontDeskQuery from "../components/front-desk/FrontDeskQuery";
+import Outpatient from "../pages/Outpatient";
+import OutpatientIndex from "../components/outpatient/OutpatientIndex";
+import OutpatientMain from "../components/outpatient/OutpatientMain";
+import OutpatientInfo from "../components/outpatient/OutpatientInfo";
+import OutpatientDiagnosis from "../components/outpatient/OutpatientDiagnosis";
+import OutpatientTech from "../components/outpatient/OutpatientTech";
+import OutpatientPrescription from "../components/outpatient/OutpatientPrescription";
 
 Vue.use(VueRouter);
 
@@ -23,7 +30,7 @@ const router = new VueRouter({
             component: FrontDesk,
             children: [
                 {
-                    path: 'main',
+                    path: 'index',
                     component: FrontDeskIndex
                 },
                 {
@@ -45,6 +52,37 @@ const router = new VueRouter({
                 {
                     path: 'query',
                     component: FrontDeskQuery
+                }
+            ]
+        }, {
+            path: '/outpatient',
+            component: Outpatient,
+            children: [
+                {
+                    path: 'index',
+                    component: OutpatientIndex
+                },
+                {
+                    path: ':medicalRecord(\\d+)',
+                    component: OutpatientMain,
+                    children: [
+                        {
+                            path: 'info',
+                            component: OutpatientInfo
+                        },
+                        {
+                            path: 'diagnosis',
+                            component: OutpatientDiagnosis
+                        },
+                        {
+                            path: 'tech',
+                            component: OutpatientTech
+                        },
+                        {
+                            path: 'prescription',
+                            component: OutpatientPrescription
+                        }
+                    ]
                 }
             ]
         }

@@ -21,7 +21,7 @@ public enum Database {
     INSTANCE;
 
     // 病历
-    private Map<Long, MedicalRecords> medicalRecords = new ConcurrentHashMap<>();
+    private Map<Long, MedicalRecord> medicalRecords = new ConcurrentHashMap<>();
     // 已经退费/完成的挂号记录，供查询
     private Map<Long, Registration> registrations = new ConcurrentHashMap<>();
     // 尚未完成/退费的挂号记录，供操作
@@ -46,7 +46,6 @@ public enum Database {
     private Map<Integer, Department> departments = new ConcurrentHashMap<>();
     // 职称
     private Map<Integer, Title> titles = new ConcurrentHashMap<>();
-
 
 
     // 因为极少更新，所以缓存成json字符串
@@ -129,10 +128,10 @@ public enum Database {
     }
 
     /**
-     * 获取某一类数据的所有实体的json字符串
+     * 获取某一类数据的所有实体的json对象
      *
      * @param fieldName 待查找的实体所属的field名称
-     * @return 查找结果的json字符串
+     * @return 查找结果的json
      */
     public Object selectAll(String fieldName) {
         if (caches.containsKey(fieldName))
@@ -141,15 +140,13 @@ public enum Database {
     }
 
 
-
-
     /**
      * 启动时从文件中初始化数据
      */
     public void boot() {
         LogUtils.info("Database is booting");
 
-        medicalRecords.putAll(FileUtils.loadMapFromFile(paths.get("medicalRecords"), Long.class, MedicalRecords.class));
+        medicalRecords.putAll(FileUtils.loadMapFromFile(paths.get("medicalRecords"), Long.class, MedicalRecord.class));
 
         registrations.putAll(FileUtils.loadMapFromFile(paths.get("registrations"), Long.class, Registration.class));
 
@@ -196,7 +193,7 @@ public enum Database {
             public void run() {
                 persist();
             }
-        },30_000,30_000);
+        }, 30_000, 30_000);
 
         LogUtils.info("Database booted successfully");
     }

@@ -1,10 +1,12 @@
 package model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 /**
  * 处方中的药物清单组成
  */
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

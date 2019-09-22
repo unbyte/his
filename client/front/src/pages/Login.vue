@@ -93,7 +93,7 @@
                         if (!response.status) {
                             // 登陆成功
                             this.$store.commit("setGlobalData", response.msg);
-                            this.$router.push(`/${this.$utils.departmentClazzToRouteName(response.msg.departments[response.msg.user.department].clazz)}/main`);
+                            this.$router.push(`/${this.$utils.departmentClazzToRouteName(response.msg.departments[response.msg.user.department].clazz)}/index`);
                         } else
                             this.$toast.message(response.msg);
                     }

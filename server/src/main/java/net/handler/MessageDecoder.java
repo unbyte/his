@@ -29,6 +29,7 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
             message.setBody(frame.toString(frame.readerIndex(), frame.readableBytes(), CharsetUtil.UTF_8));
         // 备用 message.setBody(frame.readCharSequence(frame.readInt(), CharsetUtil.UTF_8).toString());
 
+        //todo 调试用输出
         LogUtils.info(message.getBody());
         return message;
     }

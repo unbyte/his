@@ -23,7 +23,7 @@ public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
         if (message.getHeader() == null)
             return;
 
-        if (message.getHeader().getType() == MessageType.RESPONSE)
+        if (message.getHeader().getType() == MessageType.RESPONSE || message.getHeader().getType() == MessageType.PUSH)
             ctx.fireChannelRead(msg);
 
         if (message.getHeader().getType() == MessageType.CONNECT_RES) {

@@ -1,10 +1,12 @@
 package model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 /**
  * 检查/检验项目
  */
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -22,5 +24,4 @@ public class InspectionItem {
     private int departmentID;
 
     private double fee;
-
 }

@@ -1,5 +1,5 @@
 <template>
-    <div id="front-desk-index" class="tab-page">
+    <div id="outpatient-index">
         <Clock></Clock>
     </div>
 </template>
@@ -8,7 +8,7 @@
     import Clock from "../global/Clock";
 
     export default {
-        name: "FrontDeskIndex",
+        name: "OutpatientIndex",
         components: {
             Clock
         }
@@ -16,4 +16,5 @@
 </script>
 
 <style scoped>
+
 </style>

@@ -2,12 +2,14 @@ package model;
 
 import lib.IDGenerator;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.HashSet;
 
 /**
  * 处方
  */
+@Accessors(chain = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @ToString
@@ -34,11 +36,11 @@ public class Prescription {
      * 新建一个处方对象并获取
      *
      * @param medicalRecordID 病历号
-     * @param registrationID 所属的挂号记录id
-     * @param clazz          分类 0中 / 1西
-     * @param medicineList   药物清单
-     * @param fee            费用
-     * @param status         状态id
+     * @param registrationID  所属的挂号记录id
+     * @param clazz           分类 0中 / 1西
+     * @param medicineList    药物清单
+     * @param fee             费用
+     * @param status          状态id
      * @return id自动生成的处方对象，若药物超出5种则返回null
      */
     public static Prescription insert(long medicalRecordID, long registrationID, int clazz, HashSet<PrescriptionItem> medicineList, double fee, byte status) {
@@ -46,7 +48,7 @@ public class Prescription {
         // todo 更详细的检验
         if (medicineList.size() > 5)
             return null;
-        return new Prescription(medicalRecordID, IDGenerator.generate(), registrationID, clazz, medicineList, fee, status);
+        return new Prescription(IDGenerator.generate(), medicalRecordID, registrationID, clazz, medicineList, fee, status);
     }
 
 }

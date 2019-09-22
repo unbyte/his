@@ -30,6 +30,10 @@ window['isDev'] = window.mode === 'dev';
 // 几个bridge
 window['io'] = io;
 
+// 接收推送
+window['inform'] = message => {
+    io.receive(message)
+};
 
 new Vue({
     render: h => h(App),

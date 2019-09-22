@@ -36,4 +36,8 @@ public class BridgeCenter {
     public static void setWebEngine(WebEngine webEngine) {
         BridgeCenter.webEngine = webEngine;
     }
+
+    public static WebEngine getWebEngine() {
+        return webEngine;
+    }
 }

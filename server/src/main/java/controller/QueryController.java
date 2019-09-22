@@ -16,17 +16,23 @@ public class QueryController implements Controller {
         // 转发到具体的处理方法
         switch (methodName) {
             case "query-medical-record-by-id":
-                return queryMedicalRecordByID(params);
+                return queryMedicalRecordByID(params, user);
             case "query-cancelable-by-medical-record-id":
                 return queryCancelableByMedicalRecordID(params);
             case "query-uncharged-items-by-medical-record-id":
                 return queryUnchargedItemsByMedicalRecordID(params);
+            case "query-paid-items-by-medical-record-id":
+                return queryPaidItemsByMedicalRecordID(params);
+            case "query-diagnosis-by-registration-id":
+                return queryDiagnosisByRegistrationID(params);
+            case "query-prescriptions-by-registration-id":
+                return queryPrescriptionsByRegistrationID(params);
         }
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
 
     /* 用病历id查询病历 */
-    private Tuple queryMedicalRecordByID(JSONObject params) {
+    private Tuple queryMedicalRecordByID(JSONObject params, Staff user) {
         long id;
         try {
             id = params.getLong("id");
@@ -34,11 +40,25 @@ public class QueryController implements Controller {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
         }
 
-        MedicalRecords medicalRecord = Database.INSTANCE.select("medicalRecords", Long.class, MedicalRecords.class).getRaw().get(id);
+        MedicalRecord medicalRecord = Database.INSTANCE.select("medicalRecords", Long.class, MedicalRecord.class).getRaw().get(id);
 
         // 病历对象不存在
         if (medicalRecord == null)
             return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该病历号不存在"));
+
+        byte userClazz = Database.INSTANCE.select("departments", Integer.class, Department.class).getRaw().get(user.getDepartment()).getClazz();
+
+        if (userClazz == Department.OUTPATIENT)
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS,
+                    new JSONObject().fluentPut("id", medicalRecord.getId())
+                            .fluentPut("name", medicalRecord.getName())
+                            .fluentPut("gender", medicalRecord.getGender())
+                            .fluentPut("birthday", medicalRecord.getBirthday())
+                            .fluentPut("pastHistory", medicalRecord.getPastHistory())
+                            .fluentPut("presentIllnessHistory", medicalRecord.getPresentIllnessHistory())
+                            .fluentPut("allergyHistory", medicalRecord.getAllergyHistory())
+                            .fluentPut("currentIllnessTreatment", medicalRecord.getCurrentIllnessTreatment())
+            ));
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS,
                 new JSONObject().fluentPut("id", medicalRecord.getId())
@@ -85,7 +105,8 @@ public class QueryController implements Controller {
 
 
         // 查询未缴费的检查检验项目
-        List<JSONObject> unchargedInspectionRecords = Database.INSTANCE.select("inspectionRecords", Long.class, InspectionRecord.class).getRaw().values().stream()
+        List<JSONObject> unchargedInspectionRecords = Database.INSTANCE.select("inspectionRecords", Long.class, InspectionRecord.class)
+                .getRaw().values().stream()
                 .filter(i -> i.getMedicalRecordID() == id)
                 .filter(i -> i.getStatus() == Status.UNPAID)
                 .map(i -> new JSONObject()
@@ -110,6 +131,77 @@ public class QueryController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, new JSONObject()
                 .fluentPut("inspectionRecords", unchargedInspectionRecords)
                 .fluentPut("prescriptions", unchargedPrescriptions)));
+    }
+
+    private Tuple queryPaidItemsByMedicalRecordID(JSONObject params) {
+        long id;
+        try {
+            id = params.getLong("id");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+        // 查询已付费的检查检验项目
+        List<JSONObject> chargedInspectionRecords = Database.INSTANCE.select("inspectionRecords", Long.class, InspectionRecord.class).getRaw().values().stream()
+                .filter(i -> i.getMedicalRecordID() == id)
+                .filter(i -> i.getStatus() > Status.UNPAID && i.getStatus() < Status.REFUNDED)
+                .map(i -> new JSONObject()
+                        .fluentPut("id", i.getId())
+                        .fluentPut("clazz", i.getTime())
+                        .fluentPut("item", i.getItem())
+                        .fluentPut("cost", i.getFee())
+                        .fluentPut("status", i.getStatus())
+                )
+                .collect(Collectors.toList());
+
+        // 查询已付费的处方
+        List<JSONObject> chargedPrescriptions = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw().values().stream()
+                .filter(i -> i.getMedicalRecordID() == id)
+                .filter(i -> i.getStatus() > Status.UNPAID && i.getStatus() < Status.REFUNDED)
+                .map(i -> new JSONObject()
+                        .fluentPut("id", i.getId())
+                        .fluentPut("clazz", i.getClazz())
+                        .fluentPut("medicineListSize", i.getMedicineList().size())
+                        .fluentPut("cost", i.getFee())
+                        .fluentPut("status", i.getStatus())
+                )
+                .collect(Collectors.toList());
+
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, new JSONObject()
+                .fluentPut("inspectionRecords", chargedInspectionRecords)
+                .fluentPut("prescriptions", chargedPrescriptions)));
+    }
+
+    private Tuple queryDiagnosisByRegistrationID(JSONObject params) {
+        long id;
+        try {
+            id = params.getLong("id");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+        Diagnosis diagnosis = Database.INSTANCE.select("diagnoses", Long.class, Diagnosis.class).getRaw()
+                .get(id);
+
+        if (diagnosis == null)
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该诊断不存在"));
+
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, diagnosis));
+    }
+
+    private Tuple queryPrescriptionsByRegistrationID(JSONObject params) {
+        long id;
+        try {
+            id = params.getLong("id");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+        List<Prescription> prescriptions = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw().values().stream()
+                .filter(i -> i.getRegistrationID() == id)
+                .filter(i -> i.getStatus() < Status.REFUNDED)
+                .collect(Collectors.toList());
+
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, prescriptions));
     }
 
 }

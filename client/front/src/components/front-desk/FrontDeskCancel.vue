@@ -49,7 +49,7 @@
         </mu-container>
         <mu-dialog title="退号成功" width="360" :open.sync="dialogVisible" :overlay-close="false">
             {{dialogContent && dialogContent.status === 2 ?`应退还金额为 ￥${dialogContent.cost}`:'无应退还金额'}}
-            <mu-button slot="actions" flat color="primary" @click="closeDialog">关闭</mu-button>
+            <mu-button slot="actions" flat color="primary" @click="closeDialog">已退还</mu-button>
         </mu-dialog>
 
         <mu-dialog title="退号确认" width="360" :open.sync="confirmVisible" :overlay-close="false">

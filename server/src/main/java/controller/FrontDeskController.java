@@ -25,6 +25,8 @@ public class FrontDeskController implements Controller {
                 return cancelRegistration(params);
             case "front-desk-charge":
                 return chargeItems(params);
+            case "front-desk-refund":
+                return refundItems(params);
         }
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
@@ -40,29 +42,37 @@ public class FrontDeskController implements Controller {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
         }
         // 新建病历
-        MedicalRecords newMedicalRecords = MedicalRecords.insert(medicalRecordParams.getString("name"),
+        MedicalRecord newMedicalRecord = MedicalRecord.insert(medicalRecordParams.getString("name"),
                 medicalRecordParams.getLong("birthday"),
                 medicalRecordParams.getByte("gender"),
                 medicalRecordParams.getString("IDNumber"),
                 medicalRecordParams.getString("address"),
-                null, null, null, null
+                "", "", "", ""
         );
 
         // 新建挂号
-        Registration newRegistration = Registration.insert(newMedicalRecords.getId(), System.currentTimeMillis(),
+        Registration newRegistration = Registration.insert(newMedicalRecord.getId(), System.currentTimeMillis(),
                 registrationParams.getInteger("department"),
                 registrationParams.getInteger("doctor"),
                 registrationParams.getDouble("cost"),
-                Status.UNPAID
+                Status.UNCONSUMED
         );
 
-        Database.INSTANCE.insert("medicalRecords", newMedicalRecords.getId(), newMedicalRecords);
+        Database.INSTANCE.insert("medicalRecords", newMedicalRecord.getId(), newMedicalRecord);
         Database.INSTANCE.insert("newRegistrations", newRegistration.getId(), newRegistration);
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, new JSONObject()
-                .fluentPut("medicalRecordID", newMedicalRecords.getId())
+                .fluentPut("medicalRecordID", newMedicalRecord.getId())
                 .fluentPut("registrationID", newRegistration.getId())
-                .fluentPut("cost", registrationParams.getDouble("cost"))));
+                .fluentPut("cost", registrationParams.getDouble("cost"))),
+                MessageUtils.buildPush("new registration",
+                        new JSONObject()
+                                .fluentPut("id", newRegistration.getId())
+                                .fluentPut("medicalRecord", newMedicalRecord.getId())
+                                .fluentPut("name", newMedicalRecord.getName())
+                                .fluentPut("gender", newMedicalRecord.getGender())
+                                .fluentPut("birthday", newMedicalRecord.getBirthday())),
+                Database.INSTANCE.select("staffs", Integer.class, Staff.class).getRaw().get(newRegistration.getDoctorID()));
 
     }
 
@@ -77,12 +87,17 @@ public class FrontDeskController implements Controller {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
         }
 
+        MedicalRecord medicalRecord = Database.INSTANCE.select("medicalRecords", Long.class, MedicalRecord.class).getRaw().get(medicalRecordID);
+
+        if (medicalRecord == null)
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该病历不存在"));
+
         // 新建挂号
         Registration newRegistration = Registration.insert(medicalRecordID, System.currentTimeMillis(),
                 registrationParams.getInteger("department"),
                 registrationParams.getInteger("doctor"),
                 registrationParams.getDouble("cost"),
-                Status.UNPAID
+                Status.UNCONSUMED
         );
 
         Database.INSTANCE.insert("newRegistrations", newRegistration.getId(), newRegistration);
@@ -91,7 +106,15 @@ public class FrontDeskController implements Controller {
                 .fluentPut("medicalRecordID", medicalRecordID)
                 .fluentPut("registrationID", newRegistration.getId())
                 .fluentPut("cost", registrationParams.getDouble("cost"))
-        ));
+        ),
+                MessageUtils.buildPush("new registration",
+                        new JSONObject()
+                                .fluentPut("id", newRegistration.getId())
+                                .fluentPut("medicalRecord", medicalRecord.getId())
+                                .fluentPut("name", medicalRecord.getName())
+                                .fluentPut("gender", medicalRecord.getGender())
+                                .fluentPut("birthday", medicalRecord.getBirthday())),
+                Database.INSTANCE.select("staffs", Integer.class, Staff.class).getRaw().get(newRegistration.getDoctorID()));
     }
 
     /* 取消挂号 */
@@ -115,7 +138,10 @@ public class FrontDeskController implements Controller {
         registrations.remove(registration.getId());
         Database.INSTANCE.insert("registrations", registration.getId(), registration);
 
-        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "退号成功"));
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "退号成功"),
+                MessageUtils.buildPush("cancel registration", new JSONObject()
+                        .fluentPut("id", registration.getId())
+                ), Database.INSTANCE.select("staffs", Integer.class, Staff.class).getRaw().get(registration.getDoctorID()));
     }
 
     /* 收费 */
@@ -133,16 +159,53 @@ public class FrontDeskController implements Controller {
             Prescription prescriptions = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw()
                     .get(id);
             if (prescriptions == null)
-                return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该收费记录不存在"));
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该药方记录不存在"));
+            if (prescriptions.getStatus() != Status.UNPAID)
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "该药方已付费"));
             prescriptions.setStatus(Status.UNCONSUMED);
         } else if (type == 1) {
             InspectionRecord inspectionRecords = Database.INSTANCE.select("inspectionRecords", Long.class, InspectionRecord.class).getRaw()
                     .get(id);
             if (inspectionRecords == null)
-                return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该收费记录不存在"));
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该检查检验记录不存在"));
+            if (inspectionRecords.getStatus() != Status.UNPAID)
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "该检查检验项目已付费"));
             inspectionRecords.setStatus(Status.UNCONSUMED);
         } else
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "该收费类型不存在"));
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "收费成功"));
+    }
+
+    private Tuple refundItems(JSONObject params) {
+        byte type; // 0 - prescription/1 - inspectionRecords
+        long id;
+        try {
+            type = params.getByte("type");
+            id = params.getLong("id");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+        if (type == 0) {
+            Prescription prescriptions = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw()
+                    .get(id);
+            if (prescriptions == null)
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该药方记录不存在"));
+            if (prescriptions.getStatus() != Status.CANCELED)
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "该药方状态不满足退费要求"));
+            prescriptions.setStatus(Status.REFUNDED);
+        } else if (type == 1) {
+            InspectionRecord inspectionRecords = Database.INSTANCE.select("inspectionRecords", Long.class, InspectionRecord.class).getRaw()
+                    .get(id);
+            if (inspectionRecords == null)
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该检查检验记录不存在"));
+            if (inspectionRecords.getStatus() != Status.CANCELED)
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "该检查检验项目状态不满足退费要求"));
+            inspectionRecords.setStatus(Status.REFUNDED);
+        } else
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "该收费类型不存在"));
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "退费成功"));
+
+
     }
 }

@@ -2,10 +2,12 @@ package model;
 
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 /**
  * 职称
  */
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

@@ -2,16 +2,18 @@ package model;
 
 import lib.IDGenerator;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 /**
  * 病历
  */
+@Accessors(chain = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @ToString
 @Getter
 @Setter
-public class MedicalRecords {
+public class MedicalRecord {
     /*病历号*/
     private long id;
 
@@ -51,7 +53,7 @@ public class MedicalRecords {
      * @param currentIllnessTreatment 现病治疗情况
      * @return 一个病历号自动生成的病历对象
      */
-    public static MedicalRecords insert(String name, long birthday, byte gender, String IDNumber, String address, String pastHistory, String presentIllnessHistory, String allergyHistory, String currentIllnessTreatment) {
-        return new MedicalRecords(IDGenerator.generate(), name, birthday, gender, IDNumber, address, pastHistory, presentIllnessHistory, allergyHistory, currentIllnessTreatment);
+    public static MedicalRecord insert(String name, long birthday, byte gender, String IDNumber, String address, String pastHistory, String presentIllnessHistory, String allergyHistory, String currentIllnessTreatment) {
+        return new MedicalRecord(IDGenerator.generate(), name, birthday, gender, IDNumber, address, pastHistory, presentIllnessHistory, allergyHistory, currentIllnessTreatment);
     }
 }

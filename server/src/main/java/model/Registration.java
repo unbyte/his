@@ -2,10 +2,12 @@ package model;
 
 import lib.IDGenerator;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 /**
  * 挂号记录
  */
+@Accessors(chain = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @ToString

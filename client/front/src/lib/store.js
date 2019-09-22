@@ -5,12 +5,45 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
-        global: {}
+        global: {},
+        outpatient: {
+            patientList: {
+                wait: [],
+                done: []
+            },
+            currentPatient: {},
+            currentMedicalRecord: {}
+        }
     },
     mutations: {
         setGlobalData(state, globalData) {
             state.global = globalData;
         },
+        setWaitList(state, patientList) {
+            state.outpatient.patientList.wait = patientList;
+        },
+        addWaitList(state, waitList) {
+            state.outpatient.patientList.wait.push(waitList);
+        },
+        removeWaitList(state, id) {
+            state.outpatient.patientList.wait = state.outpatient.patientList.wait.filter(i => i.id !== id);
+        },
+        addDoneList(state, doneList) {
+            state.outpatient.patientList.done.push(doneList);
+        },
+        setCurrentPatient(state, patient) {
+            state.outpatient.currentPatient = patient;
+        },
+        setCurrentMedicalRecord(state, medicalRecord) {
+            state.outpatient.currentMedicalRecord = medicalRecord;
+        },
+        clearOutpatientCurrent(state) {
+            state.outpatient.currentMedicalRecord = {};
+            state.outpatient.currentPatient = {};
+        },
+        moveWaitToDone(state) {
+            state.outpatient.patientList.done.unshift(state.outpatient.patientList.wait.shift());
+        }
     },
     actions: {}
 })

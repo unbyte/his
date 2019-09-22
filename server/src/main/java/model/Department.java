@@ -1,10 +1,12 @@
 package model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 /**
  * 科室
  */
+@Accessors(chain = true)
 @AllArgsConstructor
 @Getter
 @Setter

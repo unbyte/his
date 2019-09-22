@@ -13,6 +13,7 @@ import net.handler.BusinessHandler;
 import net.handler.HeartBeatHandler;
 import net.handler.MessageDecoder;
 import net.handler.MessageEncoder;
+import net.message.Header;
 import net.message.Message;
 import net.message.MessageType;
 
@@ -94,7 +95,7 @@ public enum ClientNetCenter {
 
         // 阻塞，等待响应
         try {
-            countDownLatch.await(10, TimeUnit.SECONDS);
+            countDownLatch.await(6, TimeUnit.SECONDS);
         } catch (InterruptedException ignored) {
         }
 
@@ -106,8 +107,8 @@ public enum ClientNetCenter {
         countDownLatch = null;
         tempResponse = null;
 
-        // 超时了没有收到消息或其他原因会返回null
-        return response;
+        // 超时了没有收到消息会返回一个超时提示
+        return response == null ? new Message().setHeader(new Header().setStatus((byte) 10)).setBody("连接超时") : response;
     }
 
     public void receive(Message message) {

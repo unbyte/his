@@ -28,6 +28,9 @@ const utils = {
     doctorIDToObject(doctorID) {
         return store.state.global.doctors[doctorID];
     },
+    medicineIDToObject(medicineID){
+        return store.state.global.medicines[medicineID];
+    },
     titleIDToLimit(titleID) {
         return this.registrationLevelIDToObject(this.titleIDToObject(titleID).registrationLevel).limit;
     },
@@ -58,7 +61,8 @@ const utils = {
         2: '未消费',
         3: '已消费',
         4: '已作废',
-        5: '已退费'
+        5: '已退费',
+        6: '已作废'
     }
 }
 

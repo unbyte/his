@@ -4,10 +4,12 @@ import lib.Security;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * 员工(医生、药师、技师、前台)
  */
+@Accessors(chain = true)
 @NoArgsConstructor
 @Getter
 @Setter

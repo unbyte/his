@@ -20,6 +20,7 @@ public class MessageEncoder extends MessageToByteEncoder<Message> {
         out.writeByte(msg.getHeader().getType());
         out.writeByte(msg.getHeader().getStatus());
 
+        //todo 调试用输出
         LogUtils.info(msg.getBody());
         if (msg.getBody() != null)
             out.writeBytes(msg.getBody().getBytes(CharsetUtil.UTF_8)); // 直接取得字符串的bytes形式

@@ -6,6 +6,7 @@ import database.Database;
 import lib.MessageUtils;
 import lib.Tuple;
 import model.Department;
+import model.MedicalRecord;
 import model.Registration;
 import model.Staff;
 import net.ChannelPool;
@@ -69,16 +70,24 @@ public class LoginController implements Controller {
                 .fluentPut("departments", database.selectAll("departments"))
                 .fluentPut("registrationLevels", database.selectAll("registrationLevels"));
 
-        if (department.getClazz() == Department.OUTPATIENT)
+        if (department.getClazz() == Department.OUTPATIENT) {
+            Map<Long, MedicalRecord> medicalRecords = database.select("medicalRecords", Long.class, MedicalRecord.class).getRaw();
             msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"))
                     .fluentPut("medicines", database.selectAll("medicines"))
                     .fluentPut("diseases", database.selectAll("diseases"))
-                    .fluentPut("patients", database.select("newRegistrations", Long.class, Registration.class).filter(
-                            (map, res) -> map.values().forEach(i -> {
-                                if (i.getDoctorID() == staff.getId())
-                                    res.add(i);
-                            })).toJSONString());
-
+                    .fluentPut("patients", database.select("newRegistrations", Long.class, Registration.class).getRaw().values().stream()
+                            .filter(i -> i.getDoctorID() == staff.getId())
+                            .map(i -> {
+                                MedicalRecord medicalRecord = medicalRecords.get(i.getMedicalRecordsID());
+                                return new JSONObject()
+                                        .fluentPut("id", i.getId())
+                                        .fluentPut("medicalRecord", medicalRecord.getId())
+                                        .fluentPut("name",medicalRecord.getName() )
+                                        .fluentPut("gender",medicalRecord.getGender())
+                                        .fluentPut("birthday",medicalRecord.getBirthday());
+                                    })
+                            .collect(Collectors.toList()));
+        }
         if (department.getClazz() == Department.MEDICAL_TECHNIQUE)
             msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"));
 

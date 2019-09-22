@@ -8,12 +8,10 @@ import lombok.experimental.Accessors;
  * 消息
  */
 @Accessors(chain = true)
+@Getter
+@Setter
 public class Message {
-    @Getter
-    @Setter
     private Header header;
-    @Getter
-    @Setter
     private String body;
 
 

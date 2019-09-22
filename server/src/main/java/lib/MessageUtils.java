@@ -27,7 +27,7 @@ public class MessageUtils {
     public static byte NO_PERMISSION = (byte) 3;
 
 
-    public static byte FAIL = (byte)4;
+    public static byte FAIL = (byte) 4;
 
     /**
      * 为业务响应构造Message
@@ -51,9 +51,19 @@ public class MessageUtils {
     public static Message buildResponse(byte status, Object msg, byte type) {
         return new Message().setHeader(
                 new Header().setType(type)
-                .setStatus(status)
+                        .setStatus(status)
         ).setBody(
                 new JSONObject().fluentPut("status", status)
+                        .fluentPut("msg", msg)
+                        .toJSONString()
+        );
+    }
+
+    public static Message buildPush(String type, Object msg) {
+        return new Message().setHeader(
+                new Header().setType(MessageType.PUSH)
+        ).setBody(
+                new JSONObject().fluentPut("type", type)
                         .fluentPut("msg", msg)
                         .toJSONString()
         );

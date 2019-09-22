@@ -1,10 +1,12 @@
 package model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 /**
  * 挂号等级
  */
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

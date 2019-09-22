@@ -98,7 +98,6 @@
                     inspectionRecords: []
                 },
                 confirmVisible: false,
-                dialogContent: null,
                 temp: {
                     id: null,
                     cost: null,
@@ -134,7 +133,6 @@
                     prescriptions: [],
                     inspectionRecords: []
                 };
-                this.dialogContent = null;
             },
             charge(id, cost, index, type) {
                 //type 0 - prescription/1 - inspectionRecords
@@ -165,7 +163,6 @@
                         this.chargeableList.prescriptions = this.chargeableList.prescriptions.filter(i => i.id !== this.temp.id);
                 }
             }
-
         }
     }
 </script>
