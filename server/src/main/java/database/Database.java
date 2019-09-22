@@ -193,7 +193,7 @@ public enum Database {
             public void run() {
                 persist();
             }
-        }, 30_000, 30_000);
+        }, 60_000, 60_000);
 
         LogUtils.info("Database booted successfully");
     }

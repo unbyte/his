@@ -20,7 +20,7 @@ const store = new Vuex.Store({
             state.global = globalData;
         },
         setWaitList(state, patientList) {
-            state.outpatient.patientList.wait = patientList;
+            state.outpatient.patientList.wait = patientList.reverse();
         },
         addWaitList(state, waitList) {
             state.outpatient.patientList.wait.push(waitList);

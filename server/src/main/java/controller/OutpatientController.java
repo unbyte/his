@@ -34,6 +34,8 @@ public class OutpatientController implements Controller {
                 return publishPrescription(params);
             case "outpatient-save-temp-prescription":
                 return saveTempPrescription(params);
+            case "outpatient-cancel-prescription":
+                return cancelPrescription(params);
         }
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
