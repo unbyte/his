@@ -22,8 +22,10 @@ public class Prescription {
     private long medicalRecordID;
     /*挂号记录id*/
     private long registrationID;
+
+    private String name;
     /*0-中 1-西*/
-    private int clazz;
+    private byte clazz;
     /*药物清单*/
     private HashSet<PrescriptionItem> medicineList;
     /*费用*/
@@ -43,12 +45,8 @@ public class Prescription {
      * @param status          状态id
      * @return id自动生成的处方对象，若药物超出5种则返回null
      */
-    public static Prescription insert(long medicalRecordID, long registrationID, int clazz, HashSet<PrescriptionItem> medicineList, double fee, byte status) {
-        // 根据国家规定，每个处方中最多只能包含5种药品，如果超过需要新增处方
-        // todo 更详细的检验
-        if (medicineList.size() > 5)
-            return null;
-        return new Prescription(IDGenerator.generate(), medicalRecordID, registrationID, clazz, medicineList, fee, status);
+    public static Prescription insert(long medicalRecordID, long registrationID, String name, byte clazz, HashSet<PrescriptionItem> medicineList, double fee, byte status) {
+        return new Prescription(IDGenerator.generate(), medicalRecordID, registrationID, name, clazz, medicineList, fee, status);
     }
 
 }

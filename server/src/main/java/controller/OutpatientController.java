@@ -144,67 +144,85 @@ public class OutpatientController implements Controller {
 
 
     private Tuple saveTempPrescription(JSONObject params) {
-        long id, medicalRecord, prescriptionID;
-        HashSet<PrescriptionItem> prescriptionItems;
+        long id, medicalRecord, registration;
+        String name;
+        byte clazz;
+        HashSet<PrescriptionItem> medicineList;
         try {
             id = params.getLong("id");
             medicalRecord = params.getLong("medicalRecord");
-            prescriptionItems = params.getObject("prescription", new TypeReference<HashSet<PrescriptionItem>>() {
+            name = params.getString("name");
+            clazz = params.getByte("clazz");
+            medicineList = params.getObject("medicineList", new TypeReference<HashSet<PrescriptionItem>>() {
             });
-            prescriptionID = params.getLong("prescriptionID");
+            registration = params.getLong("registration");
         } catch (ClassCastException e) {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
         }
 
+        // 根据国家规定，每个处方中最多只能包含5种药品，如果超过需要新增处方
+        if (medicineList.size() > 5)
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "单个处方中最多包含5种药物"));
+
         Map<Integer, Medicine> medicines = Database.INSTANCE.select("medicines", Integer.class, Medicine.class).getRaw();
 
-        double fee = prescriptionItems.stream().map(i -> i.getAmount() * medicines.get(i.getMedicineID()).getPrice()).mapToDouble(i -> i).sum();
+        double fee = medicineList.stream().map(i -> i.getAmount() * medicines.get(i.getMedicineID()).getPrice()).mapToDouble(i -> i).sum();
 
-        if (prescriptionID == -1) {
-            Prescription prescription = Prescription.insert(medicalRecord, id, 1, prescriptionItems, fee, Status.TEMPORARY);
-            if (prescription == null)
-                return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该药单不存在"));
+        if (id == -1) {
+            // 药单id不存在，即是新建的药单
+            Prescription prescription = Prescription.insert(medicalRecord, registration, name, clazz, medicineList, fee, Status.TEMPORARY);
             Database.INSTANCE.insert("prescriptions", prescription.getId(), prescription);
         } else {
-            Prescription prescription = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw().get(prescriptionID);
+            // 有药单id，是已有的药单
+            Prescription prescription = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw().get(id);
             if (prescription == null)
                 return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该药单不存在"));
 
             if (prescription.getStatus() != Status.TEMPORARY)
-                return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "状态无法作废"));
-            prescription.setMedicineList(prescriptionItems).setFee(fee);
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "不可暂存状态"));
+            prescription.setMedicineList(medicineList).setFee(fee).setName(name);
         }
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "暂存成功"));
     }
 
     private Tuple publishPrescription(JSONObject params) {
-        long id, medicalRecord, prescriptionID;
-        HashSet<PrescriptionItem> prescriptionItems;
+        long id, medicalRecord, registration;
+        byte clazz;
+        String name;
+        HashSet<PrescriptionItem> medicineList;
         try {
             id = params.getLong("id");
             medicalRecord = params.getLong("medicalRecord");
-            prescriptionID = params.getLong("prescriptionID");
-            prescriptionItems = params.getObject("prescription", new TypeReference<HashSet<PrescriptionItem>>() {
+            clazz = params.getByte("clazz");
+            name = params.getString("name");
+            registration = params.getLong("registration");
+            medicineList = params.getObject("medicineList", new TypeReference<HashSet<PrescriptionItem>>() {
             });
         } catch (ClassCastException e) {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
         }
 
+        // 根据国家规定，每个处方中最多只能包含5种药品，如果超过需要新增处方
+        if (medicineList.size() > 5)
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "单个处方中最多包含5种药物"));
+
+
         Map<Integer, Medicine> medicines = Database.INSTANCE.select("medicines", Integer.class, Medicine.class).getRaw();
 
-        double fee = prescriptionItems.stream().map(i -> i.getAmount() * medicines.get(i.getMedicineID()).getPrice()).mapToDouble(i -> i).sum();
+        double fee = medicineList.stream().map(i -> i.getAmount() * medicines.get(i.getMedicineID()).getPrice()).mapToDouble(i -> i).sum();
 
-        Prescription prescription;
-        if (prescriptionID == -1)
-            prescription = Prescription.insert(medicalRecord, id, 1, prescriptionItems, fee, Status.UNPAID);
-        else
-            prescription = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw().get(prescriptionID);
+        if (id == -1) {
+            // 是新建药单
+            Prescription prescription = Prescription.insert(medicalRecord, registration, name, clazz, medicineList, fee, Status.UNPAID);
+            Database.INSTANCE.insert("prescription", prescription.getId(), prescription);
+        } else {
+            Prescription prescription = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw().get(id);
+            if (prescription.getStatus() != Status.TEMPORARY)
+                return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "不可二次开立"));
 
-        if (prescription != null) {
-            Database.INSTANCE.insert("prescriptions", prescription.getId(), prescription);
+            prescription.setName(name).setMedicineList(medicineList).setFee(fee).setStatus(Status.UNPAID);
         }
-
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "开立成功"));
     }
 

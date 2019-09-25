@@ -13,13 +13,15 @@ const store = new Vuex.Store({
             },
             currentPatient: {},
             currentMedicalRecord: {}
-        }
+        },
+        connectionStatus: true
     },
     mutations: {
         setGlobalData(state, globalData) {
             state.global = globalData;
         },
         setWaitList(state, patientList) {
+            // 拉取的列表按时间倒序，得reverse一下
             state.outpatient.patientList.wait = patientList.reverse();
         },
         addWaitList(state, waitList) {
@@ -43,6 +45,9 @@ const store = new Vuex.Store({
         },
         moveWaitToDone(state) {
             state.outpatient.patientList.done.unshift(state.outpatient.patientList.wait.shift());
+        },
+        disconnected(state){
+            state.connectionStatus = false;
         }
     },
     actions: {}

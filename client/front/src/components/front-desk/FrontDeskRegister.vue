@@ -472,6 +472,7 @@
                 let response = this.submit();
                 if (!response.status) {
                     this.responseInfo = response.msg;
+                    this.$toast.success("挂号成功");
                     this.controls.activeStep = 3;
                 } else
                     this.$toast.message(response.msg);

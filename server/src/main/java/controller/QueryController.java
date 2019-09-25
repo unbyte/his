@@ -27,6 +27,8 @@ public class QueryController implements Controller {
                 return queryDiagnosisByRegistrationID(params);
             case "query-prescriptions-by-registration-id":
                 return queryPrescriptionsByRegistrationID(params);
+            case "query-prescriptions-by-medical-record-id":
+                return queryPrescriptionsByMedicalRecordID(params);
         }
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
@@ -204,4 +206,19 @@ public class QueryController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, prescriptions));
     }
 
+    private Tuple queryPrescriptionsByMedicalRecordID(JSONObject params) {
+        long id;
+        try {
+            id = params.getLong("id");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+        List<Prescription> prescriptions = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw().values().stream()
+                .filter(i -> i.getMedicalRecordID() == id)
+                .filter(i -> i.getStatus() < Status.REFUNDED)
+                .collect(Collectors.toList());
+
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, prescriptions));
+    }
 }

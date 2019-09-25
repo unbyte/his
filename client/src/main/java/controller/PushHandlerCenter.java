@@ -12,7 +12,7 @@ public class PushHandlerCenter {
         if (message.getHeader().getType() != MessageType.PUSH)
             return;
 
-        // 执行vue暴露出来的接收方法
+        // 执行js runtime中暴露出来的接收方法
         Platform.runLater(() -> {
             JSObject window = (JSObject) BridgeCenter.getWebEngine().executeScript("window");
             window.eval("window.inform('" + message.getBody() + "')");

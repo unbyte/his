@@ -1,4 +1,5 @@
 // io
+//todo mock
 // import mock from './mock'
 import store from './store'
 
@@ -6,11 +7,12 @@ const io = {
     post(methodName, request) {
         if (!isDev) {
             return eval(`(${window.request.send(methodName, JSON.stringify(request))})`);
-        } else {
-            /*switch (methodName) {
+        } /*else {
+            switch (methodName) {
                 case 'login':
                     // return mock.loginSuccess;
-                    return mock.loginDoctorSuccess;
+                    // return mock.loginDoctorSuccess;
+                    return mock.loginPharmacySuccess;
                 case 'front-desk-register-new':
                     return mock.registerWithNewMedicalRecordSuccess;
                 case 'front-desk-register-exist':
@@ -29,10 +31,11 @@ const io = {
                 case 'outpatient-complete':
                     return {status: 0, msg: '成功'};
                 case 'query-prescriptions-by-registration-id':
-                    return {status: 0, msg: []};
-            }*/
+                    return mock.fetchPrescriptionSuccess;
 
-        }
+
+            }
+        }*/
     },
     receive(message) {
         // todo 根据具体message进行判断
@@ -42,8 +45,10 @@ const io = {
                 store.commit("addWaitList", pushContent.msg);
                 break;
             case 'cancel registration':
-                store.commit("removeWaitList", pushContent.msg.id)
-
+                store.commit("removeWaitList", pushContent.msg.id);
+                break;
+            case 'disconnected':
+                store.commit('disconnected');
         }
     }
 }

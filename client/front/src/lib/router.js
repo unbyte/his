@@ -15,6 +15,10 @@ import OutpatientInfo from "../components/outpatient/OutpatientInfo";
 import OutpatientDiagnosis from "../components/outpatient/OutpatientDiagnosis";
 import OutpatientTech from "../components/outpatient/OutpatientTech";
 import OutpatientPrescription from "../components/outpatient/OutpatientPrescription";
+import Pharmacy from "../pages/Pharmacy";
+import PharmacyDispense from "../components/pharmacy/PharmacyDispense";
+import PharmacyWithdrawal from "../components/pharmacy/PharmacyWithdrawal";
+import PharmacyQuery from "../components/pharmacy/PharmacyQuery";
 
 Vue.use(VueRouter);
 
@@ -83,6 +87,23 @@ const router = new VueRouter({
                             component: OutpatientPrescription
                         }
                     ]
+                }
+            ]
+        }, {
+            path: '/pharmacy',
+            component: Pharmacy,
+            children: [
+                {
+                    path: 'index',
+                    component: PharmacyDispense
+                },
+                {
+                    path: 'withdrawal',
+                    component: PharmacyWithdrawal
+                },
+                {
+                    path: 'query',
+                    component: PharmacyQuery
                 }
             ]
         }

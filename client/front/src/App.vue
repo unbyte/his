@@ -2,10 +2,13 @@
     <div id="app" :class="switchClass()">
         <router-view>
         </router-view>
+        <DisconnectedDialog/>
     </div>
 </template>
 
 <script>
+
+    import DisconnectedDialog from "./components/global/DisconnectedDialog";
 
     export default {
         name: 'app',
@@ -14,6 +17,9 @@
                 return !isDev ? 'font-color-fix' : '';
             }
         },
+        components: {
+            DisconnectedDialog
+        }
     }
 </script>
 
