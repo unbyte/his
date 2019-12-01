@@ -31,7 +31,7 @@ public class FrontDeskController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
 
-    /* 处理新建病历的挂号请求 */
+    // 处理新建病历的挂号请求
     private Tuple registerNew(JSONObject params) {
         // todo
         JSONObject medicalRecordParams, registrationParams;
@@ -76,7 +76,7 @@ public class FrontDeskController implements Controller {
 
     }
 
-    /* 处理已有病历的挂号请求 */
+    // 处理已有病历的挂号请求
     private Tuple registerExist(JSONObject params) {
         JSONObject registrationParams;
         long medicalRecordID;
@@ -117,7 +117,7 @@ public class FrontDeskController implements Controller {
                 Database.INSTANCE.select("staffs", Integer.class, Staff.class).getRaw().get(newRegistration.getDoctorID()));
     }
 
-    /* 取消挂号 */
+    // 取消挂号
     private Tuple cancelRegistration(JSONObject params) {
         long id;
         try {
@@ -144,7 +144,7 @@ public class FrontDeskController implements Controller {
                 ), Database.INSTANCE.select("staffs", Integer.class, Staff.class).getRaw().get(registration.getDoctorID()));
     }
 
-    /* 收费 */
+    // 收费
     private Tuple chargeItems(JSONObject params) {
         byte type; // 0 - prescription/1 - inspectionRecords
         long id;
@@ -176,6 +176,7 @@ public class FrontDeskController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "收费成功"));
     }
 
+    // 退费
     private Tuple refundItems(JSONObject params) {
         byte type; // 0 - prescription/1 - inspectionRecords
         long id;

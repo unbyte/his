@@ -28,6 +28,7 @@ public class PharmacyController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
 
+    // 取药
     private Tuple dispense(JSONObject params) {
         long id;
         try {
@@ -48,6 +49,7 @@ public class PharmacyController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "开药成功"));
     }
 
+    // 退药
     private Tuple withdrawal(JSONObject params) {
         long id;
         try {
@@ -62,7 +64,7 @@ public class PharmacyController implements Controller {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "目标处方不存在"));
 
         if (prescription.getStatus() != Status.CONSUMED)
-            return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "该处方状态不允许取药"));
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NO_PERMISSION, "该处方状态不允许退药"));
 
         prescription.setStatus(Status.CANCELED);
 

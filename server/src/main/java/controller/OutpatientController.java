@@ -41,6 +41,7 @@ public class OutpatientController implements Controller {
     }
 
 
+    // 更新病历信息
     private Tuple updateMedicalRecordInfo(JSONObject params) {
         long id;
         String pastHistory, allergyHistory, presentIllnessHistory, currentIllnessTreatment;
@@ -68,6 +69,7 @@ public class OutpatientController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "保存成功"));
     }
 
+    // 初诊
     private Tuple presumptiveDiagnosis(JSONObject params) {
         long id;
         String complaint;
@@ -89,6 +91,7 @@ public class OutpatientController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "初诊成功"));
     }
 
+    // 终诊
     private Tuple finalDiagnosis(JSONObject params) {
         long id;
         List<Integer> disease;
@@ -116,6 +119,7 @@ public class OutpatientController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "保存成功"));
     }
 
+    // 完成诊断
     private Tuple complete(JSONObject params) {
         long id;
         try {
@@ -143,6 +147,7 @@ public class OutpatientController implements Controller {
     }
 
 
+    // 保存药单（尚未发布）
     private Tuple saveTempPrescription(JSONObject params) {
         long id, medicalRecord, registration;
         String name;
@@ -186,6 +191,7 @@ public class OutpatientController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "暂存成功"));
     }
 
+    // 发布药单
     private Tuple publishPrescription(JSONObject params) {
         long id, medicalRecord, registration;
         byte clazz;
@@ -226,6 +232,7 @@ public class OutpatientController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "开立成功"));
     }
 
+    // 取消药单
     private Tuple cancelPrescription(JSONObject params) {
         long id;
         try {

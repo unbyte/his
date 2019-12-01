@@ -33,7 +33,7 @@ public class QueryController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
 
-    /* 用病历id查询病历 */
+    // 用病历id查询病历
     private Tuple queryMedicalRecordByID(JSONObject params, Staff user) {
         long id;
         try {
@@ -73,7 +73,7 @@ public class QueryController implements Controller {
 
     }
 
-    /* 用病历id查可退号挂号记录 */
+    // 用病历id查可退号挂号记录
     private Tuple queryCancelableByMedicalRecordID(JSONObject params) {
         long id;
         try {
@@ -97,6 +97,7 @@ public class QueryController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, cancelableList));
     }
 
+    // 用病历id查询未收费项目
     private Tuple queryUnchargedItemsByMedicalRecordID(JSONObject params) {
         long id;
         try {
@@ -135,6 +136,7 @@ public class QueryController implements Controller {
                 .fluentPut("prescriptions", unchargedPrescriptions)));
     }
 
+    // 用病历id查询已缴费项目
     private Tuple queryPaidItemsByMedicalRecordID(JSONObject params) {
         long id;
         try {
@@ -173,6 +175,7 @@ public class QueryController implements Controller {
                 .fluentPut("prescriptions", chargedPrescriptions)));
     }
 
+    // 用挂号记录查询诊断信息
     private Tuple queryDiagnosisByRegistrationID(JSONObject params) {
         long id;
         try {
@@ -190,6 +193,7 @@ public class QueryController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, diagnosis));
     }
 
+    // 用挂号记录查询药单
     private Tuple queryPrescriptionsByRegistrationID(JSONObject params) {
         long id;
         try {
@@ -206,6 +210,7 @@ public class QueryController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, prescriptions));
     }
 
+    // 用病历号查询药单
     private Tuple queryPrescriptionsByMedicalRecordID(JSONObject params) {
         long id;
         try {

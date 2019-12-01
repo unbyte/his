@@ -17,9 +17,10 @@ public class Department {
     public static byte PHARMACY = 1;
     public static byte MEDICAL_TECHNIQUE = 2;
     public static byte FRONT_DESK= 3;
+    public static byte ADMIN = 8;
 
     private int id;
     private String name;
-    /* 分类 0 门诊部门 1 药师部门 2 技师部门 3 前台*/
+    /* 分类 0 门诊部门 1 药师部门 2 技师部门 3 前台 8 管理员*/
     private byte clazz;
 }

@@ -1,13 +1,10 @@
 package database;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import model.Registration;
-import model.RegistrationLevel;
+import com.alibaba.fastjson.JSONObject;
+import model.Department;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 
 public class JsonTest {
     public static void main(String[] args) {
@@ -18,10 +15,18 @@ public class JsonTest {
         registrationLevels.put(3, new RegistrationLevel(3, 40, 100));
         System.out.println(JSON.toJSONString(JSON.toJSON(registrationLevels)));
 */
-        List<Registration> list = new ArrayList<>();
+        /*List<Registration> list = new ArrayList<>();
         list.add(new Registration());
 
         System.out.println(JSON.toJSONString(list));
 
+        */
+
+//        JSONObject a = new JSONObject().fluentPut("a", "123333321");
+//        System.out.println(a.getLong("a"));
+
+//        System.out.println(JSON.parseObject("{\"a\":[1,2,3,4]}").getJSONArray("a"));
+        System.out.println(new JSONObject().fluentPut("a",new Department(1,"1",(byte)1)).toJSONString());
+        System.out.println(JSON.toJSONString(new HashSet<Integer>(){{add(1);}}));
     }
 }

@@ -10,7 +10,7 @@ public class IDGenerator {
 
     /**
      * 生成一个唯一id<br/>
-     * 考虑到实际需求，取精确到毫秒的时间戳作为id
+     * 按课设标准，简单起见，取精确到毫秒的时间戳作为id
      *
      * @return id
      */
