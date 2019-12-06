@@ -13,11 +13,11 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @ToString
 public class Department {
-    public static byte OUTPATIENT = 0;
-    public static byte PHARMACY = 1;
-    public static byte MEDICAL_TECHNIQUE = 2;
-    public static byte FRONT_DESK= 3;
-    public static byte ADMIN = 8;
+    public static final byte OUTPATIENT = 0;
+    public static final byte PHARMACY = 1;
+    public static final byte MEDICAL_TECHNIQUE = 2;
+    public static final byte FRONT_DESK= 3;
+    public static final byte ADMIN = 8;
 
     private int id;
     private String name;

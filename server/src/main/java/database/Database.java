@@ -51,7 +51,6 @@ public enum Database {
     // 因为极少更新，所以缓存成json字符串
     private String inspectionItemsCache;
     private String medicinesCache;
-    private String diseasesCache;
     private String registrationLevelsCache;
     private String departmentsCache;
     private String titlesCache;
@@ -158,6 +157,8 @@ public enum Database {
 
         prescriptions.putAll(FileUtils.loadMapFromFile(paths.get("prescriptions"), Long.class, Prescription.class));
 
+        diseases.putAll(FileUtils.loadMapFromFile(paths.get("diseases"), Integer.class, Disease.class));
+
         staffs.putAll(FileUtils.loadMapFromFile(paths.get("staffs"), Integer.class, Staff.class));
 
         inspectionItems.putAll(FileUtils.loadMapFromFile(paths.get("inspectionItems"), Integer.class, InspectionItem.class));
@@ -169,8 +170,6 @@ public enum Database {
         medicines.putAll(FileUtils.loadMapFromFile(paths.get("medicines"), Integer.class, Medicine.class));
         medicinesCache = FileUtils.readJSONStringFromFile(paths.get("medicines"), "{}");
 
-        diseases.putAll(FileUtils.loadMapFromFile(paths.get("diseases"), Integer.class, Disease.class));
-        diseasesCache = FileUtils.readJSONStringFromFile(paths.get("diseases"), "{}");
 
         registrationLevels.putAll(FileUtils.loadMapFromFile(paths.get("registrationLevels"), Integer.class, RegistrationLevel.class));
         registrationLevelsCache = FileUtils.readJSONStringFromFile(paths.get("registrationLevels"), "{}");
@@ -181,7 +180,6 @@ public enum Database {
         // 存储缓存引用
         caches.put("inspectionItems", inspectionItemsCache);
         caches.put("medicines", medicinesCache);
-        caches.put("diseases", diseasesCache);
         caches.put("registrationLevels", registrationLevelsCache);
         caches.put("departments", departmentsCache);
         caches.put("titles", titlesCache);
@@ -228,6 +226,7 @@ public enum Database {
         flag &= FileUtils.saveMapToFile(paths.get("diagnoses"), diagnoses, false);
         flag &= FileUtils.saveMapToFile(paths.get("inspectionRecords"), inspectionRecords, false);
         flag &= FileUtils.saveMapToFile(paths.get("prescriptions"), prescriptions, false);
+        flag &= FileUtils.saveMapToFile(paths.get("diseases"), diseases, false);
         flag &= FileUtils.saveMapToFile(paths.get("staffs"), staffs, false);
 
 
@@ -235,7 +234,6 @@ public enum Database {
         flag &= FileUtils.writeStringToFile(paths.get("inspectionItems"), inspectionItemsCache, false);
         flag &= FileUtils.writeStringToFile(paths.get("departments"), departmentsCache, false);
         flag &= FileUtils.writeStringToFile(paths.get("medicines"), medicinesCache, false);
-        flag &= FileUtils.writeStringToFile(paths.get("diseases"), diseasesCache, false);
         flag &= FileUtils.writeStringToFile(paths.get("registrationLevels"), registrationLevelsCache, false);
         flag &= FileUtils.writeStringToFile(paths.get("titles"), titlesCache, false);
         if (!flag)

@@ -13,11 +13,11 @@ public class Status {
      * 5 已退费
      * 6 已作废（直接由UNPAID作废得到这个状态
      */
-    public static byte TEMPORARY = 0;
-    public static byte UNPAID = 1;
-    public static byte UNCONSUMED = 2;
-    public static byte CONSUMED = 3;
-    public static byte CANCELED = 4;
-    public static byte REFUNDED = 5;
-    public static byte CANCELED_WITHOUT_PAID = 6;
+    public static final byte TEMPORARY = 0;
+    public static final byte UNPAID = 1;
+    public static final byte UNCONSUMED = 2;
+    public static final byte CONSUMED = 3;
+    public static final byte CANCELED = 4;
+    public static final byte REFUNDED = 5;
+    public static final byte CANCELED_WITHOUT_PAID = 6;
 }

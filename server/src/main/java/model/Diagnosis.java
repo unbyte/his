@@ -16,10 +16,10 @@ import java.util.List;
 @Setter
 public class Diagnosis {
     /*初诊*/
-    public static byte PRESUMPTIVE = (byte) 0;
+    public static final byte PRESUMPTIVE = (byte) 0;
 
     /*确诊*/
-    public static byte FINAL = (byte) 1;
+    public static final byte FINAL = (byte) 1;
 
     private long id;
 

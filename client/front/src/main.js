@@ -26,7 +26,7 @@ Vue.config.productionTip = false;
 
 Vue.prototype.$utils = utils;
 
-window['mode'] = 'prod'; // dev or product
+window['mode'] = 'dev'; // dev or product
 
 window['isDev'] = window.mode === 'dev';
 

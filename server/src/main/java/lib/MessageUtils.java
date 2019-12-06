@@ -12,22 +12,22 @@ public class MessageUtils {
     /**
      * 成功状态码
      */
-    public static byte SUCCESS = (byte) 0;
+    public static final byte SUCCESS = (byte) 0;
     /**
      * not found状态码
      */
-    public static byte NOT_FOUND = (byte) 1;
+    public static final byte NOT_FOUND = (byte) 1;
     /**
      * bad request状态码
      */
-    public static byte BAD_REQUEST = (byte) 2;
+    public static final byte BAD_REQUEST = (byte) 2;
     /**
      * no permission状态码
      */
-    public static byte NO_PERMISSION = (byte) 3;
+    public static final byte NO_PERMISSION = (byte) 3;
 
 
-    public static byte FAIL = (byte) 4;
+    public static final byte FAIL = (byte) 4;
 
     /**
      * 为业务响应构造Message

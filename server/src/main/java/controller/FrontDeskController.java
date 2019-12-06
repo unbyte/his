@@ -55,6 +55,7 @@ public class FrontDeskController implements Controller {
                 registrationParams.getInteger("department"),
                 registrationParams.getInteger("doctor"),
                 registrationParams.getDouble("cost"),
+                registrationParams.getBoolean("urgent"),
                 Status.UNCONSUMED
         );
 
@@ -97,6 +98,7 @@ public class FrontDeskController implements Controller {
                 registrationParams.getInteger("department"),
                 registrationParams.getInteger("doctor"),
                 registrationParams.getDouble("cost"),
+                registrationParams.getBoolean("urgent"),
                 Status.UNCONSUMED
         );
 

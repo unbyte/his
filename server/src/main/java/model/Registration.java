@@ -27,7 +27,8 @@ public class Registration {
 
     private double fee;
 
-    @Setter
+    private boolean urgent;
+
     private byte status;
 
     /**
@@ -41,8 +42,8 @@ public class Registration {
      * @param status           挂号状态
      * @return 一个id自动生成的挂号记录对象
      */
-    public static Registration insert(long medicalRecordsID, long time, int departmentID, int doctorID, double fee, byte status) {
-        return new Registration(IDGenerator.generate(), medicalRecordsID, time, departmentID, doctorID, fee, status);
+    public static Registration insert(long medicalRecordsID, long time, int departmentID, int doctorID, double fee, boolean urgent, byte status) {
+        return new Registration(IDGenerator.generate(), medicalRecordsID, time, departmentID, doctorID, fee, urgent, status);
     }
 
 }

@@ -1,19 +1,21 @@
 package controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
 import database.Database;
 import lib.MessageUtils;
 import lib.Tuple;
-import model.Department;
-import model.MedicalRecord;
-import model.Registration;
-import model.Staff;
+import model.*;
 import net.ChannelPool;
 import net.message.MessageType;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -69,12 +71,11 @@ public class LoginController implements Controller {
                 .fluentPut("titles", database.selectAll("titles"))
                 .fluentPut("departments", database.selectAll("departments"))
                 .fluentPut("registrationLevels", database.selectAll("registrationLevels"));
-
         if (department.getClazz() == Department.OUTPATIENT) {
             Map<Long, MedicalRecord> medicalRecords = database.select("medicalRecords", Long.class, MedicalRecord.class).getRaw();
             msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"))
                     .fluentPut("medicines", database.selectAll("medicines"))
-                    .fluentPut("diseases", database.selectAll("diseases"))
+                    .fluentPut("diseases", getDiseaseTree())
                     .fluentPut("patients", database.select("newRegistrations", Long.class, Registration.class).getRaw().values().stream()
                             .filter(i -> i.getDoctorID() == staff.getId())
                             .map(i -> {
@@ -82,12 +83,13 @@ public class LoginController implements Controller {
                                 return new JSONObject()
                                         .fluentPut("id", i.getId())
                                         .fluentPut("medicalRecord", medicalRecord.getId())
-                                        .fluentPut("name",medicalRecord.getName() )
-                                        .fluentPut("gender",medicalRecord.getGender())
-                                        .fluentPut("birthday",medicalRecord.getBirthday());
-                                    })
+                                        .fluentPut("name", medicalRecord.getName())
+                                        .fluentPut("gender", medicalRecord.getGender())
+                                        .fluentPut("birthday", medicalRecord.getBirthday());
+                            })
                             .collect(Collectors.toList()));
         }
+
         if (department.getClazz() == Department.MEDICAL_TECHNIQUE)
             msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"));
 
@@ -102,8 +104,16 @@ public class LoginController implements Controller {
                             .map(Staff::toString).collect(Collectors.joining(",")) + "}"))
                     .fluentPut("inspectionItems", database.selectAll("inspectionItems"));
 
+        if (department.getClazz() == Department.ADMIN)
+            msg.fluentPut("diseases", getDiseaseTree());
+
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, msg, MessageType.CONNECT_RES), staff);
     }
 
-
+    private JSONArray getDiseaseTree() {
+        Map<Integer, Disease> diseases = Database.INSTANCE.select("diseases", Integer.class, Disease.class).getRaw();
+        // 防止循环引用
+        SimplePropertyPreFilter filter = new SimplePropertyPreFilter(Disease.class, "id", "code", "name", "clazz", "children");
+        return JSON.parseArray(JSON.toJSONString(diseases.values().stream().filter(i -> i.getParent() == null).collect(Collectors.toList()), filter));
+    }
 }

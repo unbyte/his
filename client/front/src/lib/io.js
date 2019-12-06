@@ -11,8 +11,8 @@ const io = {
             switch (methodName) {
                 case 'login':
                     // return mock.loginSuccess;
-                    // return mock.loginDoctorSuccess;
-                    return mock.loginAdminSuccess;
+                    return mock.loginDoctorSuccess;
+                    // return mock.loginAdminSuccess;
                 case 'front-desk-register-new':
                     return mock.registerWithNewMedicalRecordSuccess;
                 case 'front-desk-register-exist':
