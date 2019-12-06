@@ -11,6 +11,8 @@ const utils = {
                 return "medical-technique";
             case 3:
                 return "front-desk";
+            case 8:
+                return "admin";
         }
     },
     departmentIDToObject(departmentID) {
@@ -28,7 +30,7 @@ const utils = {
     doctorIDToObject(doctorID) {
         return store.state.global.doctors[doctorID];
     },
-    medicineIDToObject(medicineID){
+    medicineIDToObject(medicineID) {
         return store.state.global.medicines[medicineID];
     },
     titleIDToLimit(titleID) {
@@ -46,6 +48,11 @@ const utils = {
     getCurrentDepartmentName() {
         return this.departmentIDToObject(store.state.global.user.department).name;
     },
+    birthToAge(birthday) {
+        if (birthday == null)
+            return;
+        return parseInt((Date.now() - new Date(birthday).getTime() + 1000 * 60 * 60 * 24) / (1000 * 60 * 60 * 24 * 365));
+    },
     isLoggedIn() {
         return !!store.state.global.user
     },
@@ -53,7 +60,8 @@ const utils = {
         OUTPATIENT: 0,
         PHARMACY: 1,
         MEDICAL_TECHNIQUE: 2,
-        FRONT_DESK: 3
+        FRONT_DESK: 3,
+        ADMIN: 8
     },
     statusNameMap: {
         0: '暂存',

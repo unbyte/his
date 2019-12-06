@@ -55,5 +55,7 @@ public class MainScene implements Initializable {
         webView.setPrefWidth(newWidth);
         webView.setPrefHeight(newHeight);
         stage.centerOnScreen();
+
+        // show在webview中载入完后使用js调用
     }
 }

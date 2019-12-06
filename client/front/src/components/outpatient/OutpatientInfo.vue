@@ -21,7 +21,7 @@
                     </mu-col>
                     <mu-col span="2">
                         <mu-form-item prop="age" label="年龄">
-                            <mu-text-field prop="age" :value="getAge(medicalRecordInfo.birthday)"
+                            <mu-text-field prop="age" :value="$utils.birthToAge(medicalRecordInfo.birthday)"
                                            disabled></mu-text-field>
                         </mu-form-item>
                     </mu-col>
@@ -77,11 +77,6 @@
             }
         },
         methods: {
-            getAge(birthday) {
-                if (birthday == null)
-                    return;
-                return parseInt((Date.now() - new Date(birthday).getTime() + 1000 * 60 * 60 * 24) / (1000 * 60 * 60 * 24 * 365));
-            },
             updateMedicalRecordInfo() {
                 if (!Object.keys(this.medicalRecordInfo).length)
                     return;

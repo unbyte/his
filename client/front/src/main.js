@@ -7,6 +7,7 @@ import 'muse-ui/dist/muse-ui.css'
 import io from './lib/io'
 import utils from './lib/utils'
 import Toast from 'muse-ui-toast'
+import {Tree} from "element-ui";
 
 Vue.use(MuseUI);
 Vue.use(Toast, {
@@ -19,11 +20,13 @@ Vue.use(Toast, {
     errorIcon: ''
 });
 
+Vue.use(Tree);
+
 Vue.config.productionTip = false;
 
 Vue.prototype.$utils = utils;
 
-window['mode'] = 'product'; // dev or product
+window['mode'] = 'prod'; // dev or product
 
 window['isDev'] = window.mode === 'dev';
 

@@ -15,7 +15,7 @@
                     <mu-list-item-content>
                         <mu-list-item-title>{{wait.name}}</mu-list-item-title>
                         <mu-list-item-sub-title style="color: rgba(0, 0, 0, .9)">{{genderMap[wait.gender]}}
-                            {{getAge(wait.birthday)}}岁
+                            {{$utils.birthToAge(wait.birthday)}}岁
                         </mu-list-item-sub-title>
                         <mu-list-item-sub-title>
                             No.{{wait.medicalRecord}}
@@ -34,7 +34,7 @@
                     <mu-list-item-content>
                         <mu-list-item-title>{{done.name}}</mu-list-item-title>
                         <mu-list-item-sub-title style="color: rgba(0, 0, 0, .9)">{{genderMap[done.gender]}}
-                            {{getAge(done.birthday)}}岁
+                            {{$utils.birthToAge(done.birthday)}}岁
                         </mu-list-item-sub-title>
                         <mu-list-item-sub-title>
                             No.{{done.medicalRecord}}
@@ -68,11 +68,6 @@
             }
         },
         methods: {
-            getAge(birthday) {
-                if (birthday == null)
-                    return;
-                return parseInt((Date.now() - new Date(birthday).getTime() + 1000 * 60 * 60 * 24) / (1000 * 60 * 60 * 24 * 365));
-            },
             search() {
 
             },

@@ -1,12 +1,17 @@
 package model;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import lib.JSONUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class DataInitialTest {
     public static void main(String[] args) {
-        genInspectionItem();
+        genDisease();
     }
 
     static void genDepartments() {
@@ -17,6 +22,7 @@ public class DataInitialTest {
         departments.put(3, new Department(3, "放射科", Department.MEDICAL_TECHNIQUE));
         departments.put(4, new Department(4, "外科", Department.OUTPATIENT));
         departments.put(5, new Department(5, "消化科", Department.OUTPATIENT));
+        departments.put(8, new Department(8, "管理员", Department.ADMIN));
         System.out.println(JSON.toJSONString(departments));
     }
 
@@ -35,6 +41,7 @@ public class DataInitialTest {
         titles.put(10, new Title(10, "副主任药师", 0));
         titles.put(11, new Title(11, "主任药师", 0));
         titles.put(12, new Title(12, "前台接诊", 0));
+        titles.put(13, new Title(13, "管理员", 0));
         System.out.println(JSON.toJSONString(titles));
     }
 
@@ -58,6 +65,7 @@ public class DataInitialTest {
         staffs.put(6, new Staff(6, "黄黄黄", "E=BLv", 4, 3)); // 主任医师
         staffs.put(7, new Staff(7, "青青青", "E=BLv", 5, 1)); // 主治医师
         staffs.put(8, new Staff(8, "紫紫紫", "E=BLv", 5, 1)); // 主治医师
+        staffs.put(9, new Staff(9, "哈哈哈", "E=BLv", 8, 13)); // 主治医师
         System.out.println(JSON.toJSONString(staffs));
     }
 
@@ -66,5 +74,42 @@ public class DataInitialTest {
         inspectionItems.put(0, new InspectionItem(0, "PTTS", "普通透视", 3, 5));
         inspectionItems.put(1, new InspectionItem(1, "SGBCTS", "食管钡餐透视", 3, 15));
         System.out.println(JSON.toJSONString(inspectionItems));
+    }
+
+    static void genDisease() {
+        HashMap<Integer, Disease> diseases = new HashMap<>();
+        Disease disease0 = new Disease(0, "内科疾病", "nkjb", 1, null, new ArrayList<>());
+        Disease disease1 = new Disease(1, "呼吸内科", "hxnk", 1, disease0, new ArrayList<>());
+        Disease disease2 = new Disease(2, "消化内科", "xhnk", 1, disease0, new ArrayList<>());
+        Disease disease3 = new Disease(3, "心血管内科", "xxgnk", 1, disease0, new ArrayList<>());
+
+        disease0.getChildren().addAll(Arrays.asList(disease1, disease2, disease3));
+
+        Disease disease4 = new Disease(4, "哮喘", "xc", 1, disease1, new ArrayList<>());
+
+        disease1.getChildren().add(disease4);
+
+        Disease disease5 = new Disease(5, "肠炎", "cy", 1, disease2, new ArrayList<>());
+        disease2.getChildren().add(disease5);
+
+        Disease disease6 = new Disease(6, "出血性结肠炎", "cxxjcy", 1, disease5, new ArrayList<>());
+
+        disease5.getChildren().add(disease6);
+
+        Disease disease7 = new Disease(7, "心肌炎", "xjy", 1, disease3, new ArrayList<>());
+
+        disease3.getChildren().add(disease7);
+
+        diseases.put(0,disease0);
+        diseases.put(1,disease1);
+        diseases.put(2,disease2);
+        diseases.put(3,disease3);
+        diseases.put(4,disease4);
+        diseases.put(5,disease5);
+        diseases.put(6,disease6);
+        diseases.put(7,disease7);
+
+        System.out.println(JSON.toJSONString(diseases));
+        System.out.println(JSONUtils.toHashMap(JSON.toJSONString(diseases),Integer.class,Disease.class).get(0).getChildren().get(0).getName());
     }
 }

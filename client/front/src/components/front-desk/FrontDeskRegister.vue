@@ -109,7 +109,7 @@
                                    disabled></mu-date-input>
                 </mu-form-item>
                 <mu-form-item prop="age" label="年龄">
-                    <mu-text-field prop="age" :value="getAge(medicalRecordInfo.birthday)" disabled></mu-text-field>
+                    <mu-text-field prop="age" :value="$utils.birthToAge(medicalRecordInfo.birthday)" disabled></mu-text-field>
                 </mu-form-item>
                 <mu-form-item prop="IDNumber" label="身份证号码">
                     <mu-text-field :value="medicalRecordInfo.IDNumber" max-length="18" prop="IDNumber"
@@ -414,11 +414,6 @@
                     medicalRecordID: ''
                 };
             },
-            getAge(birthday) {
-                if (birthday == null)
-                    return;
-                return parseInt((Date.now() - birthday.getTime() + 1000 * 60 * 60 * 24) / (1000 * 60 * 60 * 24 * 365));
-            },
             selectDoctor(index, selects) {
                 this.selects = [index];
                 this.registrationForm = {
@@ -519,7 +514,7 @@
         },
         computed: {
             age() {
-                return this.getAge(this.newForm.birthday);
+                return this.$utils.birthToAge(this.newForm.birthday);
             },
             departments() {
                 return this.$store.state.global.departments

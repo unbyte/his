@@ -19,6 +19,9 @@ import Pharmacy from "../pages/Pharmacy";
 import PharmacyDispense from "../components/pharmacy/PharmacyDispense";
 import PharmacyWithdrawal from "../components/pharmacy/PharmacyWithdrawal";
 import PharmacyQuery from "../components/pharmacy/PharmacyQuery";
+import Admin from "../pages/Admin";
+import AdminIndex from "../components/admin/AdminIndex";
+import AdminQuery from "../components/admin/AdminQuery";
 
 Vue.use(VueRouter);
 
@@ -87,7 +90,7 @@ const router = new VueRouter({
                             component: OutpatientPrescription
                         }
                     ]
-                }
+                },
             ]
         }, {
             path: '/pharmacy',
@@ -104,6 +107,20 @@ const router = new VueRouter({
                 {
                     path: 'query',
                     component: PharmacyQuery
+                }
+            ]
+        },
+        {
+            path: '/admin',
+            component: Admin,
+            children: [
+                {
+                    path: 'index',
+                    component: AdminIndex
+                },
+                {
+                    path: 'query',
+                    component: AdminQuery
                 }
             ]
         }

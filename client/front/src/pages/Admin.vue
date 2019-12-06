@@ -1,18 +1,15 @@
 <template>
-    <div id="front-desk-page">
+    <div id="admin-page">
         <mu-container>
             <mu-tabs :value.sync="active" inverse color="primary" indicator-color="rgb(33, 150, 243)"
                      text-color="rgba(0, 0, 0, .54)">
-                <mu-tab to="/front-desk/index">首页</mu-tab>
-                <mu-tab to="/front-desk/register">挂号</mu-tab>
-                <mu-tab to="/front-desk/cancel">退号</mu-tab>
-                <mu-tab to="/front-desk/charge">收费</mu-tab>
-                <mu-tab to="/front-desk/refund">退费</mu-tab>
-                <mu-tab to="/front-desk/query">费用查询</mu-tab>
+                <mu-tab to="/admin/index">首页</mu-tab>
+                <mu-tab to="/admin/query">查询</mu-tab>
             </mu-tabs>
             <router-view v-if="isRouterAlive"></router-view>
             <mu-chip class="name-chip" color="primary" delete @delete="exit">
-                <mu-icon value=":i-icon-profile"></mu-icon> 【{{user.title}}】{{user.name}}
+                <mu-icon value=":i-icon-profile"></mu-icon>
+                【{{user.title}}】{{user.name}}
             </mu-chip>
         </mu-container>
     </div>
@@ -20,7 +17,7 @@
 
 <script>
     export default {
-        name: "FrontDesk",
+        name: "Admin",
         data() {
             return {
                 active: 0,
@@ -49,20 +46,15 @@
                 lifecycle.exit();
             },
             reload() {
-                this.isRouterAlive = false
+                this.isRouterAlive = false;
                 this.$nextTick(() => (this.isRouterAlive = true))
             }
-        },
-        provide() {
-            return {
-                reload: this.reload
-            }
-        },
+        }
     }
 </script>
 
 <style scoped>
-    #front-desk-page {
+    #admin-page {
         display: flex;
         width: 100%;
         height: 100%;
@@ -102,5 +94,4 @@
     #front-desk-page >>> .mu-tab-wrapper, .mu-form-item {
         font-size: 15px;
     }
-
 </style>

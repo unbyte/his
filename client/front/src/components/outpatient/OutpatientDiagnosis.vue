@@ -81,6 +81,7 @@
 </template>
 
 <script>
+    // todo 修改疾病为病种树
     export default {
         name: "OutpatientDiagnosis",
         data() {

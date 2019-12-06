@@ -1,18 +1,18 @@
 // io
 //todo mock
-// import mock from './mock'
+import mock from './mock'
 import store from './store'
 
 const io = {
     post(methodName, request) {
         if (!isDev) {
             return eval(`(${window.request.send(methodName, JSON.stringify(request))})`);
-        } /*else {
+        } else {
             switch (methodName) {
                 case 'login':
                     // return mock.loginSuccess;
                     // return mock.loginDoctorSuccess;
-                    return mock.loginPharmacySuccess;
+                    return mock.loginAdminSuccess;
                 case 'front-desk-register-new':
                     return mock.registerWithNewMedicalRecordSuccess;
                 case 'front-desk-register-exist':
@@ -32,10 +32,9 @@ const io = {
                     return {status: 0, msg: '成功'};
                 case 'query-prescriptions-by-registration-id':
                     return mock.fetchPrescriptionSuccess;
-
-
             }
-        }*/
+        }
+        // todo 打包前注释掉
     },
     receive(message) {
         // todo 根据具体message进行判断
