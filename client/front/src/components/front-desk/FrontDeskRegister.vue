@@ -109,7 +109,8 @@
                                    disabled></mu-date-input>
                 </mu-form-item>
                 <mu-form-item prop="age" label="年龄">
-                    <mu-text-field prop="age" :value="$utils.birthToAge(medicalRecordInfo.birthday)" disabled></mu-text-field>
+                    <mu-text-field prop="age" :value="$utils.birthToAge(medicalRecordInfo.birthday)"
+                                   disabled></mu-text-field>
                 </mu-form-item>
                 <mu-form-item prop="IDNumber" label="身份证号码">
                     <mu-text-field :value="medicalRecordInfo.IDNumber" max-length="18" prop="IDNumber"
@@ -128,7 +129,7 @@
                 <mu-row gutter>
                     <mu-col span="8">
                         <mu-row gutter>
-                            <mu-col span="6">
+                            <mu-col span="5">
                                 <mu-form-item prop="department" label="科室">
                                     <mu-select prop="department" filterable
                                                v-model.number="registrationFilter.department"
@@ -140,7 +141,7 @@
                                     </mu-select>
                                 </mu-form-item>
                             </mu-col>
-                            <mu-col span="6">
+                            <mu-col span="5">
                                 <!--这里直接用职称来代替挂号级别了-->
                                 <mu-form-item prop="title" label="级别">
                                     <mu-select prop="title" v-model.number="registrationFilter.title" full-width>
@@ -150,6 +151,11 @@
                                                    :label="title.name"
                                                    :value="title.id"></mu-option>
                                     </mu-select>
+                                </mu-form-item>
+                            </mu-col>
+                            <mu-col span="2">
+                                <mu-form-item prop="urgent" label="加急">
+                                    <mu-checkbox v-model="registrationForm.urgent" prop="urgent"></mu-checkbox>
                                 </mu-form-item>
                             </mu-col>
                         </mu-row>
@@ -211,6 +217,15 @@
                                         '￥1.00':'￥0.00' }}
                                     </mu-list-item-title>
                                     <mu-list-item-sub-title>工本费</mu-list-item-sub-title>
+                                </mu-list-item-content>
+                            </mu-list-item>
+                            <mu-list-item button :ripple="false">
+                                <mu-list-item-content>
+                                    <mu-list-item-title>
+                                        {{registrationForm.urgent ?
+                                        '￥20.00':'￥0.00' }}
+                                    </mu-list-item-title>
+                                    <mu-list-item-sub-title>加急费</mu-list-item-sub-title>
                                 </mu-list-item-content>
                             </mu-list-item>
                             <mu-list-item button :ripple="false">
@@ -354,6 +369,7 @@
                     department: -1,
                     title: -1,
                     doctor: null,
+                    urgent: false,
                     cost: 0
                 },
                 selects: [],
@@ -416,12 +432,10 @@
             },
             selectDoctor(index, selects) {
                 this.selects = [index];
-                this.registrationForm = {
-                    title: this.filteredDoctors[index].title,
-                    department: this.filteredDoctors[index].department,
-                    doctor: this.filteredDoctors[index],
-                    cost: this.$utils.titleIDToFee(this.filteredDoctors[index].title) + (this.controls.newMedicalRecord ? 1 : 0)
-                }
+                this.registrationForm.department = this.filteredDoctors[index].department;
+                this.registrationForm.title = this.filteredDoctors[index].title;
+                this.registrationForm.doctor = this.filteredDoctors[index];
+                this.registrationForm.cost = this.$utils.titleIDToFee(this.filteredDoctors[index].title) + (this.controls.newMedicalRecord ? 1 : 0) + (this.registrationForm.urgent ? 20 : 0);
             },
             handleFirstStep() {
                 // 验证表单是否通过
@@ -482,6 +496,7 @@
                     department: this.registrationForm.department,
                     title: this.registrationForm.title,
                     doctor: this.registrationForm.doctor.id,
+                    urgent: this.registrationForm.urgent,
                     cost: this.registrationForm.cost
                 };
                 // 新建病历的挂号请求
@@ -532,12 +547,11 @@
             },
             filteredDoctors() {
                 this.selects = [];
-                this.registrationForm = {
-                    department: -1,
-                    title: -1,
-                    doctor: null,
-                    cost: 0
-                };
+                this.registrationForm.department = -1;
+                this.registrationForm.title = -1;
+                this.registrationForm.doctor = null;
+                this.registrationForm.cost = 0;
+
                 return Object.values(this.doctors).filter(i => (i.department === this.registrationFilter.department || this.registrationFilter.department === -1)
                     && (i.title === this.registrationFilter.title || this.registrationFilter.title === -1));
             },

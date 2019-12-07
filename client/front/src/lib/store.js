@@ -21,8 +21,8 @@ const store = new Vuex.Store({
             state.global = globalData;
         },
         setWaitList(state, patientList) {
-            // 拉取的列表按时间倒序，得reverse一下
-            state.outpatient.patientList.wait = patientList.reverse();
+            patientList.sort((a, b) => b.power - a.power);
+            state.outpatient.patientList.wait = patientList;
         },
         addWaitList(state, waitList) {
             state.outpatient.patientList.wait.push(waitList);
@@ -46,7 +46,7 @@ const store = new Vuex.Store({
         moveWaitToDone(state) {
             state.outpatient.patientList.done.unshift(state.outpatient.patientList.wait.shift());
         },
-        disconnected(state){
+        disconnected(state) {
             state.connectionStatus = false;
         }
     },

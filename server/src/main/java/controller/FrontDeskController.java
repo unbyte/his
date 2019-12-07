@@ -1,12 +1,15 @@
 package controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import database.Database;
 import lib.MessageUtils;
 import lib.Tuple;
 import model.*;
 
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FrontDeskController implements Controller {
     @Override
@@ -59,25 +62,52 @@ public class FrontDeskController implements Controller {
                 Status.UNCONSUMED
         );
 
+
         Database.INSTANCE.insert("medicalRecords", newMedicalRecord.getId(), newMedicalRecord);
+
         Database.INSTANCE.insert("newRegistrations", newRegistration.getId(), newRegistration);
+
+        Map<Long, MedicalRecord> medicalRecords = Database.INSTANCE.select("medicalRecords", Long.class, MedicalRecord.class).getRaw();
+        Map<Integer, VisitingQueue> visitingQueues = Database.INSTANCE.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw();
+
+        // 加入索引表
+        Map<Long, Long[]> registrationIndexes = Database.INSTANCE.select("registrationIndexes", Long.class, Long[].class).getRaw();
+        registrationIndexes.put(newMedicalRecord.getId(), new Long[]{newRegistration.getId()});
+
+        if (!visitingQueues.containsKey(newRegistration.getDoctorID()))
+            visitingQueues.put(newRegistration.getDoctorID(), new VisitingQueue());
+
+        VisitingQueue visitingQueue = visitingQueues.get(newRegistration.getDoctorID());
+
+        visitingQueue.insert(newRegistration);
+
+        List<JSONObject> collect = visitingQueue.getAllElement().stream()
+                .filter(Objects::nonNull)
+                .map(i -> {
+                            MedicalRecord medicalRecord = medicalRecords.get(i.getRegistration().getMedicalRecordsID());
+                            return new JSONObject()
+                                    .fluentPut("id", i.getRegistration().getId())
+                                    .fluentPut("medicalRecord", medicalRecord.getId())
+                                    .fluentPut("name", medicalRecord.getName())
+                                    .fluentPut("gender", medicalRecord.getGender())
+                                    .fluentPut("birthday", medicalRecord.getBirthday())
+                                    .fluentPut("power", i.getPower())
+                                    .fluentPut("urgent", i.getRegistration().isUrgent());
+                        }
+                ).collect(Collectors.toList());
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, new JSONObject()
                 .fluentPut("medicalRecordID", newMedicalRecord.getId())
                 .fluentPut("registrationID", newRegistration.getId())
                 .fluentPut("cost", registrationParams.getDouble("cost"))),
                 MessageUtils.buildPush("new registration",
-                        new JSONObject()
-                                .fluentPut("id", newRegistration.getId())
-                                .fluentPut("medicalRecord", newMedicalRecord.getId())
-                                .fluentPut("name", newMedicalRecord.getName())
-                                .fluentPut("gender", newMedicalRecord.getGender())
-                                .fluentPut("birthday", newMedicalRecord.getBirthday())),
+                        collect),
                 Database.INSTANCE.select("staffs", Integer.class, Staff.class).getRaw().get(newRegistration.getDoctorID()));
 
     }
 
     // 处理已有病历的挂号请求
+    @SuppressWarnings("unchecked")
     private Tuple registerExist(JSONObject params) {
         JSONObject registrationParams;
         long medicalRecordID;
@@ -104,18 +134,53 @@ public class FrontDeskController implements Controller {
 
         Database.INSTANCE.insert("newRegistrations", newRegistration.getId(), newRegistration);
 
+        // 加索引
+        Map<Long, Long[]> registrationIndexes = Database.INSTANCE.select("registrationIndexes", Long.class, Long[].class).getRaw();
+        System.out.println(JSON.toJSONString(registrationIndexes));
+
+        if (!registrationIndexes.containsKey(medicalRecordID))
+            registrationIndexes.put(medicalRecordID, new Long[]{newRegistration.getId()});
+
+        Long[] oldRegistrations = registrationIndexes.get(medicalRecordID);
+        System.out.println(Arrays.toString(oldRegistrations));
+
+        Long[] appended = new Long[oldRegistrations.length + 1];
+        System.arraycopy(oldRegistrations, 0, appended, 1, oldRegistrations.length);
+
+        System.out.println(Arrays.toString(appended));
+
+        registrationIndexes.put(medicalRecordID, appended);
+
+        Map<Integer, VisitingQueue> visitingQueues = Database.INSTANCE.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw();
+        Map<Long, MedicalRecord> medicalRecords = Database.INSTANCE.select("medicalRecords", Long.class, MedicalRecord.class).getRaw();
+
+        if (!visitingQueues.containsKey(newRegistration.getDoctorID()))
+            visitingQueues.put(newRegistration.getDoctorID(), new VisitingQueue());
+
+        VisitingQueue visitingQueue = visitingQueues.get(newRegistration.getDoctorID());
+        visitingQueue.insert(newRegistration);
+
+
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, new JSONObject()
                 .fluentPut("medicalRecordID", medicalRecordID)
                 .fluentPut("registrationID", newRegistration.getId())
                 .fluentPut("cost", registrationParams.getDouble("cost"))
         ),
                 MessageUtils.buildPush("new registration",
-                        new JSONObject()
-                                .fluentPut("id", newRegistration.getId())
-                                .fluentPut("medicalRecord", medicalRecord.getId())
-                                .fluentPut("name", medicalRecord.getName())
-                                .fluentPut("gender", medicalRecord.getGender())
-                                .fluentPut("birthday", medicalRecord.getBirthday())),
+                        visitingQueue.getAllElement().stream()
+                                .filter(Objects::nonNull)
+                                .map(i -> {
+                                            MedicalRecord temp = medicalRecords.get(i.getRegistration().getMedicalRecordsID());
+                                            return new JSONObject()
+                                                    .fluentPut("id", i.getRegistration().getId())
+                                                    .fluentPut("medicalRecord", temp.getId())
+                                                    .fluentPut("name", temp.getName())
+                                                    .fluentPut("gender", temp.getGender())
+                                                    .fluentPut("birthday", temp.getBirthday())
+                                                    .fluentPut("power", i.getPower())
+                                                    .fluentPut("urgent", i.getRegistration().isUrgent());
+                                        }
+                                ).collect(Collectors.toList())),
                 Database.INSTANCE.select("staffs", Integer.class, Staff.class).getRaw().get(newRegistration.getDoctorID()));
     }
 

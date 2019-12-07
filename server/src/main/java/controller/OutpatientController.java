@@ -29,7 +29,7 @@ public class OutpatientController implements Controller {
             case "outpatient-final-diagnosis":
                 return finalDiagnosis(params);
             case "outpatient-complete":
-                return complete(params);
+                return complete(params, user);
             case "outpatient-publish-prescription":
                 return publishPrescription(params);
             case "outpatient-save-temp-prescription":
@@ -120,19 +120,23 @@ public class OutpatientController implements Controller {
     }
 
     // 完成诊断
-    private Tuple complete(JSONObject params) {
+    private Tuple complete(JSONObject params, Staff user) {
         long id;
         try {
             id = params.getLong("id");
         } catch (ClassCastException e) {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
         }
+//        Registration reg = Database.INSTANCE.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw().get(user.getId()).get();
+//        if (reg.getId() != id)
+//            return new Tuple(MessageUtils.buildResponse(MessageUtils.FAIL, "越权操作"));
+
 
         Diagnosis diagnoses = Database.INSTANCE.select("diagnoses", Long.class, Diagnosis.class).getRaw()
                 .get(id);
 
-        if (diagnoses == null || diagnoses.getStatus() == Diagnosis.PRESUMPTIVE)
-            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "尚未完成诊断"));
+        if (diagnoses == null /*|| diagnoses.getStatus() == Diagnosis.PRESUMPTIVE*/)
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.FAIL, "尚未完成诊断"));
 
         Registration registration = Database.INSTANCE.select("newRegistrations", Long.class, Registration.class).getRaw()
                 .get(id);
@@ -142,6 +146,10 @@ public class OutpatientController implements Controller {
         // 移动
         Database.INSTANCE.select("newRegistrations", Long.class, Registration.class).getRaw().remove(registration.getId());
         Database.INSTANCE.insert("registrations", registration.getId(), registration);
+
+        // 从队列中移除
+        Database.INSTANCE.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw()
+                .get(registration.getDoctorID()).get();
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "已完成诊断"));
     }

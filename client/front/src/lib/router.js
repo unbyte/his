@@ -22,6 +22,9 @@ import PharmacyQuery from "../components/pharmacy/PharmacyQuery";
 import Admin from "../pages/Admin";
 import AdminIndex from "../components/admin/AdminIndex";
 import AdminQuery from "../components/admin/AdminQuery";
+import MedicalTechnique from "../pages/MedicalTechnique";
+import MedicalTechniqueIndex from "../components/medical-technique/MedicalTechniqueIndex";
+import MedicalTechniqueMain from "../components/medical-technique/MedicalTechniqueMain";
 
 Vue.use(VueRouter);
 
@@ -121,6 +124,20 @@ const router = new VueRouter({
                 {
                     path: 'query',
                     component: AdminQuery
+                }
+            ]
+        },
+        {
+            path: '/medical-technique',
+            component: MedicalTechnique,
+            children: [
+                {
+                    path: 'index',
+                    component: MedicalTechniqueIndex
+                },
+                {
+                    path: 'main',
+                    component: MedicalTechniqueMain
                 }
             ]
         }

@@ -4,6 +4,7 @@ package database;
 import com.alibaba.fastjson.JSON;
 import lib.FileUtils;
 import lib.LogUtils;
+import lib.MyHashMap;
 import model.*;
 
 import java.nio.file.Path;
@@ -48,6 +49,12 @@ public enum Database {
     private Map<Integer, Title> titles = new ConcurrentHashMap<>();
 
 
+    // 分诊队列
+    private Map<Integer, VisitingQueue> visitingQueues = new ConcurrentHashMap<>();
+
+    // 索引 病历号 → 就诊记录
+    private Map<Long, Long[]> medicalRecordMapToRegistration = new HashMap<>();
+
     // 因为极少更新，所以缓存成json字符串
     private String inspectionItemsCache;
     private String medicinesCache;
@@ -73,6 +80,8 @@ public enum Database {
             put("registrationLevels", Paths.get(pathPrefix, "registrationLevels.dat"));
             put("departments", Paths.get(pathPrefix, "departments.dat"));
             put("titles", Paths.get(pathPrefix, "titles.dat"));
+            put("visitingQueues", Paths.get(pathPrefix, "queues.dat"));
+            put("registrationIndexes", Paths.get(pathPrefix, "registrationIndexes.dat"));
         }
     };
 
@@ -93,6 +102,8 @@ public enum Database {
             put("registrationLevels", registrationLevels);
             put("departments", departments);
             put("titles", titles);
+            put("visitingQueues", visitingQueues);
+            put("registrationIndexes", medicalRecordMapToRegistration);
         }
     };
 
@@ -159,7 +170,11 @@ public enum Database {
 
         diseases.putAll(FileUtils.loadMapFromFile(paths.get("diseases"), Integer.class, Disease.class));
 
+        visitingQueues.putAll(FileUtils.loadMapFromFile(paths.get("visitingQueues"), Integer.class, VisitingQueue.class));
+
         staffs.putAll(FileUtils.loadMapFromFile(paths.get("staffs"), Integer.class, Staff.class));
+
+        medicalRecordMapToRegistration.putAll(FileUtils.loadMapFromFile(paths.get("registrationIndexes"), Long.class, Long[].class));
 
         inspectionItems.putAll(FileUtils.loadMapFromFile(paths.get("inspectionItems"), Integer.class, InspectionItem.class));
         inspectionItemsCache = FileUtils.readJSONStringFromFile(paths.get("inspectionItems"), "{}");
@@ -228,6 +243,8 @@ public enum Database {
         flag &= FileUtils.saveMapToFile(paths.get("prescriptions"), prescriptions, false);
         flag &= FileUtils.saveMapToFile(paths.get("diseases"), diseases, false);
         flag &= FileUtils.saveMapToFile(paths.get("staffs"), staffs, false);
+        flag &= FileUtils.saveMapToFile(paths.get("visitingQueues"), visitingQueues, false);
+        flag &= FileUtils.saveMapToFile(paths.get("registrationIndexes"), medicalRecordMapToRegistration, false);
 
 
         // 由缓存成的字符串直接写成文件

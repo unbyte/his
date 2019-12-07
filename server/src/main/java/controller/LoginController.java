@@ -14,6 +14,7 @@ import net.message.MessageType;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,6 +58,7 @@ public class LoginController implements Controller {
                 (map, res) -> res.add(map.get(staff.getDepartment()))
         ).get();
 
+
         // 若科室有误，则账号不正常
         if (department == null)
             return new Tuple(MessageUtils.buildResponse(MessageUtils.FAIL, "账号内部错误", MessageType.CONNECT_RES));
@@ -76,7 +78,7 @@ public class LoginController implements Controller {
             msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"))
                     .fluentPut("medicines", database.selectAll("medicines"))
                     .fluentPut("diseases", getDiseaseTree())
-                    .fluentPut("patients", database.select("newRegistrations", Long.class, Registration.class).getRaw().values().stream()
+                    .fluentPut("patients", /*database.select("newRegistrations", Long.class, Registration.class).getRaw().values().stream()
                             .filter(i -> i.getDoctorID() == staff.getId())
                             .map(i -> {
                                 MedicalRecord medicalRecord = medicalRecords.get(i.getMedicalRecordsID());
@@ -87,7 +89,21 @@ public class LoginController implements Controller {
                                         .fluentPut("gender", medicalRecord.getGender())
                                         .fluentPut("birthday", medicalRecord.getBirthday());
                             })
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList())*/
+                            database.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw().getOrDefault(staff.getId(), new VisitingQueue())
+                                    .getAllElement().stream()
+                                    .filter(Objects::nonNull)
+                                    .map(i -> {
+                                        MedicalRecord medicalRecord = medicalRecords.get(i.getRegistration().getMedicalRecordsID());
+                                        return new JSONObject()
+                                                .fluentPut("id", i.getRegistration().getId())
+                                                .fluentPut("medicalRecord", medicalRecord.getId())
+                                                .fluentPut("name", medicalRecord.getName())
+                                                .fluentPut("gender", medicalRecord.getGender())
+                                                .fluentPut("birthday", medicalRecord.getBirthday())
+                                                .fluentPut("urgent", i.getRegistration().isUrgent());
+                                    }
+                            ).collect(Collectors.toList()));
         }
 
         if (department.getClazz() == Department.MEDICAL_TECHNIQUE)

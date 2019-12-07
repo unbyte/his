@@ -7,9 +7,7 @@ import lib.MessageUtils;
 import lib.Tuple;
 import model.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class QueryController implements Controller {
@@ -34,6 +32,8 @@ public class QueryController implements Controller {
                 return queryPrescriptionsByMedicalRecordID(params);
             case "query-patients-by-disease-id":
                 return queryRegistrationByDiseaseID(params);
+            case "query-registrations-by-medical-record-id":
+                return queryRegistrationsByMedicalRecordID(params);
         }
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
@@ -100,6 +100,40 @@ public class QueryController implements Controller {
 
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, cancelableList));
+    }
+
+    // 用病历id查询历次挂号记录
+    private Tuple queryRegistrationsByMedicalRecordID(JSONObject params) {
+        long id;
+        try {
+            id = params.getLong("id");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+        Map<Integer, Disease> diseases = Database.INSTANCE.select("diseases", Integer.class, Disease.class).getRaw();
+        Map<Long, Long[]> registrationIndexes = Database.INSTANCE.select("registrationIndexes", Long.class, Long[].class).getRaw();
+        Map<Long, Diagnosis> diagnoses = Database.INSTANCE.select("diagnoses", Long.class, Diagnosis.class).getRaw();
+        Map<Long, Registration> allRegistrations = Database.INSTANCE.select("registrations", Long.class, Registration.class).getRaw();
+        Map<Integer, Staff> staffs = Database.INSTANCE.select("staffs", Integer.class, Staff.class).getRaw();
+
+        JSONArray result = new JSONArray();
+
+        if (registrationIndexes.containsKey(id))
+            Arrays.stream(registrationIndexes.get(id))
+                    .map(i -> allRegistrations.getOrDefault(i, null))
+                    .filter(Objects::nonNull)
+                    .map(i -> {
+                        Registration r = allRegistrations.get(i.getId());
+                        return new JSONObject()
+                                .fluentPut("registrationTime", r.getTime())
+                                .fluentPut("diseaseName", diseases.get(diagnoses.get(i.getId()).getDisease().get(0)).getName())
+                                .fluentPut("departmentID", r.getDepartmentID())
+                                .fluentPut("doctorName", staffs.get(r.getDoctorID()).getName());
+                    }).forEach(result::add);
+
+
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, result));
     }
 
     // 用病历id查询未收费项目
@@ -276,7 +310,8 @@ public class QueryController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, result));
     }
 
-    private static List<Integer> getChildrenDiseaseID(Integer id, Map<Integer, Disease> disease) {
+    // 辅助方法，遍历树节点
+    private List<Integer> getChildrenDiseaseID(Integer id, Map<Integer, Disease> disease) {
         if (disease.get(id).getChildren().size() == 0)
             return new ArrayList<>() {{
                 add(id);
@@ -291,5 +326,4 @@ public class QueryController implements Controller {
         children.add(id);
         return children;
     }
-
 }

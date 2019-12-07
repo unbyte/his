@@ -109,11 +109,33 @@ const mock = {
                 3: {"fee": 100.0, "limit": 40, "id": 3}
             },
             "patients": [{
-                "id": 1123333333333,
-                "name": "爱新觉罗",
+                "birthday": 1575695695509,
                 "gender": 0,
-                "birthday": 390240000000,
-                "medicalRecord": 1569007490943
+                "medicalRecord": 1575695705071,
+                "name": "d",
+                "id": 1575695705071,
+                "urgent": true
+            }, {
+                "birthday": 1575697543187,
+                "gender": 0,
+                "medicalRecord": 1575697551093,
+                "name": "das",
+                "id": 1575697551093,
+                "urgent": true
+            }, {
+                "birthday": 1575698723065,
+                "gender": 0,
+                "medicalRecord": 1575698731628,
+                "name": "asdas",
+                "id": 1575698731628,
+                "urgent": true
+            }, {
+                "birthday": 1575699267001,
+                "gender": 0,
+                "medicalRecord": 1575699274355,
+                "name": "asdsa",
+                "id": 1575699274355,
+                "urgent": true
             }],
             "diseases": {
                 1: {"id": 1, "code": "ZDXFX", "name": "中毒性腹泻", "clazz": 1},
@@ -303,6 +325,46 @@ const mock = {
                 8: {"name": "管理员", "id": 8, "clazz": 8}
             },
             "user": {"name": "灰灰灰", "title": 8, "department": 2}
+        }, "status": 0
+    },
+    loginTechniqueSuccess: {
+        "msg": {
+            "registrationLevels": {
+                0: {"fee": 0.0, "limit": 0, "id": 0},
+                1: {"fee": 20.0, "limit": 120, "id": 1},
+                2: {"fee": 60.0, "limit": 80, "id": 2},
+                3: {"fee": 100.0, "limit": 40, "id": 3}
+            },
+            "titles": {
+                0: {"registrationLevel": 0, "name": "住院医师", "id": 0},
+                1: {"registrationLevel": 1, "name": "主治医师", "id": 1},
+                2: {"registrationLevel": 2, "name": "副主任医师", "id": 2},
+                3: {"registrationLevel": 3, "name": "主任医师", "id": 3},
+                4: {"registrationLevel": 0, "name": "初级技师", "id": 4},
+                5: {"registrationLevel": 0, "name": "主管技师", "id": 5},
+                6: {"registrationLevel": 0, "name": "副主任技师", "id": 6},
+                7: {"registrationLevel": 0, "name": "主任技师", "id": 7},
+                8: {"registrationLevel": 0, "name": "初级药师", "id": 8},
+                9: {"registrationLevel": 0, "name": "主管药师", "id": 9},
+                10: {"registrationLevel": 0, "name": "副主任药师", "id": 10},
+                11: {"registrationLevel": 0, "name": "主任药师", "id": 11},
+                12: {"registrationLevel": 0, "name": "前台接诊", "id": 12},
+                13: {"registrationLevel": 0, "name": "管理员", "id": 13}
+            },
+            "departments": {
+                0: {"name": "前台", "id": 0, "clazz": 3},
+                1: {"name": "中药药房", "id": 1, "clazz": 1},
+                2: {"name": "西药药房", "id": 2, "clazz": 1},
+                3: {"name": "放射科", "id": 3, "clazz": 2},
+                4: {"name": "内科", "id": 4, "clazz": 0},
+                5: {"name": "消化科", "id": 5, "clazz": 0},
+                8: {"name": "管理员", "id": 8, "clazz": 8}
+            },
+            "user": {"name": "蓝蓝蓝", "title": 4, "department": 3},
+            "inspectionItems": {
+                0: {"code": "PTTS", "departmentID": 3, "fee": 5.0, "name": "普通透视", "id": 0},
+                1: {"code": "SGBCTS", "departmentID": 3, "fee": 15.0, "name": "食管钡餐透视", "id": 1}
+            }
         }, "status": 0
     },
     loginAdminSuccess: {

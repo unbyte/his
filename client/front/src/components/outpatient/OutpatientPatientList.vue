@@ -13,7 +13,9 @@
                               @click="handleClickPatientInList(wait,index)"
                 >
                     <mu-list-item-content>
-                        <mu-list-item-title>{{wait.name}}</mu-list-item-title>
+                        <mu-list-item-title>{{wait.name}}
+                            <mu-badge content="紧急" color="orange" v-if="wait.urgent"></mu-badge>
+                        </mu-list-item-title>
                         <mu-list-item-sub-title style="color: rgba(0, 0, 0, .9)">{{genderMap[wait.gender]}}
                             {{$utils.birthToAge(wait.birthday)}}岁
                         </mu-list-item-sub-title>
@@ -32,7 +34,9 @@
                 </mu-list-item-title>
                 <mu-list-item button :ripple="false" slot="nested" v-for="(done,index) in doneList" :key="index">
                     <mu-list-item-content>
-                        <mu-list-item-title>{{done.name}}</mu-list-item-title>
+                        <mu-list-item-title>{{done.name}}
+                            <mu-badge content="紧急" color="orange" v-if="done.urgent"></mu-badge>
+                        </mu-list-item-title>
                         <mu-list-item-sub-title style="color: rgba(0, 0, 0, .9)">{{genderMap[done.gender]}}
                             {{$utils.birthToAge(done.birthday)}}岁
                         </mu-list-item-sub-title>

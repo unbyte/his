@@ -15,7 +15,7 @@ public class PushHandlerCenter {
         // 执行js runtime中暴露出来的接收方法
         Platform.runLater(() -> {
             JSObject window = (JSObject) BridgeCenter.getWebEngine().executeScript("window");
-            window.eval("window.inform('" + message.getBody() + "')");
+            window.eval("window.inform(`" + message.getBody() + "`)");
         });
     }
 }

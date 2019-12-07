@@ -13,6 +13,7 @@ const io = {
                     // return mock.loginSuccess;
                     return mock.loginDoctorSuccess;
                     // return mock.loginAdminSuccess;
+                    // return mock.loginTechniqueSuccess;
                 case 'front-desk-register-new':
                     return mock.registerWithNewMedicalRecordSuccess;
                 case 'front-desk-register-exist':
@@ -41,7 +42,8 @@ const io = {
         let pushContent = eval(`(${message})`);
         switch (pushContent.type) {
             case 'new registration':
-                store.commit("addWaitList", pushContent.msg);
+                // store.commit("addWaitList", pushContent.msg);
+                store.commit("setWaitList", pushContent.msg);
                 break;
             case 'cancel registration':
                 store.commit("removeWaitList", pushContent.msg.id);

@@ -1,10 +1,10 @@
 <template>
-    <div id="admin-page">
+    <div id="medical-technique-page">
         <mu-container>
             <mu-tabs :value.sync="active" inverse color="primary" indicator-color="rgb(33, 150, 243)"
                      text-color="rgba(0, 0, 0, .54)">
-                <mu-tab to="/admin/index">首页</mu-tab>
-                <mu-tab to="/admin/query">查询</mu-tab>
+                <mu-tab to="/medical-technique/index">首页</mu-tab>
+                <mu-tab to="/medical-technique/main">操作</mu-tab>
             </mu-tabs>
             <router-view v-if="isRouterAlive"></router-view>
             <mu-chip class="name-chip" color="primary" delete @delete="exit">
@@ -17,7 +17,7 @@
 
 <script>
     export default {
-        name: "Admin",
+        name: "MedicalTechnique",
         data() {
             return {
                 active: 0,
@@ -54,7 +54,7 @@
 </script>
 
 <style scoped>
-    #admin-page {
+    #medical-technique-page {
         display: flex;
         width: 100%;
         height: 100%;
@@ -91,7 +91,7 @@
     }
 
     /*改变字体大小*/
-    #admin-page >>> .mu-tab-wrapper, .mu-form-item {
+    #medical-technique-page >>> .mu-tab-wrapper, .mu-form-item {
         font-size: 15px;
     }
 </style>

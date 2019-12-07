@@ -40,6 +40,7 @@ public class AnalyserCenter {
                 return;
             Staff staff = result.get(2, Staff.class);
             Message message = result.get(1, Message.class);
+
             LogUtils.info(message.getBody());
             LogUtils.info(staff);
 
@@ -49,6 +50,18 @@ public class AnalyserCenter {
         }));
 
         analysers.put("front-desk-cancel", ((ctx, result) -> {
+            if (result.size() < 2)
+                return;
+            Staff staff = result.get(2, Staff.class);
+            Message message = result.get(1, Message.class);
+            LogUtils.info(message.getBody());
+            LogUtils.info(staff);
+
+            if (ChannelPool.containStaff(staff))
+                ChannelPool.getChannel(staff).writeAndFlush(message);
+        }));
+
+        analysers.put("medical-technique-check", ((ctx, result) -> {
             if (result.size() < 2)
                 return;
             Staff staff = result.get(2, Staff.class);
