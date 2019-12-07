@@ -142,12 +142,9 @@ public class FrontDeskController implements Controller {
             registrationIndexes.put(medicalRecordID, new Long[]{newRegistration.getId()});
 
         Long[] oldRegistrations = registrationIndexes.get(medicalRecordID);
-        System.out.println(Arrays.toString(oldRegistrations));
 
         Long[] appended = new Long[oldRegistrations.length + 1];
         System.arraycopy(oldRegistrations, 0, appended, 1, oldRegistrations.length);
-
-        System.out.println(Arrays.toString(appended));
 
         registrationIndexes.put(medicalRecordID, appended);
 

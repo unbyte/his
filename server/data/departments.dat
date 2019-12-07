@@ -1,1 +1,75 @@
-{0:{"clazz":3,"id":0,"name":"前台"},1:{"clazz":1,"id":1,"name":"中药药房"},2:{"clazz":1,"id":2,"name":"西药药房"},3:{"clazz":2,"id":3,"name":"放射科"},4:{"clazz":0,"id":4,"name":"内科"},5:{"clazz":0,"id":5,"name":"消化科"},8:{"clazz":8,"id":8,"name":"管理员"}}
+{
+  0: {
+    "children": [],
+    "clazz": 8,
+    "id": 0,
+    "name": "管理员"
+  },
+  20: {
+    "children": [],
+    "clazz": 1,
+    "id": 20,
+    "name": "中药药房"
+  },
+  21: {
+    "children": [],
+    "clazz": 1,
+    "id": 21,
+    "name": "西药药房"
+  },
+  40: {
+    "children": [
+      {
+        "children": [],
+        "clazz": 0,
+        "id": 41,
+        "name": "呼吸内科",
+        "parent": {
+          "$ref": "$[40]"
+        }
+      },
+      {
+        "children": [],
+        "clazz": 0,
+        "id": 42,
+        "name": "消化内科",
+        "parent": {
+          "$ref": "$[40]"
+        }
+      },
+      {
+        "children": [],
+        "clazz": 0,
+        "id": 43,
+        "name": "心内科",
+        "parent": {
+          "$ref": "$[40]"
+        }
+      }
+    ],
+    "clazz": 0,
+    "id": 40,
+    "name": "内科"
+  },
+  41: {
+    "$ref": "$[40].children[0]"
+  },
+  10: {
+    "children": [],
+    "clazz": 3,
+    "id": 10,
+    "name": "前台"
+  },
+  42: {
+    "$ref": "$[40].children[1]"
+  },
+  43: {
+    "$ref": "$[40].children[2]"
+  },
+  30: {
+    "children": [],
+    "clazz": 2,
+    "id": 30,
+    "name": "放射科"
+  }
+}

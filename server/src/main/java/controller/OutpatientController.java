@@ -29,7 +29,7 @@ public class OutpatientController implements Controller {
             case "outpatient-final-diagnosis":
                 return finalDiagnosis(params);
             case "outpatient-complete":
-                return complete(params, user);
+                return complete(params);
             case "outpatient-publish-prescription":
                 return publishPrescription(params);
             case "outpatient-save-temp-prescription":
@@ -120,17 +120,13 @@ public class OutpatientController implements Controller {
     }
 
     // 完成诊断
-    private Tuple complete(JSONObject params, Staff user) {
+    private Tuple complete(JSONObject params) {
         long id;
         try {
             id = params.getLong("id");
         } catch (ClassCastException e) {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
         }
-//        Registration reg = Database.INSTANCE.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw().get(user.getId()).get();
-//        if (reg.getId() != id)
-//            return new Tuple(MessageUtils.buildResponse(MessageUtils.FAIL, "越权操作"));
-
 
         Diagnosis diagnoses = Database.INSTANCE.select("diagnoses", Long.class, Diagnosis.class).getRaw()
                 .get(id);
@@ -138,14 +134,19 @@ public class OutpatientController implements Controller {
         if (diagnoses == null /*|| diagnoses.getStatus() == Diagnosis.PRESUMPTIVE*/)
             return new Tuple(MessageUtils.buildResponse(MessageUtils.FAIL, "尚未完成诊断"));
 
-        Registration registration = Database.INSTANCE.select("newRegistrations", Long.class, Registration.class).getRaw()
-                .get(id);
+        Map<Long, Registration> newRegistrations = Database.INSTANCE.select("newRegistrations", Long.class, Registration.class).getRaw();
+        Map<Long, Registration> registrations = Database.INSTANCE.select("registrations", Long.class, Registration.class).getRaw();
 
-        registration.setStatus(Status.CONSUMED);
-
+        Registration registration;
         // 移动
-        Database.INSTANCE.select("newRegistrations", Long.class, Registration.class).getRaw().remove(registration.getId());
-        Database.INSTANCE.insert("registrations", registration.getId(), registration);
+        if (newRegistrations.containsKey(id)) {
+            registration = newRegistrations.get(id);
+            registration.setStatus(Status.CONSUMED);
+            newRegistrations.remove(id);
+            registrations.put(id, registration);
+        } else {
+            registration = registrations.get(id);
+        }
 
         // 从队列中移除
         Database.INSTANCE.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw()
@@ -224,6 +225,14 @@ public class OutpatientController implements Controller {
 
         Map<Integer, Medicine> medicines = Database.INSTANCE.select("medicines", Integer.class, Medicine.class).getRaw();
 
+        // 减掉库存
+        medicineList.forEach(i -> {
+            Medicine medicine = medicines.get(i.getMedicineID());
+            if (medicine.getStock() < i.getAmount())
+                i.setAmount(medicine.getStock());
+            medicine.setStock(medicine.getStock() - i.getAmount());
+        });
+
         double fee = medicineList.stream().map(i -> i.getAmount() * medicines.get(i.getMedicineID()).getPrice()).mapToDouble(i -> i).sum();
 
         if (id == -1) {
@@ -258,6 +267,14 @@ public class OutpatientController implements Controller {
             prescription.setStatus(Status.CANCELED_WITHOUT_PAID);
         else
             prescription.setStatus(Status.CANCELED);
+
+        Map<Integer, Medicine> medicines = Database.INSTANCE.select("medicines", Integer.class, Medicine.class).getRaw();
+
+        // 把库存加回去
+        prescription.getMedicineList().forEach(i -> {
+            Medicine medicine = medicines.get(i.getMedicineID());
+            medicine.setStock(medicines.get(i.getMedicineID()).getStock() + i.getAmount());
+        });
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "作废成功"));
     }

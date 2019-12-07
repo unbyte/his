@@ -88,8 +88,8 @@ public class AdminController implements Controller {
 
 
         Disease parent = diseases.get(parentID);
-        // todo 想办法找一个递增id的办法
-        int id = 100;
+
+        int id = 100 + diseases.size();
         Disease newDisease = new Disease(id, name, code, 1, parent, new ArrayList<>());
         parent.getChildren().add(newDisease);
         diseases.put(id, newDisease);

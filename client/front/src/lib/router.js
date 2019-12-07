@@ -25,6 +25,7 @@ import AdminQuery from "../components/admin/AdminQuery";
 import MedicalTechnique from "../pages/MedicalTechnique";
 import MedicalTechniqueIndex from "../components/medical-technique/MedicalTechniqueIndex";
 import MedicalTechniqueMain from "../components/medical-technique/MedicalTechniqueMain";
+import OutpatientHistory from "../components/outpatient/OutpatientHistory";
 
 Vue.use(VueRouter);
 
@@ -91,6 +92,10 @@ const router = new VueRouter({
                         {
                             path: 'prescription',
                             component: OutpatientPrescription
+                        },
+                        {
+                            path: 'history',
+                            component: OutpatientHistory
                         }
                     ]
                 },

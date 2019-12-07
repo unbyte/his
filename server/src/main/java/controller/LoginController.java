@@ -71,39 +71,28 @@ public class LoginController implements Controller {
                         .fluentPut("title", staff.getTitle())
                         .fluentPut("department", staff.getDepartment()))
                 .fluentPut("titles", database.selectAll("titles"))
-                .fluentPut("departments", database.selectAll("departments"))
+                .fluentPut("departments", getDepartmentTree())
                 .fluentPut("registrationLevels", database.selectAll("registrationLevels"));
         if (department.getClazz() == Department.OUTPATIENT) {
             Map<Long, MedicalRecord> medicalRecords = database.select("medicalRecords", Long.class, MedicalRecord.class).getRaw();
             msg.fluentPut("inspectionItems", database.selectAll("inspectionItems"))
                     .fluentPut("medicines", database.selectAll("medicines"))
                     .fluentPut("diseases", getDiseaseTree())
-                    .fluentPut("patients", /*database.select("newRegistrations", Long.class, Registration.class).getRaw().values().stream()
-                            .filter(i -> i.getDoctorID() == staff.getId())
-                            .map(i -> {
-                                MedicalRecord medicalRecord = medicalRecords.get(i.getMedicalRecordsID());
-                                return new JSONObject()
-                                        .fluentPut("id", i.getId())
-                                        .fluentPut("medicalRecord", medicalRecord.getId())
-                                        .fluentPut("name", medicalRecord.getName())
-                                        .fluentPut("gender", medicalRecord.getGender())
-                                        .fluentPut("birthday", medicalRecord.getBirthday());
-                            })
-                            .collect(Collectors.toList())*/
+                    .fluentPut("patients",
                             database.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw().getOrDefault(staff.getId(), new VisitingQueue())
                                     .getAllElement().stream()
                                     .filter(Objects::nonNull)
                                     .map(i -> {
-                                        MedicalRecord medicalRecord = medicalRecords.get(i.getRegistration().getMedicalRecordsID());
-                                        return new JSONObject()
-                                                .fluentPut("id", i.getRegistration().getId())
-                                                .fluentPut("medicalRecord", medicalRecord.getId())
-                                                .fluentPut("name", medicalRecord.getName())
-                                                .fluentPut("gender", medicalRecord.getGender())
-                                                .fluentPut("birthday", medicalRecord.getBirthday())
-                                                .fluentPut("urgent", i.getRegistration().isUrgent());
-                                    }
-                            ).collect(Collectors.toList()));
+                                                MedicalRecord medicalRecord = medicalRecords.get(i.getRegistration().getMedicalRecordsID());
+                                                return new JSONObject()
+                                                        .fluentPut("id", i.getRegistration().getId())
+                                                        .fluentPut("medicalRecord", medicalRecord.getId())
+                                                        .fluentPut("name", medicalRecord.getName())
+                                                        .fluentPut("gender", medicalRecord.getGender())
+                                                        .fluentPut("birthday", medicalRecord.getBirthday())
+                                                        .fluentPut("urgent", i.getRegistration().isUrgent());
+                                            }
+                                    ).collect(Collectors.toList()));
         }
 
         if (department.getClazz() == Department.MEDICAL_TECHNIQUE)
@@ -130,6 +119,14 @@ public class LoginController implements Controller {
         Map<Integer, Disease> diseases = Database.INSTANCE.select("diseases", Integer.class, Disease.class).getRaw();
         // 防止循环引用
         SimplePropertyPreFilter filter = new SimplePropertyPreFilter(Disease.class, "id", "code", "name", "clazz", "children");
-        return JSON.parseArray(JSON.toJSONString(diseases.values().stream().filter(i -> i.getParent() == null).collect(Collectors.toList()), filter));
+        return JSON.parseArray(JSON.toJSONString(diseases.values().stream()
+                .filter(i -> i.getParent() == null).collect(Collectors.toList()), filter));
+    }
+
+    private JSONObject getDepartmentTree() {
+        Map<Integer, Department> departments = Database.INSTANCE.select("departments", Integer.class, Department.class).getRaw();
+        // 防止循环引用
+        SimplePropertyPreFilter filter = new SimplePropertyPreFilter(Department.class, "id", "name", "clazz");
+        return JSON.parseObject(JSON.toJSONString(departments, filter));
     }
 }

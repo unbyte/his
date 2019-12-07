@@ -34,6 +34,8 @@ public class QueryController implements Controller {
                 return queryRegistrationByDiseaseID(params);
             case "query-registrations-by-medical-record-id":
                 return queryRegistrationsByMedicalRecordID(params);
+            case "query-medical-record-by-department-id":
+                return queryMedicalRecordByDepartment(params);
         }
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
@@ -119,18 +121,21 @@ public class QueryController implements Controller {
 
         JSONArray result = new JSONArray();
 
-        if (registrationIndexes.containsKey(id))
+        if (registrationIndexes.containsKey(id)) {
             Arrays.stream(registrationIndexes.get(id))
-                    .map(i -> allRegistrations.getOrDefault(i, null))
                     .filter(Objects::nonNull)
+                    .map(i -> allRegistrations.getOrDefault(i, null))
                     .map(i -> {
-                        Registration r = allRegistrations.get(i.getId());
+                        if (i == null || !diagnoses.containsKey(i.getId())) return null;
                         return new JSONObject()
-                                .fluentPut("registrationTime", r.getTime())
+                                .fluentPut("registrationTime", i.getTime())
                                 .fluentPut("diseaseName", diseases.get(diagnoses.get(i.getId()).getDisease().get(0)).getName())
-                                .fluentPut("departmentID", r.getDepartmentID())
-                                .fluentPut("doctorName", staffs.get(r.getDoctorID()).getName());
-                    }).forEach(result::add);
+                                .fluentPut("departmentID", i.getDepartmentID())
+                                .fluentPut("doctorName", staffs.get(i.getDoctorID()).getName());
+                    })
+                    .filter(Objects::nonNull)
+                    .forEach(result::add);
+        }
 
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, result));
@@ -310,6 +315,43 @@ public class QueryController implements Controller {
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, result));
     }
 
+    // 用科室号查询就诊记录
+    private Tuple queryMedicalRecordByDepartment(JSONObject params) {
+        Integer id;
+        String order;
+        try {
+            id = params.getInteger("id");
+            order = params.getString("order");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+        Map<Integer, Department> departments = Database.INSTANCE.select("departments", Integer.class, Department.class).getRaw();
+        if (!departments.containsKey(id))
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该科室不存在"));
+
+        // 获取科室及其子科室的id
+        List<Integer> department = getChildDepartmentID(id, departments);
+
+        Map<Long, MedicalRecord> medicalRecords = Database.INSTANCE.select("medicalRecords", Long.class, MedicalRecord.class).getRaw();
+        Map<Long, Registration> registrations = Database.INSTANCE.select("registrations", Long.class, Registration.class).getRaw();
+
+        JSONArray result = new JSONArray();
+        registrations.values().stream()
+                .filter(i -> department.contains(i.getDepartmentID()))
+                .map(i -> {
+                    MedicalRecord mr = medicalRecords.get(i.getMedicalRecordsID());
+                    return new JSONObject()
+                            .fluentPut("id", mr.getId())
+                            .fluentPut("name", mr.getName())
+                            .fluentPut("birth", mr.getBirthday())
+                            .fluentPut("gender", mr.getGender());
+                })
+                .forEach(result::add);
+
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, result));
+    }
+
     // 辅助方法，遍历树节点
     private List<Integer> getChildrenDiseaseID(Integer id, Map<Integer, Disease> disease) {
         if (disease.get(id).getChildren().size() == 0)
@@ -318,6 +360,22 @@ public class QueryController implements Controller {
             }};
         List<Integer> children = disease.get(id).getChildren().stream()
                 .map(i -> getChildrenDiseaseID(i.getId(), disease))
+                .reduce((x, y) -> {
+                    x.addAll(y);
+                    return x;
+                })
+                .get();
+        children.add(id);
+        return children;
+    }
+
+    private List<Integer> getChildDepartmentID(Integer id, Map<Integer, Department> department) {
+        if (department.get(id).getChildren().size() == 0)
+            return new ArrayList<>() {{
+                add(id);
+            }};
+        List<Integer> children = department.get(id).getChildren().stream()
+                .map(i -> getChildDepartmentID(i.getId(), department))
                 .reduce((x, y) -> {
                     x.addAll(y);
                     return x;

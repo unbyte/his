@@ -7,6 +7,7 @@
                 <mu-tab to="diagnosis">诊断管理</mu-tab>
                 <mu-tab to="tech">医技项目</mu-tab>
                 <mu-tab to="prescription">处方管理</mu-tab>
+                <mu-tab to="history">历史就诊</mu-tab>
             </mu-tabs>
             <router-view></router-view>
             <mu-button round small color="primary" class="done-button" @click="complete">

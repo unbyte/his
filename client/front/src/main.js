@@ -7,7 +7,7 @@ import 'muse-ui/dist/muse-ui.css'
 import io from './lib/io'
 import utils from './lib/utils'
 import Toast from 'muse-ui-toast'
-import {Tree} from "element-ui";
+import {Cascader, Tree} from "element-ui";
 
 Vue.use(MuseUI);
 Vue.use(Toast, {
@@ -21,6 +21,7 @@ Vue.use(Toast, {
 });
 
 Vue.use(Tree);
+Vue.use(Cascader);
 
 Vue.config.productionTip = false;
 

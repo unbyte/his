@@ -24,4 +24,6 @@ public class Medicine {
 
     private double price;
 
+    private int stock;
+
 }

@@ -26,7 +26,7 @@ public class JsonTest {
 //        System.out.println(a.getLong("a"));
 
 //        System.out.println(JSON.parseObject("{\"a\":[1,2,3,4]}").getJSONArray("a"));
-        System.out.println(new JSONObject().fluentPut("a",new Department(1,"1",(byte)1)).toJSONString());
+//        System.out.println(new JSONObject().fluentPut("a",new Department(1,"1",(byte)1)).toJSONString());
         System.out.println(JSON.toJSONString(new HashSet<Integer>(){{add(1);}}));
     }
 }

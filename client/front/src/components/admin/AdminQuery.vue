@@ -2,7 +2,7 @@
     <div id="admin-query">
         <mu-container>
             <mu-row>
-                <mu-col span="4">
+                <mu-col span="3">
                     <h2>病种</h2>
                     <mu-text-field v-model="diseaseFilterText" placeholder="筛选" full-width></mu-text-field>
 
@@ -77,7 +77,6 @@
 </template>
 
 <script>
-    // todo 病种树的响应应该包含一个目前的最大id值，然后赋给组件里的自增id
     export default {
         name: "AdminQuery",
         data() {
@@ -118,7 +117,7 @@
                 patientAttr: [
                     {title: '日期', name: 'registrationTime', width: 96, align: 'center', sortable: true},
                     {title: '科室', name: 'department', width: 96, align: 'center', sortable: true},
-                    {title: '病种', name: 'diseaseName', width: 126, sortable: true},
+                    {title: '病种', name: 'diseaseName', width: 96, sortable: true},
                     {title: '姓名', name: 'patientName', width: 96, align: 'center', sortable: true},
                     {title: '年龄', name: 'patientBirth', width: 48, align: 'center', sortable: true},
                     {title: '性别', name: 'patientGender', width: 48, align: 'center', sortable: true},

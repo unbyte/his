@@ -14,13 +14,15 @@
                         <mu-row>
                             <mu-col span="10">
                                 <mu-form-item :label="!diagnosisForm.status?'终诊疾病':'初诊疾病'">
-                                    <mu-select filterable multiple chips
-                                               v-model="diagnosisForm.disease" full-width
-                                               :disabled="diagnosisForm.status === 1">
-                                        <mu-option v-for="(disease,index) in filteredDiseases" :key="index"
-                                                   :label="disease.name"
-                                                   :value="disease.id" :search-text="disease.code"></mu-option>
-                                    </mu-select>
+                                    <!--                                    <mu-select filterable multiple chips
+                                                                                   v-model="diagnosisForm.disease" full-width
+                                                                                   :disabled="diagnosisForm.status === 1">
+                                                                            <mu-option v-for="(disease,index) in filteredDiseases" :key="index"
+                                                                                       :label="disease.name"
+                                                                                       :value="disease.id" :search-text="disease.code"></mu-option>
+                                                                        </mu-select>-->
+                                    <el-cascader :options="filteredDiseases" :show-all-levels="false"
+                                                 v-model="diagnosisForm.disease" :props="cascaderProp"></el-cascader>
                                 </mu-form-item>
                             </mu-col>
                         </mu-row>
@@ -95,6 +97,12 @@
                     note: '',
                     judgement: '',
                     status: -1
+                },
+                cascaderProp: {
+                    value: "id",
+                    label: "name",
+                    emitPath: false,
+                    multiple: true
                 }
             }
         },
@@ -151,6 +159,13 @@
                     this.diagnosisForm = response.msg;
                 else
                     this.diagnosisForm.id = this.$store.state.outpatient.currentPatient.id;
+            },
+            processDiseaseTree(node) {
+                if (!node.children || !node.children.length) {
+                    node.children = null;
+                    return;
+                }
+                node.children.forEach(i => this.processDiseaseTree(i));
             }
         },
         mounted() {
@@ -163,7 +178,9 @@
             filteredDiseases() {
                 if (!this.diseases)
                     return [];
-                return Object.values(this.diseases).filter(i => i.clazz === this.diagnosisForm.clazz);
+                let a = this.diseases[0].children[0];
+                this.processDiseaseTree(a);
+                return a.children;
             }
         }
     }
@@ -176,5 +193,13 @@
 
     .mu-divider {
         margin: 32px 0;
+    }
+
+    .el-cascader {
+        transform: translateY(-8px);
+    }
+
+    .el-cascader > > input {
+        border: none;
     }
 </style>

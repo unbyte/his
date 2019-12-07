@@ -16,13 +16,34 @@ public class DataInitialTest {
 
     static void genDepartments() {
         HashMap<Integer, Department> departments = new HashMap<>();
-        departments.put(0, new Department(0, "前台", Department.FRONT_DESK));
-        departments.put(1, new Department(1, "中药药房", Department.PHARMACY));
-        departments.put(2, new Department(2, "西药药房", Department.PHARMACY));
-        departments.put(3, new Department(3, "放射科", Department.MEDICAL_TECHNIQUE));
-        departments.put(4, new Department(4, "外科", Department.OUTPATIENT));
-        departments.put(5, new Department(5, "消化科", Department.OUTPATIENT));
-        departments.put(8, new Department(8, "管理员", Department.ADMIN));
+        Department department0 = new Department(0, "管理员", Department.ADMIN, null,new ArrayList<>());
+        Department department10 = new Department(10, "前台", Department.FRONT_DESK, null, new ArrayList<>());
+        Department department20 = new Department(20, "中药药房", Department.PHARMACY, null, new ArrayList<>());
+        Department department21 = new Department(21, "西药药房", Department.PHARMACY, null, new ArrayList<>());
+        Department department30 = new Department(30, "放射科", Department.MEDICAL_TECHNIQUE, null, new ArrayList<>());
+
+        Department department40 = new Department(40, "内科", Department.OUTPATIENT, null, new ArrayList<>());
+        Department department41 = new Department(41, "呼吸内科", Department.OUTPATIENT, null, new ArrayList<>());
+        Department department42 = new Department(42, "消化内科", Department.OUTPATIENT, null, new ArrayList<>());
+        Department department43 = new Department(43, "心内科", Department.OUTPATIENT, null, new ArrayList<>());
+
+        department40.getChildren().add(department41);
+        department40.getChildren().add(department42);
+        department40.getChildren().add(department43);
+        department41.setParent(department40);
+        department42.setParent(department40);
+        department43.setParent(department40);
+
+        departments.put(0, department0);
+        departments.put(10, department10);
+        departments.put(20, department20);
+        departments.put(21, department21);
+        departments.put(30, department30);
+        departments.put(40, department40);
+        departments.put(41, department41);
+        departments.put(42, department42);
+        departments.put(43, department43);
+
         System.out.println(JSON.toJSONString(departments));
     }
 
@@ -56,16 +77,14 @@ public class DataInitialTest {
 
     static void genStaff() {
         HashMap<Integer, Staff> staffs = new HashMap<>();
-        staffs.put(0, new Staff(0, "白白白", "E=pc", 0, 12)); // 前台
-        staffs.put(1, new Staff(1, "黑黑黑", "E=mc^2", 1, 8)); // 中药房
-        staffs.put(2, new Staff(2, "灰灰灰", "E=1/2mv^2", 2, 8)); // 西药房
-        staffs.put(3, new Staff(3, "蓝蓝蓝", "E=U/d", 3, 4)); // 放射科
-        staffs.put(4, new Staff(4, "红红红", "E=BLv", 4, 1)); // 主治医师
-        staffs.put(5, new Staff(5, "绿绿绿", "E=BLv", 4, 2)); // 副主任医师
-        staffs.put(6, new Staff(6, "黄黄黄", "E=BLv", 4, 3)); // 主任医师
-        staffs.put(7, new Staff(7, "青青青", "E=BLv", 5, 1)); // 主治医师
-        staffs.put(8, new Staff(8, "紫紫紫", "E=BLv", 5, 1)); // 主治医师
-        staffs.put(9, new Staff(9, "哈哈哈", "E=BLv", 8, 13)); // 主治医师
+        staffs.put(0, new Staff(0, "白白白", "E=pc", 10, 12)); // 前台
+        staffs.put(1, new Staff(1, "黑黑黑", "E=mc^2", 20, 8)); // 中药房
+        staffs.put(2, new Staff(2, "灰灰灰", "E=1/2mv^2", 21, 8)); // 西药房
+        staffs.put(3, new Staff(3, "蓝蓝蓝", "E=U/d", 30, 4)); // 放射科
+        staffs.put(4, new Staff(4, "红红红", "E=BLv", 43, 1)); // 主治医师
+        staffs.put(5, new Staff(5, "绿绿绿", "E=BLv", 41, 2)); // 副主任医师
+        staffs.put(6, new Staff(6, "黄黄黄", "E=BLv", 42, 3)); // 主任医师
+        staffs.put(7, new Staff(7, "紫紫紫", "E=BLv", 0, 1)); // 主治医师
         System.out.println(JSON.toJSONString(staffs));
     }
 
@@ -85,31 +104,48 @@ public class DataInitialTest {
 
         disease0.getChildren().addAll(Arrays.asList(disease1, disease2, disease3));
 
-        Disease disease4 = new Disease(4, "哮喘", "xc", 1, disease1, new ArrayList<>());
+        Disease disease4 = new Disease(104, "肺病", "xc", 1, disease1, new ArrayList<>());
 
         disease1.getChildren().add(disease4);
 
-        Disease disease5 = new Disease(5, "肠炎", "cy", 1, disease2, new ArrayList<>());
+        Disease disease11 = new Disease(108, "咽喉病", "yh", 1, disease1, new ArrayList<>());
+
+        disease1.getChildren().add(disease11);
+
+
+        Disease disease14 = new Disease(109, "肺炎", "xc", 1, disease4, new ArrayList<>());
+
+        disease4.getChildren().add(disease14);
+
+        Disease disease21 = new Disease(110, "咽炎", "yy", 1, disease11, new ArrayList<>());
+
+        disease11.getChildren().add(disease21);
+
+
+        Disease disease5 = new Disease(105, "肠炎", "cy", 1, disease2, new ArrayList<>());
         disease2.getChildren().add(disease5);
 
-        Disease disease6 = new Disease(6, "出血性结肠炎", "cxxjcy", 1, disease5, new ArrayList<>());
+        Disease disease6 = new Disease(106, "出血性结肠炎", "cxxjcy", 1, disease5, new ArrayList<>());
 
         disease5.getChildren().add(disease6);
 
-        Disease disease7 = new Disease(7, "心肌炎", "xjy", 1, disease3, new ArrayList<>());
+        Disease disease7 = new Disease(107, "心肌炎", "xjy", 1, disease3, new ArrayList<>());
 
         disease3.getChildren().add(disease7);
 
-        diseases.put(0,disease0);
-        diseases.put(1,disease1);
-        diseases.put(2,disease2);
-        diseases.put(3,disease3);
-        diseases.put(4,disease4);
-        diseases.put(5,disease5);
-        diseases.put(6,disease6);
-        diseases.put(7,disease7);
+        diseases.put(0, disease0);
+        diseases.put(1, disease1);
+        diseases.put(2, disease2);
+        diseases.put(3, disease3);
+        diseases.put(104, disease4);
+        diseases.put(105, disease5);
+        diseases.put(106, disease6);
+        diseases.put(107, disease7);
+        diseases.put(108, disease11);
+        diseases.put(109, disease14);
+        diseases.put(110, disease21);
 
         System.out.println(JSON.toJSONString(diseases));
-        System.out.println(JSONUtils.toHashMap(JSON.toJSONString(diseases),Integer.class,Disease.class).get(0).getChildren().get(0).getName());
+        System.out.println(JSONUtils.toHashMap(JSON.toJSONString(diseases), Integer.class, Disease.class).get(0).getChildren().get(0).getName());
     }
 }
