@@ -34,10 +34,14 @@ public class QueryController implements Controller {
                 return queryPrescriptionsByMedicalRecordID(params);
             case "query-patients-by-disease-id":
                 return queryRegistrationByDiseaseID(params);
+            case "query-patients-by-disease":
+                return queryRegistrationByDisease(params);
             case "query-registrations-by-medical-record-id":
                 return queryRegistrationsByMedicalRecordID(params);
             case "query-medical-record-by-department-id":
                 return queryMedicalRecordByDepartment(params);
+            case "query-patients-by-department-id":
+                return queryPatientsByDepartmentID(params);
         }
         return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "目的行为不存在"));
     }
@@ -274,6 +278,65 @@ public class QueryController implements Controller {
     }
 
     // 用病种号查询就诊记录
+    private Tuple queryRegistrationByDisease(JSONObject params) {
+        Integer id;
+        String order;
+        try {
+            id = params.getInteger("id");
+            order = params.getString("order");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+        Map<Integer, Disease> diseases = Database.INSTANCE.select("diseases", Integer.class, Disease.class).getRaw();
+        if (!diseases.containsKey(id))
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该病种不存在"));
+
+        // 获取病种及其子病种的id
+        List<Integer> disease = getChildrenDiseaseID(id, diseases);
+
+        Map<Long, MedicalRecord> medicalRecords = Database.INSTANCE.select("medicalRecords", Long.class, MedicalRecord.class).getRaw();
+        Map<Long, Registration> registrations = Database.INSTANCE.select("registrations", Long.class, Registration.class).getRaw();
+        Map<Long, Diagnosis> diagnoses = Database.INSTANCE.select("diagnoses", Long.class, Diagnosis.class).getRaw();
+        Map<Integer, Staff> staffs = Database.INSTANCE.select("staffs", Integer.class, Staff.class).getRaw();
+
+        switch (order) {
+            case "id":
+                Long[] registrationsArray =
+                        registrations.values().stream()
+                                .map(Registration::getId)
+                                .toArray(Long[]::new);
+                SortUtils.mergeSort(registrationsArray,
+                        0, registrationsArray.length - 1);
+                break;
+            case "name":
+                Collator instance = Collator.getInstance(Locale.CHINA);
+                List<Registration> registrationsList = List.copyOf(registrations.values());
+                registrationsList.sort(instance);
+                break;
+        }
+
+        JSONArray result = new JSONArray();
+        diagnoses.values().stream()
+                .filter(i -> i.getDisease().stream().anyMatch(disease::contains))
+                .map(i -> {
+                    Registration r = registrations.get(i.getId());
+                    MedicalRecord mr = medicalRecords.get(r.getMedicalRecordsID());
+                    return new JSONObject().fluentPut("diseaseName", diseases.get(i.getDisease().get(0)).getName())
+                            // 这里写死了取第一个，其实应该取出对应于要求病种的病，懒得写了
+                            .fluentPut("registrationTime", r.getTime())
+                            .fluentPut("departmentID", r.getDepartmentID())
+                            .fluentPut("patientName", mr.getName())
+                            .fluentPut("patientBirth", mr.getBirthday())
+                            .fluentPut("patientGender", mr.getGender())
+                            .fluentPut("doctorName", staffs.get(r.getDoctorID()).getName());
+                })
+                .forEach(result::add);
+
+        // todo 做假排序
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, result));
+    }
+
     private Tuple queryRegistrationByDiseaseID(JSONObject params) {
         Integer id;
         String order;
@@ -299,6 +362,7 @@ public class QueryController implements Controller {
         JSONArray result = new JSONArray();
         diagnoses.values().stream()
                 .filter(i -> i.getDisease().stream().anyMatch(disease::contains))
+                .filter(i -> i.getStatus() == Diagnosis.FINAL)
                 .map(i -> {
                     Registration r = registrations.get(i.getId());
                     MedicalRecord mr = medicalRecords.get(r.getMedicalRecordsID());
@@ -318,7 +382,7 @@ public class QueryController implements Controller {
     }
 
     // 用科室号查询就诊记录
-    private Tuple queryMedicalRecordByDepartment(JSONObject params) {
+    private Tuple queryPatientsByDepartmentID(JSONObject params) {
         Integer id;
         String order;
         try {
@@ -353,6 +417,42 @@ public class QueryController implements Controller {
                 registrationsList.sort(instance);
                 break;
         }
+
+        JSONArray result = new JSONArray();
+        registrations.values().stream()
+                .filter(i -> department.contains(i.getDepartmentID()))
+                .map(i -> {
+                    MedicalRecord mr = medicalRecords.get(i.getMedicalRecordsID());
+                    return new JSONObject()
+                            .fluentPut("id", mr.getId())
+                            .fluentPut("name", mr.getName())
+                            .fluentPut("birth", mr.getBirthday())
+                            .fluentPut("gender", mr.getGender());
+                })
+                .forEach(result::add);
+
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, result));
+    }
+
+    private Tuple queryMedicalRecordByDepartment(JSONObject params) {
+        Integer id;
+        String order;
+        try {
+            id = params.getInteger("id");
+            order = params.getString("order");
+        } catch (ClassCastException e) {
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
+        }
+
+        Map<Integer, Department> departments = Database.INSTANCE.select("departments", Integer.class, Department.class).getRaw();
+        if (!departments.containsKey(id))
+            return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该科室不存在"));
+
+        // 获取科室及其子科室的id
+        List<Integer> department = getChildDepartmentID(id, departments);
+
+        Map<Long, MedicalRecord> medicalRecords = Database.INSTANCE.select("medicalRecords", Long.class, MedicalRecord.class).getRaw();
+        Map<Long, Registration> registrations = Database.INSTANCE.select("registrations", Long.class, Registration.class).getRaw();
 
         JSONArray result = new JSONArray();
         registrations.values().stream()

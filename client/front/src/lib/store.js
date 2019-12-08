@@ -21,8 +21,11 @@ const store = new Vuex.Store({
             state.global = globalData;
         },
         setWaitList(state, patientList) {
-            patientList.sort((a, b) => b.power - a.power);
-            state.outpatient.patientList.wait = patientList;
+            let cu = state.outpatient.currentPatient;
+            if (Object.keys(cu).length)
+                patientList = patientList.filter(i => i.id !== cu.id);
+            patientList.sort((a, b) => a.power - b.power);
+            state.outpatient.patientList.wait = Object.keys(cu).length ? [cu].concat(patientList) : patientList;
         },
         addWaitList(state, waitList) {
             state.outpatient.patientList.wait.push(waitList);

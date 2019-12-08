@@ -44,6 +44,7 @@ public class AdminController implements Controller {
             return new Tuple(MessageUtils.buildResponse(MessageUtils.BAD_REQUEST, "请求参数类型错误"));
         }
 
+
         Map<Integer, Disease> diseases = Database.INSTANCE.select("diseases", Integer.class, Disease.class).getRaw();
 
         if (!diseases.containsKey(nodeID) || !diseases.containsKey(dropNodeID))
@@ -57,15 +58,20 @@ public class AdminController implements Controller {
             case "before":
             case "after":
                 node.getParent().getChildren().remove(node);
-                node.setParent(dropNode.getParent());
-                dropNode.getParent().getChildren().add(node);
+                Disease parent = dropNode.getParent();
+                node.setParent(parent);
+                if (parent != null)
+                    dropNode.getParent().getChildren().add(node);
                 break;
             case "inside":
+                System.out.println(2);
                 node.getParent().getChildren().remove(node);
                 node.setParent(dropNode);
                 dropNode.getChildren().add(node);
                 break;
         }
+        System.out.println(5);
+
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "更新结构成功"));
     }
@@ -111,7 +117,9 @@ public class AdminController implements Controller {
         if (!diseases.containsKey(id))
             return new Tuple(MessageUtils.buildResponse(MessageUtils.NOT_FOUND, "该病种不存在"));
         Disease disease = diseases.get(id);
-        disease.getParent().getChildren().remove(disease);
+        Disease parent = disease.getParent();
+        if (parent != null)
+            parent.getChildren().remove(disease);
         diseases.remove(id);
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "移除病种成功"));

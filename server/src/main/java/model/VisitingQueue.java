@@ -61,11 +61,6 @@ public class VisitingQueue {
         }
         min = parent = left / 2;
 
-        if (compare(i, right, left, parent, min)) return;
-        modifyUp(parent);
-    }
-
-    private boolean compare(int i, int right, int left, int parent, int min) {
         if (left < registrations.size() &&
                 registrations.get(left).getPower() < registrations.get(parent).getPower())
             min = left;
@@ -74,12 +69,12 @@ public class VisitingQueue {
             min = right;
 
         if (parent == min)
-            return true;
+            return;
 
         VisitingQueueElement temp = registrations.get(parent);
         registrations.set(parent, registrations.get(min));
         registrations.set(min, temp);
-        return false;
+        modifyUp(parent);
     }
 
     private void modifyDown(int i) {
@@ -87,19 +82,49 @@ public class VisitingQueue {
         int right = i * 2 + 1;
         int min = i;
 
-        if (compare(i, right, left, i, min)) return;
+        if (left < registrations.size() &&
+                registrations.get(left).getPower() < registrations.get(i).getPower())
+            min = left;
+        if (right < registrations.size() &&
+                registrations.get(right).getPower() < registrations.get(min).getPower())
+            min = right;
+
+        if (i == min)
+            return;
+
+        VisitingQueueElement temp = registrations.get(i);
+        registrations.set(i, registrations.get(min));
+        registrations.set(min, temp);
         modifyDown(min);
     }
 
 
-    // 获取较小的元素
+    // 获取最小的元素
     public Registration get() {
+        if (registrations.size() == 0)
+            return null;
         VisitingQueueElement popElement = registrations.get(1);
         registrations.set(1, registrations.get(registrations.size() - 1));
         registrations.remove(registrations.size() - 1);
         modifyDown(1);
         out++;
         return popElement.getRegistration();
+    }
+
+    // 查看
+    public Registration peek() {
+        if (registrations.size() == 0)
+            return null;
+        return registrations.get(1).getRegistration();
+    }
+
+    // 去除
+    public void remove(Registration o) {
+        for (int i = 1; i < registrations.size(); i++)
+            if (registrations.get(i).getRegistration().getId() == o.getId()) {
+                registrations.remove(i);
+                return;
+            }
     }
 
     // 插入元素

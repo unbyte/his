@@ -11,6 +11,7 @@ import model.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class OutpatientController implements Controller {
     @Override
@@ -149,8 +150,13 @@ public class OutpatientController implements Controller {
         }
 
         // 从队列中移除
-        Database.INSTANCE.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw()
-                .get(registration.getDoctorID()).get();
+        VisitingQueue visitingQueue = Database.INSTANCE.select("visitingQueues", Integer.class, VisitingQueue.class).getRaw().get(registration.getDoctorID());
+        if (visitingQueue.peek().getId() == registration.getId()) {
+            visitingQueue.get();
+        } else {
+            visitingQueue.remove(registration);
+        }
+
 
         return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "已完成诊断"));
     }
@@ -226,10 +232,14 @@ public class OutpatientController implements Controller {
         Map<Integer, Medicine> medicines = Database.INSTANCE.select("medicines", Integer.class, Medicine.class).getRaw();
 
         // 减掉库存
+        AtomicBoolean usedOut = new AtomicBoolean(false);
         medicineList.forEach(i -> {
             Medicine medicine = medicines.get(i.getMedicineID());
-            if (medicine.getStock() < i.getAmount())
+            if (medicine.getStock() < i.getAmount()) {
+                usedOut.set(true);
                 i.setAmount(medicine.getStock());
+            }
+
             medicine.setStock(medicine.getStock() - i.getAmount());
         });
 
@@ -238,7 +248,8 @@ public class OutpatientController implements Controller {
         if (id == -1) {
             // 是新建药单
             Prescription prescription = Prescription.insert(medicalRecord, registration, name, clazz, medicineList, fee, Status.UNPAID);
-            Database.INSTANCE.insert("prescription", prescription.getId(), prescription);
+            System.out.println(prescription);
+            Database.INSTANCE.insert("prescriptions", prescription.getId(), prescription);
         } else {
             Prescription prescription = Database.INSTANCE.select("prescriptions", Long.class, Prescription.class).getRaw().get(id);
             if (prescription.getStatus() != Status.TEMPORARY)
@@ -246,7 +257,8 @@ public class OutpatientController implements Controller {
 
             prescription.setName(name).setMedicineList(medicineList).setFee(fee).setStatus(Status.UNPAID);
         }
-        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "开立成功"));
+
+        return new Tuple(MessageUtils.buildResponse(MessageUtils.SUCCESS, "开立成功".concat(usedOut.get() ? "，但药物库存不足，已自动修改数量" : "！")));
     }
 
     // 取消药单

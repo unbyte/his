@@ -269,25 +269,20 @@ const mock = {
                 3: {"fee": 100.0, "limit": 40, "id": 3}
             },
             "patients": [{
-                "birthday": 1575729761600,
-                "gender": 0,
-                "medicalRecord": 1575729785523,
-                "name": "阿松大",
-                "id": 1575729785524,
+                "birthday": 1575601620000,
+                "gender": 1,
+                "medicalRecord": 1575774487195,
+                "name": "阿松",
+                "id": 1575774487195,
+                "power": 0,
                 "urgent": false
             }, {
-                "birthday": 1575729818380,
+                "birthday": 1575774491022,
                 "gender": 0,
-                "medicalRecord": 1575729828189,
-                "name": "啊沙发沙发",
-                "id": 1575729828189,
-                "urgent": false
-            }, {
-                "birthday": 1575729788655,
-                "gender": 0,
-                "medicalRecord": 1575729799446,
-                "name": "啊是",
-                "id": 1575729799446,
+                "medicalRecord": 1575774508118,
+                "name": "广东佛山",
+                "id": 1575774508118,
+                "power": 2,
                 "urgent": false
             }],
             "diseases": [{

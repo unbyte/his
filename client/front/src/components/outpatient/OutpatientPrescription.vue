@@ -7,7 +7,8 @@
                     <mu-col span="8">
                         <mu-form-item label="药品">
                             <mu-select filterable v-model="addForm.medicineID" full-width>
-                                <mu-option v-for="(medicine,index) in medicines" :key="index" :label="medicine.name"
+                                <mu-option v-for="(medicine,index) in medicines" :key="index"
+                                           :label="medicine.name"
                                            :value="medicine.id" :search-text="medicine.code"></mu-option>
                             </mu-select>
                         </mu-form-item>
@@ -136,7 +137,7 @@
                     dosage: '',
                     usage: '',
                     frequency: '',
-                    amount: 1
+                    amount: 1,
                 },
                 medicineList: [],
                 currentPrescriptionID: -1,
@@ -189,13 +190,14 @@
                     this.$toast.message("一个药单中最多包含5种药物");
                     return;
                 }
+
                 this.medicineList.push(this.addForm);
                 this.addForm = {
                     medicineID: null,
                     dosage: '',
                     usage: '',
                     frequency: '',
-                    amount: 1
+                    amount: 1,
                 }
             },
             deleteFromMedicineList(id) {

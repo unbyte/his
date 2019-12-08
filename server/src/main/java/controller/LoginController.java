@@ -90,6 +90,7 @@ public class LoginController implements Controller {
                                                         .fluentPut("name", medicalRecord.getName())
                                                         .fluentPut("gender", medicalRecord.getGender())
                                                         .fluentPut("birthday", medicalRecord.getBirthday())
+                                                        .fluentPut("power", i.getPower())
                                                         .fluentPut("urgent", i.getRegistration().isUrgent());
                                             }
                                     ).collect(Collectors.toList()));
