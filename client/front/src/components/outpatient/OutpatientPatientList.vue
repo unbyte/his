@@ -143,7 +143,10 @@
                 }
             },
             handleSortChange({name, order}) {
-                this.searchResult = this.searchResult.sort((a, b) => order === 'asc' ? a[name] - b[name] : b[name] - a[name]);
+                if (name === "name")
+                    this.searchResult = this.searchResult.sort((a, b) => order === 'asc' ? a[name].localeCompare(b[name], 'zh-CN') : b[name].localeCompare(a[name], 'zh-CN'));
+                else
+                    this.searchResult = this.searchResult.sort((a, b) => order === 'asc' ? a[name] - b[name] : b[name] - a[name]);
             },
         }
     }

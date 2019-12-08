@@ -72,7 +72,8 @@ public class FrontDeskController implements Controller {
 
         // 加入索引表
         Map<Long, Long[]> registrationIndexes = Database.INSTANCE.select("registrationIndexes", Long.class, Long[].class).getRaw();
-        registrationIndexes.put(newMedicalRecord.getId(), new Long[]{newRegistration.getId()});
+        registrationIndexes.put(newMedicalRecord.getId(),
+                new Long[]{newRegistration.getId()});
 
         if (!visitingQueues.containsKey(newRegistration.getDoctorID()))
             visitingQueues.put(newRegistration.getDoctorID(), new VisitingQueue());
@@ -136,7 +137,6 @@ public class FrontDeskController implements Controller {
 
         // 加索引
         Map<Long, Long[]> registrationIndexes = Database.INSTANCE.select("registrationIndexes", Long.class, Long[].class).getRaw();
-        System.out.println(JSON.toJSONString(registrationIndexes));
 
         if (!registrationIndexes.containsKey(medicalRecordID))
             registrationIndexes.put(medicalRecordID, new Long[]{newRegistration.getId()});

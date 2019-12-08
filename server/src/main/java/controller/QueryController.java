@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import database.Database;
 import lib.MessageUtils;
+import lib.SortUtils;
 import lib.Tuple;
 import model.*;
 
+import java.text.Collator;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -335,6 +337,22 @@ public class QueryController implements Controller {
 
         Map<Long, MedicalRecord> medicalRecords = Database.INSTANCE.select("medicalRecords", Long.class, MedicalRecord.class).getRaw();
         Map<Long, Registration> registrations = Database.INSTANCE.select("registrations", Long.class, Registration.class).getRaw();
+
+        switch (order) {
+            case "id":
+                Long[] registrationsArray =
+                        registrations.values().stream()
+                                .map(Registration::getId)
+                                .toArray(Long[]::new);
+                SortUtils.mergeSort(registrationsArray,
+                        0, registrationsArray.length - 1);
+                break;
+            case "name":
+                Collator instance = Collator.getInstance(Locale.CHINA);
+                List<Registration> registrationsList = List.copyOf(registrations.values());
+                registrationsList.sort(instance);
+                break;
+        }
 
         JSONArray result = new JSONArray();
         registrations.values().stream()

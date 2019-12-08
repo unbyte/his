@@ -1,5 +1,8 @@
 package lib;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -248,28 +251,12 @@ public class MyHashMap<K, V> implements Map<K, V> {
         return "{" + sb.toString() + "}";
     }
 
+    @AllArgsConstructor
+    @Getter
     static class Entry<K, V> {
         final K key;
         V value;
         Entry<K, V> next;
-
-        public Entry(K key, V value, Entry<K, V> next) {
-            this.key = key;
-            this.value = value;
-            this.next = next;
-        }
-
-        public K getKey() {
-            return key;
-        }
-
-        public V getValue() {
-            return value;
-        }
-
-        public Entry<K, V> getNext() {
-            return next;
-        }
 
         @Override
         public boolean equals(Object obj) {

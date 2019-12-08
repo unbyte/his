@@ -240,7 +240,10 @@
                 this.$toast.success("删除成功");
             },
             handleSortChange({name, order}) {
-                this.patients = this.patients.sort((a, b) => order === 'asc' ? a[name] - b[name] : b[name] - a[name]);
+                if (name.endsWith("Name"))
+                    this.patients = this.patients.sort((a, b) => order === 'asc' ? a[name].localeCompare(b[name], 'zh-CN') : b[name].localeCompare(a[name], 'zh-CN'));
+                else
+                    this.patients = this.patients.sort((a, b) => order === 'asc' ? a[name] - b[name] : b[name] - a[name]);
             },
             // hook一下拖动，每次拖动都和服务器同步树
             handleDrag(draggingNode, dropNode, dropType, ev) {

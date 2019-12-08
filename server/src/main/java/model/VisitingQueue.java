@@ -21,17 +21,18 @@ public class VisitingQueue {
     }
 
     public VisitingQueue(Registration[] registrations) {
-        this.registrations.addAll(Arrays.stream(registrations).map(this::process).collect(Collectors.toList()));
+        this.registrations.addAll(Arrays.stream(registrations).map(this::calculatePower).collect(Collectors.toList()));
         build();
     }
 
-    private VisitingQueueElement process(Registration registration) {
+    private VisitingQueueElement calculatePower(Registration registration) {
         VisitingQueueElement newElement = new VisitingQueueElement().setRegistration(registration);
         if (registration.isUrgent()) {
             urgent++;
             return newElement.setPower(-100 + urgent).setType(VisitingQueueElement.TYPE_URGENT);
         }
-        if (Database.INSTANCE.select("diagnoses", Long.class, Diagnosis.class).getRaw().containsKey(registration.getId())) {
+        if (Database.INSTANCE.select("diagnoses", Long.class, Diagnosis.class).getRaw()
+                .containsKey(registration.getId())) {
             typeB++;
             return newElement.setPower((typeB - 1 + out) * 2 + 1).setType(VisitingQueueElement.TYPE_B);
         }
@@ -65,9 +66,11 @@ public class VisitingQueue {
     }
 
     private boolean compare(int i, int right, int left, int parent, int min) {
-        if (left < registrations.size() && registrations.get(left).getPower() < registrations.get(parent).getPower())
+        if (left < registrations.size() &&
+                registrations.get(left).getPower() < registrations.get(parent).getPower())
             min = left;
-        if (right < registrations.size() && registrations.get(right).getPower() < registrations.get(min).getPower())
+        if (right < registrations.size() &&
+                registrations.get(right).getPower() < registrations.get(min).getPower())
             min = right;
 
         if (parent == min)
@@ -101,7 +104,7 @@ public class VisitingQueue {
 
     // 插入元素
     public void insert(Registration val) {
-        VisitingQueueElement newElement = process(val);
+        VisitingQueueElement newElement = calculatePower(val);
         registrations.add(newElement);
         modifyUp(registrations.size() - 1);
     }

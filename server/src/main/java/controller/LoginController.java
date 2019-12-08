@@ -119,8 +119,11 @@ public class LoginController implements Controller {
         Map<Integer, Disease> diseases = Database.INSTANCE.select("diseases", Integer.class, Disease.class).getRaw();
         // 防止循环引用
         SimplePropertyPreFilter filter = new SimplePropertyPreFilter(Disease.class, "id", "code", "name", "clazz", "children");
-        return JSON.parseArray(JSON.toJSONString(diseases.values().stream()
-                .filter(i -> i.getParent() == null).collect(Collectors.toList()), filter));
+        return JSON.parseArray(JSON.toJSONString(
+                diseases.values().stream()
+                        .filter(i -> i.getParent() == null)
+                        .collect(Collectors.toList())
+                , filter));
     }
 
     private JSONObject getDepartmentTree() {

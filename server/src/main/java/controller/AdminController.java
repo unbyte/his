@@ -90,7 +90,8 @@ public class AdminController implements Controller {
         Disease parent = diseases.get(parentID);
 
         int id = 100 + diseases.size();
-        Disease newDisease = new Disease(id, name, code, 1, parent, new ArrayList<>());
+        Disease newDisease = new Disease(id,
+                name, code, 1, parent, new ArrayList<>());
         parent.getChildren().add(newDisease);
         diseases.put(id, newDisease);
 
